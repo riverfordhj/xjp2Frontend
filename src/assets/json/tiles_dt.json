@@ -1,0 +1,10 @@
+[{
+  "name": "水岸星城社区-单体化",
+  "url": "http://202.114.148.160:6080/saxc-dth/tileset.json"
+}, {
+  "name": "秦臻路社区-单体化",
+  "url": "http://202.114.148.160/xjp/qzl/dth-qzl/tileset.json"
+}, {
+  "name": "湖北大学-单体化",
+  "url": "http://202.114.148.160/xjp/hbdx/dth-hbdx/tileset.json"
+}]
