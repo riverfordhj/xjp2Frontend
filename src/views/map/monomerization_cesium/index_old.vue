@@ -154,7 +154,7 @@ export default {
         homeButton: false,
         navigationHelpButton: false,
         animation: false,
-        // infoBox: false,
+        infoBox: false,
         requestRenderMode: true,
         // imageryProvider: new Cesium.WebMapTileServiceImageryProvider({
         //   url: 'http://t0.tianditu.com/img_w/wmts?service=wmts&request=GetTile&version=1.0.0&LAYER=img&tileMatrixSet=w&TileMatrix={TileMatrix}&TileRow={TileRow}&TileCol={TileCol}&style=default&format=tiles&tk=b97312f85a240009c717a8480b6d54d2',
@@ -335,6 +335,8 @@ export default {
           message: "单体化加载完毕",
           type: "success",
         });
+
+        console.log("单体化模型", tileset);
         // var handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas)
         // handler.setInputAction(function(evt) {
         //   var pick = viewer.scene.pick(evt.position)
@@ -350,8 +352,10 @@ export default {
         // }, Cesium.ScreenSpaceEventType.LEFT_CLICK)
         // viewer.flyTo(classificationTileset)
       });
+      this.addMouseEvent(viewer);
     },
     addMouseEvent(viewer) {
+      console.log("addmouseevent");
       this.addPointMoveEvent(viewer);
       this.addLeftClickEvent(viewer);
     },
@@ -374,7 +378,9 @@ export default {
         console.log("evt,pick", evt, pick);
         if (pick) {
           if (pick instanceof Cesium.Cesium3DTileFeature) {
-            _this.hightLightAndGetProps(pick);
+            // _this.hightLightAndGetProps(pick);
+
+            _this.opened = !_this.opened;
             // // 弹出框 start
             // var position = viewer.scene.pickPosition(evt.position)
             // if (!position) {
@@ -516,11 +522,12 @@ export default {
           if (pickedEntity.label.text._value === "刘德兰") {
             _this.opened = !_this.opened;
             // debugger
+            console.log("刘德兰", pickedEntity);
             return;
           }
           if (pickedEntity.label.text._value === "消防栓") {
             _this.fopened = !_this.fopened;
-            debugger;
+            // debugger;
             return;
           }
           if (pickedEntity.label.text._value === "违法占道") {
