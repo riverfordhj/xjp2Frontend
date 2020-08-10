@@ -41,8 +41,18 @@ const Init = function () {
 
 // 定义3dTiles模型所选要素的交互形式
 var featureViewer = {
+  viewer: {},
   colorHighlight: Cesium.Color.YELLOW.withAlpha(0.3),
   colorSelected: Cesium.Color.LIME.withAlpha(0.3),
+  selected: {
+    feature: undefined,
+    originalColor: new Cesium.Color()
+  },
+  highlighted: {
+    feature: undefined,
+    originalColor: new Cesium.Color()
+  },
+
   setMouseOver: function (v) {
     if (v) {
       this.viewer.screenSpaceEventHandler.setInputAction(
@@ -75,7 +85,57 @@ var featureViewer = {
       )
     }
   },
+
+  //Set feature infobox description
+  setInfobox (pickedFeature) {
+    var featureName = pickedFeature.getProperty('gid')
+
+    const selectedEntity = new Cesium.Entity()
+    selectedEntity.name = featureName
+    selectedEntity.description =
+      'Loading <div class="cesium-infoBox-loading"></div>'
+    this.viewer.selectedEntity = selectedEntity
+
+    var names = pickedFeature._content.batchTable.getPropertyNames(
+      pickedFeature._batchId
+    )
+
+    // 普通3dtiles 获取属性表格
+    var html = get3dTilesHtml(pickedFeature)
+
+    if (!html) {
+      html = '<table class="cesium-infoBox-defaultTable"><tbody>'
+
+      for (var i = 0; i < names.length; i++) {
+        var n = names[i]
+        html +=
+          '<tr><th>' +
+          n +
+          '</th><td>' +
+          pickedFeature.getProperty(n) +
+          '</td></tr>'
+      }
+      html += '</tbody></table>'
+    }
+
+    selectedEntity.description = html
+  },
+
+  restoreHighlight () {
+    // If a feature was previously highlighted, undo the highlight
+    if (Cesium.defined(this.highlighted.feature)) {
+      try {
+        this.highlighted.feature.color = this.highlighted.originalColor
+      } catch (ex) {
+        console.log(ex)
+      }
+      this.highlighted.feature = undefined
+    }
+  },
+
   install: function (viewer) {
+    this.viewer = viewer
+
     var nameOverlay = document.createElement('div')
     viewer.container.appendChild(nameOverlay)
     nameOverlay.className = 'backdrop'
@@ -89,65 +149,27 @@ var featureViewer = {
     nameOverlay.style.color = 'white'
     this.nameOverlay = nameOverlay
 
-    var selected = {
-      feature: undefined,
-      originalColor: new Cesium.Color()
-    }
-
-    var highlighted = {
-      feature: undefined,
-      originalColor: new Cesium.Color()
-    }
-
-    const selectedEntity = new Cesium.Entity()
-
-    this.viewer = viewer
-
     var leftDown = false
     var middleDown = false
 
-    viewer.screenSpaceEventHandler.setInputAction(function onMouseMove (
-      movement
-    ) {
+    viewer.screenSpaceEventHandler.setInputAction(function onMouseMove (movement) {
       leftDown = true
-    },
-      Cesium.ScreenSpaceEventType.LEFT_DOWN)
+    }, Cesium.ScreenSpaceEventType.LEFT_DOWN)
 
-    viewer.screenSpaceEventHandler.setInputAction(function onMouseMove (
-      movement
-    ) {
+    viewer.screenSpaceEventHandler.setInputAction(function onMouseMove (movement) {
       leftDown = false
-    },
-      Cesium.ScreenSpaceEventType.LEFT_UP)
+    }, Cesium.ScreenSpaceEventType.LEFT_UP)
 
-    viewer.screenSpaceEventHandler.setInputAction(function onMouseMove (
-      movement
-    ) {
+    viewer.screenSpaceEventHandler.setInputAction(function onMouseMove (movement) {
       middleDown = true
-    },
-      Cesium.ScreenSpaceEventType.MIDDLE_DOWN)
+    }, Cesium.ScreenSpaceEventType.MIDDLE_DOWN)
 
-    viewer.screenSpaceEventHandler.setInputAction(function onMouseMove (
-      movement
-    ) {
+    viewer.screenSpaceEventHandler.setInputAction(function onMouseMove (movement) {
       middleDown = false
-    },
-      Cesium.ScreenSpaceEventType.MIDDLE_UP)
+    }, Cesium.ScreenSpaceEventType.MIDDLE_UP)
 
-    this.restoreHighlight = function () {
-      // If a feature was previously highlighted, undo the highlight
-      if (Cesium.defined(highlighted.feature)) {
-        try {
-          highlighted.feature.color = highlighted.originalColor
-        } catch (ex) {
-          console.log(ex)
-        }
-        highlighted.feature = undefined
-      }
-    }
-
-    this.onMouseMove = function (movement) {
-      self.restoreHighlight()
+    this.onMouseMove = (movement) => {
+      this.restoreHighlight()
 
       if (middleDown || leftDown) {
         nameOverlay.style.display = 'none'
@@ -156,18 +178,12 @@ var featureViewer = {
 
       // Pick a new feature
       var pickedFeature = viewer.scene.pick(movement.endPosition)
-      if (!Cesium.defined(pickedFeature)) {
+      if (!Cesium.defined(pickedFeature) || !Cesium.defined(pickedFeature.getProperty)) {
         nameOverlay.style.display = 'none'
         return
       }
 
-      if (!Cesium.defined(pickedFeature.getProperty)) {
-        nameOverlay.style.display = 'none'
-        return
-      }
-      debugger
       // A feature was picked, so show it's overlay content
-
       var name = pickedFeature.getProperty('gid')
       if (!Cesium.defined(name)) {
         name = pickedFeature.getProperty('id')
@@ -189,83 +205,52 @@ var featureViewer = {
       nameOverlay.textContent = name
 
       // Highlight the feature if it's not already selected.
-      if (pickedFeature !== selected.feature) {
-        highlighted.feature = pickedFeature
-        Cesium.Color.clone(pickedFeature.color, highlighted.originalColor)
-        pickedFeature.color = self.colorHighlight
+      if (pickedFeature !== this.selected.feature) {
+        this.highlighted.feature = pickedFeature
+        Cesium.Color.clone(pickedFeature.color, this.highlighted.originalColor)
+        pickedFeature.color = this.colorHighlight
       }
     }
 
-    var self = this
-    this.onLeftClick = function (movement) {
+    this.onLeftClick = (movement) => {
       // If a feature was previously selected, undo the highlight
-      if (Cesium.defined(selected.feature)) {
+      if (Cesium.defined(this.selected.feature)) {
         try {
-          selected.feature.color = selected.originalColor
+          this.selected.feature.color = this.selected.originalColor
         } catch (ex) {
           console.log(ex)
         }
-        selected.feature = undefined
+        this.selected.feature = undefined
       }
 
       // Pick a new feature
       var pickedFeature = viewer.scene.pick(movement.position)
       if (!Cesium.defined(pickedFeature)) {
-        self.orginClickHandler(movement)
+        this.orginClickHandler(movement)
         return
       }
 
       // Select the feature if it's not already selected
-      if (selected.feature === pickedFeature) {
+      if (this.selected.feature === pickedFeature) {
         return
       }
 
       if (!Cesium.defined(pickedFeature.getProperty)) return
 
-      selected.feature = pickedFeature
+      this.selected.feature = pickedFeature
 
       // Save the selected feature's original color
-      if (pickedFeature === highlighted.feature) {
-        Cesium.Color.clone(highlighted.originalColor, selected.originalColor)
-        highlighted.feature = undefined
+      if (pickedFeature === this.highlighted.feature) {
+        Cesium.Color.clone(this.highlighted.originalColor, this.selected.originalColor)
+        this.highlighted.feature = undefined
       } else {
-        Cesium.Color.clone(pickedFeature.color, selected.originalColor)
+        Cesium.Color.clone(pickedFeature.color, this.selected.originalColor)
       }
 
       // Highlight newly selected feature
-      pickedFeature.color = self.colorSelected
+      pickedFeature.color = this.colorSelected
 
-      // Set feature infobox description
-
-      var featureName = pickedFeature.getProperty('gid')
-      selectedEntity.name = featureName
-      selectedEntity.description =
-        'Loading <div class="cesium-infoBox-loading"></div>'
-      viewer.selectedEntity = selectedEntity
-
-      var names = pickedFeature._content.batchTable.getPropertyNames(
-        pickedFeature._batchId
-      )
-
-      // 普通3dtiles 获取属性表格
-      var html = get3dTilesHtml(pickedFeature)
-
-      if (!html) {
-        html = '<table class="cesium-infoBox-defaultTable"><tbody>'
-
-        for (var i = 0; i < names.length; i++) {
-          var n = names[i]
-          html +=
-            '<tr><th>' +
-            n +
-            '</th><td>' +
-            pickedFeature.getProperty(n) +
-            '</td></tr>'
-        }
-        html += '</tbody></table>'
-      }
-
-      selectedEntity.description = html
+      this.setInfobox(pickedFeature);
     }
 
     this.setMouseOver(true)

@@ -1,6 +1,24 @@
 <template>
   <div>
     <div id="cesiumContainer" ref="cesiumContainer" />
+    <div class="mainMenu">
+      <!-- <hsc-menu-style-white>
+        <hsc-menu-bar style="border-radius: 0 0 4pt 0;">
+          <hsc-menu-bar-item label="基础">
+            <hsc-menu-item label="图层管理" @click="openLayerTreePanel" />
+          </hsc-menu-bar-item>
+        </hsc-menu-bar>
+      </hsc-menu-style-white>-->
+      <el-dropdown @command="handleMenuCommand">
+        <el-button type="primary">
+          选房
+          <i class="el-icon-arrow-down el-icon--right" />
+        </el-button>
+        <el-dropdown-menu slot="dropdown">
+          <el-dropdown-item command="showLayer">选房</el-dropdown-item>
+        </el-dropdown-menu>
+      </el-dropdown>
+    </div>
     <OldMen-Dialog :opened="opened" />
     <Fire-Dialog :fire-opened="fireOpened" />
     <people-Dialog :popend="popend" />
@@ -94,6 +112,7 @@ export default {
   },
   data() {
     return {
+      dtfFeatures: null,
       selectOptions: [],
       value: "",
       tiltTileset: null,
@@ -129,8 +148,32 @@ export default {
     this.initSeletion();
     // this.selectOptions.push
     this.init();
+
+    // this.SelectHouseBySearchProperty();
   },
   methods: {
+    handleMenuCommand(command) {
+      if (this.dtfFeatures) {
+        this.SelectHouseBySearchProperty();
+      }
+    },
+    SelectHouseBySearchProperty() {
+      console.log("in SelectHouseBySearchProperty()");
+
+      const gidName = "G2-1-204"; //""
+      var featuresLength = this.dtfFeatures.featuresLength;
+      for (var i = 0; i < featuresLength; i++) {
+        let feature = this.dtfFeatures.getFeature(i);
+        // debugger;
+        let value = feature.getProperty("gid");
+        if (value && value == gidName) {
+          debugger;
+          feature.color = Cesium.Color.RED;
+
+          // viewer.flyTo(feature);
+        }
+      }
+    },
     initSeletion() {
       var _this = this;
       oldMenJson.map((man) => {
@@ -154,7 +197,7 @@ export default {
         homeButton: false,
         navigationHelpButton: false,
         animation: false,
-        infoBox: false,
+        // infoBox: false,
         requestRenderMode: true,
         // imageryProvider: new Cesium.WebMapTileServiceImageryProvider({
         //   url: 'http://t0.tianditu.com/img_w/wmts?service=wmts&request=GetTile&version=1.0.0&LAYER=img&tileMatrixSet=w&TileMatrix={TileMatrix}&TileRow={TileRow}&TileCol={TileCol}&style=default&format=tiles&tk=b97312f85a240009c717a8480b6d54d2',
@@ -167,6 +210,7 @@ export default {
         // terrainProvider: Cesium.createWorldTerrain() //建议不要加载全球地形
       });
       // viewer.extend(Cesium.viewerCesiumInspectorMixin)
+      // debugger;
       this.initCamera(viewer);
       this.initInfobox(viewer);
       // this.addFire(viewer)
@@ -330,6 +374,11 @@ export default {
       });
       classificationTileset.readyPromise.then(function (tileset) {
         viewer.scene.primitives.add(tileset);
+
+        tileset.tileLoad.addEventListener((tile) => {
+          _this.dtfFeatures = tile.content;
+        });
+
         _this.$notify({
           title: "成功",
           message: "单体化加载完毕",
@@ -352,11 +401,11 @@ export default {
         // }, Cesium.ScreenSpaceEventType.LEFT_CLICK)
         // viewer.flyTo(classificationTileset)
       });
-      this.addMouseEvent(viewer);
+      // this.addMouseEvent(viewer);
     },
     addMouseEvent(viewer) {
       console.log("addmouseevent");
-      this.addPointMoveEvent(viewer);
+      // this.addPointMoveEvent(viewer);
       this.addLeftClickEvent(viewer);
     },
     addPointMoveEvent(viewer) {
@@ -593,7 +642,14 @@ export default {
 #cesiumContainer {
   height: calc(100vh - 84px);
 }
+.mainMenu {
+  left: 10px;
+  top: 10px;
+  position: absolute;
+  z-index: 991;
+}
 </style>
+
 <style>
 .cesium-widget-credits {
   display: none !important;
