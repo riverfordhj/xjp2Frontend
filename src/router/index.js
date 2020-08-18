@@ -89,6 +89,15 @@ export const constantRoutes = [
     },
     children: [
       {
+        path: 'person-house-map',
+        name: '人房地图',
+        component: () => import('@/views/map/person-house/base-map'), // cesium-test
+        meta: {
+          title: '人房地图',
+          icon: 'map'
+        }
+      },
+      {
         path: 'index',
         name: '地图',
         component: () => import('@/views/map/cesium/index_9_24'), // cesium-test

@@ -113,6 +113,9 @@ export default {
   data() {
     return {
       dtfFeatures: null,
+      dftTileset: null,
+      theFeature: null,
+
       selectOptions: [],
       value: "",
       tiltTileset: null,
@@ -152,6 +155,79 @@ export default {
     // this.SelectHouseBySearchProperty();
   },
   methods: {
+    FlyTo(feature) {
+      if (!feature) {
+        feature = this.theFeature;
+      }
+
+      if (feature && feature._content && feature._content.tile) {
+        debugger;
+        let cartographic = Cesium.Cartographic.fromCartesian(
+          feature._content.tile.boundingSphere.center
+        );
+
+        // cartographic.height *= 0.5;
+        // viewer.camera.flyToBoundingSphere(feature._content.tile.boundingSphere)
+        // viewer.camera.flyTo({
+        //   destination: feature._content.tile.boundingSphere.center,
+        // });
+        // var position = viewer.scene.globe.ellipsoid.cartographicToCartesian(
+        //   cartographic
+        // );
+
+        // var camera = viewer.scene.camera;
+        // var heading = camera.heading;
+        // var pitch = camera.pitch;
+
+        // var offset = this.offsetFromHeadingPitchRange(
+        //   heading,
+        //   pitch,
+        //   cartographic.height * 2.0
+        // );
+
+        // var transform = Cesium.Transforms.eastNorthUpToFixedFrame(position);
+        // Cesium.Matrix4.multiplyByPoint(transform, offset, position);
+
+        // camera.flyTo({
+        //   destination: position,
+        //   orientation: {
+        //     heading: heading,
+        //     pitch: pitch,
+        //   },
+        //   easingFunction: Cesium.EasingFunction.QUADRATIC_OUT,
+        // });
+      }
+    },
+    offsetFromHeadingPitchRange(heading, pitch, range) {
+      pitch = Cesium.Math.clamp(
+        pitch,
+        -Cesium.Math.PI_OVER_TWO,
+        Cesium.Math.PI_OVER_TWO
+      );
+      heading = Cesium.Math.zeroToTwoPi(heading) - Cesium.Math.PI_OVER_TWO;
+
+      var pitchQuat = Cesium.Quaternion.fromAxisAngle(
+        Cesium.Cartesian3.UNIT_Y,
+        -pitch
+      );
+      var headingQuat = Cesium.Quaternion.fromAxisAngle(
+        Cesium.Cartesian3.UNIT_Z,
+        -heading
+      );
+      var rotQuat = Cesium.Quaternion.multiply(
+        headingQuat,
+        pitchQuat,
+        headingQuat
+      );
+      var rotMatrix = Cesium.Matrix3.fromQuaternion(rotQuat);
+
+      var offset = Cesium.Cartesian3.clone(Cesium.Cartesian3.UNIT_X);
+      Cesium.Matrix3.multiplyByVector(rotMatrix, offset, offset);
+      Cesium.Cartesian3.negate(offset, offset);
+      Cesium.Cartesian3.multiplyByScalar(offset, range, offset);
+      return offset;
+    },
+
     handleMenuCommand(command) {
       if (this.dtfFeatures) {
         this.SelectHouseBySearchProperty();
@@ -160,19 +236,40 @@ export default {
     SelectHouseBySearchProperty() {
       console.log("in SelectHouseBySearchProperty()");
 
-      const gidName = "G2-1-204"; //""
-      var featuresLength = this.dtfFeatures.featuresLength;
-      for (var i = 0; i < featuresLength; i++) {
-        let feature = this.dtfFeatures.getFeature(i);
-        // debugger;
-        let value = feature.getProperty("gid");
-        if (value && value == gidName) {
-          debugger;
-          feature.color = Cesium.Color.RED;
-
-          // viewer.flyTo(feature);
-        }
+      const gidName = "H15-2-1-1"; //"G2-1-204"
+      if (this.theFeature) {
+        this.theFeature.color = Cesium.Color.RED;
+        // viewer.selectedEntity = this.theFeature;
+        // viewer.flyTo(this.theFeature.tileset)
+        this.FlyTo();
       }
+      // if (this.dtfFeatures && this.dtfFeatures.featuresLength) {
+      //   let featuresLength = this.dtfFeatures.featuresLength;
+      //   for (let i = 0; i < featuresLength; i++) {
+      //     let feature = this.dtfFeatures.getFeature(i);
+      //     // debugger;
+      //     let value = feature.getProperty("gid");
+      //     if (value && value == gidName) {
+      //       debugger;
+      //       feature.color = Cesium.Color.RED;
+
+      //       // viewer.flyTo(feature);
+      //     }
+      //   }
+      // }
+      // this.dftTileset.style = new Cesium.Cesium3DTileStyle({
+      //   color: {
+      //     conditions: [
+      //       // ["${Height} >= 100", 'color("purple", 0.5)'],
+      //       ["${gid} == ${gidName}", 'color("red")'],
+      //       ["true", "rgba(255,255,255,0.5)"],
+      //     ],
+      //   },
+      // show: "${Height} > 0",
+      // meta: {
+      //   description: '"Building id ${id} has height ${Height}."',
+      // },
+      // });
     },
     initSeletion() {
       var _this = this;
@@ -372,11 +469,51 @@ export default {
       classificationTileset.style = new Cesium.Cesium3DTileStyle({
         color: "rgba(255,255,255,0.01)",
       });
+
+      let gidName = "H15-1-4/5-2"; //测试房屋号G8-2-802
+      // classificationTileset.style = new Cesium.Cesium3DTileStyle({
+      //   color: {
+      //     conditions: [
+      //       // ["${Height} >= 100", 'color("purple", 0.5)'],
+      //       ["${gid} == ${gidName}", 'color("red")'],
+      //       ["true", "rgba(255,255,255,0.5)"],
+      //     ],
+      //   },
+      //   // show: "${Height} > 0",
+      //   // meta: {
+      //   //   description: '"Building id ${id} has height ${Height}."',
+      //   // },
+      // });
+
       classificationTileset.readyPromise.then(function (tileset) {
         viewer.scene.primitives.add(tileset);
 
+        _this.dftTileset = classificationTileset;
+
         tileset.tileLoad.addEventListener((tile) => {
-          _this.dtfFeatures = tile.content;
+          //tileVisible
+          // debugger
+          if (tile && tile.content) {
+            // debugger;
+            _this.dtfFeatures = tile.content;
+            console.log("dftfeatures", _this.dtfFeatures.featuresLength);
+
+            let fLength = tile.content.featuresLength;
+
+            for (let i = 0; i < fLength; i++) {
+              let feature = tile.content.getFeature(i);
+              // debugger;
+              let value = feature.getProperty("gid");
+              if (value && value == gidName) {
+                // debugger;
+                // feature.color = Cesium.Color.RED;
+                _this.theFeature = feature;
+                console.log("find", gidName);
+                // viewer.flyTo(feature);
+                // _this.FlyTo(feature);
+              }
+            }
+          }
         });
 
         _this.$notify({
