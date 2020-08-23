@@ -137,6 +137,7 @@ export default {
     //   this.chose2 = !this.chose2;
     // },3000)
     this.changeBg()
+    // debugger
   },
   methods: {
     changeBg() {
@@ -163,6 +164,7 @@ export default {
       })
     },
     handleLogin() {
+      // debugger
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true

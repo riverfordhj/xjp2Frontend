@@ -51,7 +51,8 @@
 import DialogDrag from "vue-dialog-drag";
 
 var Cesium = require("cesium/Cesium");
-var interOper = require("./interactivate3DTiles");
+// var interOper = require("./interactivate3DTiles");
+
 import "cesium/Widgets/widgets.css";
 import { interactOperate } from "./interactivate3DTiles.js";
 
@@ -186,7 +187,7 @@ export default {
 
         self.sDTilesCollection.set(mouldId, tiltTileset);
         // debugger
-        if (style) interOper.interactOperate.install(self.viewer);
+        if (style) interactOperate.install(self.viewer);
       });
     },
     //处理菜单事件
