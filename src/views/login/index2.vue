@@ -53,6 +53,7 @@
           ref="loginForm"
           label-position="left"
           :model="loginForm"
+          :rules="loginRules"
         >
           <h3 class="title">平台登录</h3>
           <el-form-item prop="username">
@@ -101,15 +102,15 @@ export default {
   name: '',
   data() {
     const validateUsername = (rule, value, callback) => {
-      if (!validUsername(value)) {
-        callback(new Error('Please enter the correct user name'))
-      } else {
-        callback()
-      }
+      // if (!validUsername(value)) {
+      //   callback(new Error('Please enter the correct user name'))
+      // } else {
+      //   callback()
+      // }
     }
     const validatePassword = (rule, value, callback) => {
       if (value.length < 6) {
-        callback(new Error('The password can not be less than 6 digits'))
+        callback(new Error('密码不可少于6位！'))
       } else {
         callback()
       }
@@ -121,7 +122,7 @@ export default {
         password: ''
       },
       loginRules: {
-        username: [{ required: true, trigger: 'blur', validator: validateUsername }],
+        // username: [{ required: true, trigger: 'blur', validator: validateUsername }],
         password: [{ required: true, trigger: 'blur', validator: validatePassword }]
       },
       loading: false,
