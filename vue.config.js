@@ -49,7 +49,7 @@ module.exports = {
       //     ['^' + process.env.VUE_APP_BASE_API]: ''
       //   }
       // }
-      "/api": {
+      '/api': {
         target: "https://localhost:44318",
         secure: false
       }

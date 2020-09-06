@@ -1,5 +1,13 @@
 import request from '@/utils/request'
 
+export function getPersonByRoom(roomInfo) {
+  return request({
+    url: '/person/GetPersonsInRoom',
+    method: 'post',
+    data: roomInfo
+  })
+}
+
 export function getPeopleByResidents(HouseId) {
   return request({
     url: '/people/getPeopleByResidents',

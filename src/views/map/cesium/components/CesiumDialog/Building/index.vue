@@ -46,7 +46,7 @@ import Tree from './Tree'
 import HouseTable from './HouseTable'
 import PeopleTable from './PeopleTable'
 import Chart from './Chart'
-import { getPeopleByBuilding } from '@/api/people.js'
+import { getPeopleByBuilding } from '@/api/person.js'
 import { getHousesByBuildingName } from '@/api/house.js'
 
 export default {
