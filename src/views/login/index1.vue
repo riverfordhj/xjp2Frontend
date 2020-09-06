@@ -67,6 +67,7 @@ export default {
   name: '',
   data() {
     const validateUsername = (rule, value, callback) => {
+      debugger
       if (!isvalidUsername(value)) {
         callback(new Error('请输入正确的用户名'))
       } else {
@@ -74,6 +75,7 @@ export default {
       }
     }
     const validatePass = (rule, value, callback) => {
+      debugger
       if (value.length < 5) {
         callback(new Error('密码不能小于5位'))
       } else {
@@ -87,9 +89,13 @@ export default {
       },
       loginRules: {
         username: [
-          { required: true, trigger: 'blur', validator: validateUsername }
+          // { required: true, trigger: 'blur', validator: validateUsername }
+          { required: true }
         ],
-        password: [{ required: true, trigger: 'blur', validator: validatePass }]
+        password: [
+          { required: true }
+          // { required: true, trigger: 'blur', validator: validatePass }
+          ]
       },
       loading: false,
       pwdType: 'password',
