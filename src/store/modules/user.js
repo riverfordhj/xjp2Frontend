@@ -64,8 +64,8 @@ const actions = {
       getInfo(state.token).then(response => {
         // const { data } = response
 
-        let data = response[0].value;
-        let avatar = "";
+        const data = response[0].value
+        const avatar = ''
 
         if (!data) {
           reject('Verification failed, please Login again.')
@@ -73,7 +73,7 @@ const actions = {
 
         // const { name, avatar } = data
 
-        commit('SET_NAME', data)//name
+        commit('SET_NAME', data)// name
         commit('SET_AVATAR', avatar)
         resolve(data)
       }).catch(error => {

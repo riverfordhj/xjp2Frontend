@@ -4,13 +4,8 @@ export {
 }
 
 var Cesium = require('cesium/Cesium')
-var axios = require('axios')
 import { getPersonByRoom } from '@/api/person.js'
-import {
-  login,
-  logout,
-  getInfo
-} from '@/api/user'
+
 
 var interactOperate = {
   viewer: null, // cesium viewer
@@ -200,24 +195,7 @@ var interactOperate = {
     }).catch(error => {
       console.log(error)
     })
-    // var data = JSON.stringify(roomInfo)
-
-    // var config = {
-    //   method: 'post',
-    //   url: 'https://localhost:44318/api/Person/GetPersonsInRoom',
-    //   headers: {
-    //     'Content-Type': 'application/json'
-    //   },
-    //   data: data
-    // }
-
-    // axios(config)
-    //   .then(function (response) {
-    //     console.log(JSON.stringify(response.data))
-    //   })
-    //   .catch(function (error) {
-    //     console.log(error)
-    //   })
+ 
   },
   // 设置entity, 及属性，并在viewer中选择
   setSelectedEntity(pickedFeature) {
