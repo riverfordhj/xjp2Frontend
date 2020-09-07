@@ -6,7 +6,6 @@ export {
 var Cesium = require('cesium/Cesium')
 import { getPersonByRoom } from '@/api/person.js'
 
-
 var interactOperate = {
   viewer: null, // cesium viewer
   personHouseDataForm: null,
@@ -176,10 +175,14 @@ var interactOperate = {
   // Set feature infobox description
   setInfobox(pickedFeature) {
     const roomInfo = {}
-    roomInfo.CommunityName = '水岸星城' // pickedFeature.getProperty('community')
-    roomInfo.BuildingName = 'G3' // pickedFeature.getProperty('buildingid')
-    roomInfo.RoomNO = '1-202' // pickedFeature.getProperty('roomid')
-    // debugger
+    roomInfo.CommunityName = pickedFeature.getProperty('community')
+    roomInfo.BuildingName = pickedFeature.getProperty('buildingid')
+    const unit = pickedFeature.getProperty('unitid')
+    const roomId = pickedFeature.getProperty('roomid')
+    roomInfo.RoomNO = `${unit}-${roomId}`
+
+    this.personHouseDataForm.roomid = `${roomInfo.CommunityName}-${roomInfo.BuildingName}-${roomInfo.RoomNO}`
+    debugger
     this.getPersonInRoom(roomInfo) // JSON.stringify(
 
     // debugger
@@ -188,14 +191,15 @@ var interactOperate = {
   // 获取后台数据
   getPersonInRoom(roomInfo) {
     getPersonByRoom(roomInfo).then(response => { // login{      username: 'hj',      password: 'password'    }
-      debugger
-      console.log('返回人员数据P, ', response)
-      this.personHouseDataForm.show = true
-      this.personHouseDataForm.roomid = roomInfo.roomNO
+      // debugger
+      if (this.personHouseDataForm.show !== true) {
+        this.personHouseDataForm.show = true
+      }
+
+      this.personHouseDataForm.personInRoom = response
     }).catch(error => {
       console.log(error)
     })
- 
   },
   // 设置entity, 及属性，并在viewer中选择
   setSelectedEntity(pickedFeature) {

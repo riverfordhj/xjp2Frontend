@@ -51,14 +51,20 @@
       class="dialog-3"
       :title="personHouseDataFormTitle"
       pinned="false"
-      :options="{top:250, left:350, height: 500, width: 800, buttonPin: false }"
+      :options="{top:250, left:50, height: 500, width: 800, buttonPin: false }"
       @close="closepersonHouseDataForm"
     >
       <!-- <el-scrollbar :native="false" style="height:100%, height: 100%"> -->
-      <el-table :data="tableData" height="440" border style="width: 100%">
-        <el-table-column prop="date" label="日期" width="180" />
-        <el-table-column prop="name" label="姓名" width="180" />
-        <el-table-column prop="address" label="地址" />
+      <el-table :data="personHouseDataForm.personInRoom" height="440" border style="width: 100%">
+        <el-table-column prop="name" label="姓名" width="80" />
+        <el-table-column prop="personId" label="身份证" width="170" />
+        <el-table-column prop="phone" label="电话" width="120" />
+        <el-table-column prop="ethnicGroups" label="民族" />
+        <el-table-column prop="address" label="户籍地址" />
+        <el-table-column prop="company" label="公司" />
+        <el-table-column prop="isOverseasChinese" label="海外华人" />
+        <el-table-column prop="politicalState" label="政治面貌" />
+        <el-table-column prop="organizationalRelation" label="组织关系" />
       </el-table>
       <!-- </el-scrollbar> -->
     </dialog-drag>
@@ -72,7 +78,6 @@ var Cesium = require('cesium/Cesium')
 
 import 'cesium/Widgets/widgets.css'
 import { interactOperate } from './interactivate3DTiles.js'
-import { getPersonByRoom } from '@/api/person.js'
 
 export default {
   name: 'PersonHouseMap',
@@ -93,7 +98,7 @@ export default {
             {
               id: 11,
               label: '峯岚天下3栋',
-              url: 'http://localhost/xjp/3D/fftx/1building3DTiles/tileset.json' // saxc/saxc
+              url: 'http://localhost/xjp/3D/saxc/saxc/tileset.json' // fftx/1building3DTiles
             }
           ]
         },
@@ -104,7 +109,7 @@ export default {
             {
               id: 12,
               label: '峯岚天下3栋',
-              url: 'http://localhost/xjp/3D/fftx/dth3DTiles/tileset.json' // saxc/dtf-SAXC
+              url: 'http://localhost/xjp/3D/saxc/dtf-SAXC/tileset.json' // fftx/dth3DTiles
             }
           ]
         }
@@ -121,37 +126,31 @@ export default {
       modelColor: null, // 模型颜色
 
       personHouseDataForm: {
-        title: '数据页',
+        title: '人房数据页',
         show: false,
-        roomid: ''
-      },
-      tableData: [
-        {
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        },
-        {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1517 弄'
-        },
-        {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1519 弄'
-        },
-        {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1516 弄'
-        }
-      ]
+        roomid: '',
+        personInRoom: []
+        // {
+        //   address: '武汉',
+        //   company: '',
+        //   ethnicGroups: '汉',
+        //   isOverseasChinese: false,
+        //   name: '陈谦',
+        //   organizationalRelation: '',
+        //   personId: '420802198306140315',
+        //   phone: '13971349323',
+        //   politicalState: ''
+        // }
+      }
     }
   },
   computed: {
     personHouseDataFormTitle() {
-      return this.personHouseDataForm.title + ' 房号：' + this.personHouseDataForm.roomid
+      return (
+        this.personHouseDataForm.title +
+        ' 房号：' +
+        this.personHouseDataForm.roomid
+      )
     }
   },
   mounted() {
