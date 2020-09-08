@@ -109,7 +109,7 @@ export default {
             {
               id: 12,
               label: '峯岚天下3栋',
-              url: 'http://localhost/xjp/3D/saxc/dtf-SAXC/tileset.json' // fftx/dth3DTiles
+              url: 'http://localhost/xjp/3D/saxc/dth-SAXC/tileset.json' // fftx/dth3DTiles
             }
           ]
         }
