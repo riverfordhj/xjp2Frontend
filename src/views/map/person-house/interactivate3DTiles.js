@@ -106,10 +106,10 @@ var interactOperate = {
     }
 
     // A feature was picked, so show it's overlay content
-    var name = pickedFeature.getProperty('roomid')
-    if (!Cesium.defined(name)) {
-      name = pickedFeature.getProperty('id')
-    }
+    const buildingId = pickedFeature.getProperty('buildingid')
+    const unitid = pickedFeature.getProperty('unitid')
+    const roomId = pickedFeature.getProperty('roomid')
+    const name = `${buildingId}-${unitid}-${roomId}`
 
     if (name === '') {
       this.nameOverlay.style.display = 'none'
@@ -121,6 +121,7 @@ var interactOperate = {
     this.nameOverlay.style.left = movement.endPosition.x + 'px'
 
     // nameOverlay.textContent = '水岸星城党员群众服务中心'
+    debugger
     this.nameOverlay.textContent = name
 
     // Highlight the feature if it's not already selected.

@@ -54,6 +54,9 @@ import { interactOperate } from './interactivate3DTiles.js'
 import PersonHouseInfomationPage from './components/person-house-infomation-page'
 import ColorSetPage from './components/color-set-page'
 
+// 3D 模型配置数据
+import modelsConfigData from '@/assets/3DModels/models.json'
+
 export default {
   name: 'PersonHouseMap',
   components: {
@@ -67,30 +70,31 @@ export default {
       sDTilesCollection: new Map(),
 
       layerTreeVisible: false,
-      modelTreeData: [
-        {
-          id: 1,
-          label: '实体模型',
-          children: [
-            {
-              id: 11,
-              label: '峯岚天下3栋',
-              url: 'http://localhost/xjp/3D/saxc/saxc/tileset.json' // fftx/1building3DTiles
-            }
-          ]
-        },
-        {
-          id: 2,
-          label: '单体模型',
-          children: [
-            {
-              id: 12,
-              label: '峯岚天下3栋',
-              url: 'http://localhost/xjp/3D/saxc/dth-SAXC/tileset.json' // fftx/dth3DTiles
-            }
-          ]
-        }
-      ],
+      modelTreeData: modelsConfigData,
+      // [
+      //   {
+      //     id: 1,
+      //     label: '实体模型',
+      //     children: [
+      //       {
+      //         id: 11,
+      //         label: '峯岚天下3栋',
+      //         url: 'http://localhost/xjp/3D/saxc/saxc/tileset.json' // fftx/1building3DTiles
+      //       }
+      //     ]
+      //   },
+      //   {
+      //     id: 2,
+      //     label: '单体模型',
+      //     children: [
+      //       {
+      //         id: 12,
+      //         label: '峯岚天下3栋',
+      //         url: 'http://localhost/xjp/3D/saxc/dth-SAXC/tileset.json' // fftx/dth3DTiles
+      //       }
+      //     ]
+      //   }
+      // ],
       defaultProps: {
         children: 'children',
         label: 'label'
