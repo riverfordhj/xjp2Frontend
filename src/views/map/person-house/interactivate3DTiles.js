@@ -182,7 +182,7 @@ var interactOperate = {
     roomInfo.RoomNO = `${unit}-${roomId}`
 
     this.personHouseDataForm.roomid = `${roomInfo.CommunityName}-${roomInfo.BuildingName}-${roomInfo.RoomNO}`
-    debugger
+    // debugger
     this.getPersonInRoom(roomInfo) // JSON.stringify(
 
     // debugger

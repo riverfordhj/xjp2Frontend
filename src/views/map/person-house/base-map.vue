@@ -37,37 +37,10 @@
       </el-scrollbar>
     </dialog-drag>
 
-    <el-dialog title="图层设置" :visible.sync="dialogVisible" width="250px">
-      <div class="block">
-        <span class="demonstration">模型颜色:</span>
-        <!-- <el-tag>模型颜色:</el-tag> -->
-        <el-color-picker v-model="modelColor" show-alpha @change="colorChange" />
-      </div>
-    </el-dialog>
-
-    <dialog-drag
-      v-show="personHouseDataForm.show"
-      id="dialog-2"
-      class="dialog-3"
-      :title="personHouseDataFormTitle"
-      pinned="false"
-      :options="{top:250, left:50, height: 500, width: 800, buttonPin: false }"
-      @close="closepersonHouseDataForm"
-    >
-      <!-- <el-scrollbar :native="false" style="height:100%, height: 100%"> -->
-      <el-table :data="personHouseDataForm.personInRoom" height="440" border style="width: 100%">
-        <el-table-column prop="name" label="姓名" width="80" />
-        <el-table-column prop="personId" label="身份证" width="170" />
-        <el-table-column prop="phone" label="电话" width="120" />
-        <el-table-column prop="ethnicGroups" label="民族" />
-        <el-table-column prop="address" label="户籍地址" />
-        <el-table-column prop="company" label="公司" />
-        <el-table-column prop="isOverseasChinese" label="海外华人" />
-        <el-table-column prop="politicalState" label="政治面貌" />
-        <el-table-column prop="organizationalRelation" label="组织关系" />
-      </el-table>
-      <!-- </el-scrollbar> -->
-    </dialog-drag>
+    <!-- 3D单体化模型颜色设置面板 -->
+    <ColorSetPage :option="layerPropertyOption" @colorChange="setDthColor" />
+    <!-- 人房信息面板 -->
+    <PersonHouseInfomationPage :person-house-info="personHouseDataForm" />
   </div>
 </template>
 
@@ -78,11 +51,15 @@ var Cesium = require('cesium/Cesium')
 
 import 'cesium/Widgets/widgets.css'
 import { interactOperate } from './interactivate3DTiles.js'
+import PersonHouseInfomationPage from './components/person-house-infomation-page'
+import ColorSetPage from './components/color-set-page'
 
 export default {
   name: 'PersonHouseMap',
   components: {
-    DialogDrag
+    DialogDrag,
+    PersonHouseInfomationPage,
+    ColorSetPage
   },
   data() {
     return {
@@ -120,39 +97,24 @@ export default {
       },
       defaultChecked: [11, 12], // 模型树check状态
 
-      dialogVisible: false, // 图层设置面试显示开关
+      // dialogVisible: false,
       currentModelId: -1, // 当前被设置的模型id
 
-      modelColor: null, // 模型颜色
+      layerPropertyOption: {
+        show: false, // 图层设置面试显示开关
+        color: '' // 模型颜色
+      },
+      // modelColor: null,
 
       personHouseDataForm: {
         title: '人房数据页',
         show: false,
         roomid: '',
         personInRoom: []
-        // {
-        //   address: '武汉',
-        //   company: '',
-        //   ethnicGroups: '汉',
-        //   isOverseasChinese: false,
-        //   name: '陈谦',
-        //   organizationalRelation: '',
-        //   personId: '420802198306140315',
-        //   phone: '13971349323',
-        //   politicalState: ''
-        // }
       }
     }
   },
-  computed: {
-    personHouseDataFormTitle() {
-      return (
-        this.personHouseDataForm.title +
-        ' 房号：' +
-        this.personHouseDataForm.roomid
-      )
-    }
-  },
+
   mounted() {
     this.initMap()
     this.loadData()
@@ -217,12 +179,10 @@ export default {
         // debugger;
         tiltTileset = new Cesium.Cesium3DTileset({
           url: url
-          // classificationType: classificationType,
         })
       } else {
         tiltTileset = new Cesium.Cesium3DTileset({
           url: url
-          // classificationType: classificationType,
         })
       }
 
@@ -253,31 +213,13 @@ export default {
     closeLayerTreePanel() {
       this.layerTreeVisible = false
     },
-    closepersonHouseDataForm() {
-      this.personHouseDataForm.show = false
-    },
+
     handleCheckChange(data, checked, indeterminate) {
       // debugger;
       var target = this.sDTilesCollection.get(data.id)
       if (Cesium.defined(target)) {
         target.show = checked
-        // target.then(function (dataSource) {
-        //   dataSource.entities.show = checked;
-        //   return;
-        // });
       }
-      // var target = this.jsonLayers.get(data.label)
-
-      // if (!Cesium.defined(target)) {
-      //   target = this.tileSets.get(data.label)
-      // }
-      // if (!Cesium.defined(target)) {
-      //   return
-      // }
-      // target.then(function(dataSource) {
-      //   dataSource.entities.show = checked
-      // })
-      // }
     },
     handleNodeClick(data) {
       var target = this.sDTilesCollection.get(data.id)
@@ -326,40 +268,23 @@ export default {
     openTPanel(node, data, event) {
       event.stopPropagation()
       // console.log(node, data)
-      debugger
+      // debugger
       var self = this
       this.currentModelId = data.id // 记录当前设置模型id
       var target = this.sDTilesCollection.get(this.currentModelId)
       if (Cesium.defined(target)) {
-        self.modelColor = target.style.color.expression
-        self.dialogVisible = true
-      }
-      // target.then(function (dataSource) {
-      //   console.log(dataSource);
-      //   var alpha =
-      //     dataSource.entities.values[0].polygon.material.color._value.alpha;
-      //   self.transparency = alpha;
-      //   // debugger
-      //   self.SelectedDataSource = dataSource;
-      //   self.dialogVisible = true;
-      // });
-    },
-    // 模型透明度滑块控件事件映射
-    sliderChange() {
-      // debugger;
-      var target = this.sDTilesCollection.get(this.currentModelId)
-      if (Cesium.defined(target)) {
-        target.style = new Cesium.Cesium3DTileStyle({
-          color: `rgba(255,255,255,"${this.transparency}")`
-        })
+        self.layerPropertyOption.color = target.style.color.expression
+        self.layerPropertyOption.show = true
       }
     },
-    colorChange() {
+
+    // 设置3D单体模型颜色
+    setDthColor(color) {
       debugger
       var target = this.sDTilesCollection.get(this.currentModelId)
       if (Cesium.defined(target)) {
         target.style = new Cesium.Cesium3DTileStyle({
-          color: this.modelColor
+          color: color
         })
       }
     }
