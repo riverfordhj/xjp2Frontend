@@ -121,7 +121,7 @@ var interactOperate = {
     this.nameOverlay.style.left = movement.endPosition.x + 'px'
 
     // nameOverlay.textContent = '水岸星城党员群众服务中心'
-    debugger
+    // debugger
     this.nameOverlay.textContent = name
 
     // Highlight the feature if it's not already selected.
@@ -145,6 +145,7 @@ var interactOperate = {
 
     // Pick a new feature
     var pickedFeature = this.viewer.scene.pick(movement.position)
+    // debugger
     if (!Cesium.defined(pickedFeature)) {
       this.orginClickHandler(movement)
       return
@@ -171,6 +172,78 @@ var interactOperate = {
     pickedFeature.color = this.colorSelected
 
     this.setInfobox(pickedFeature)
+
+    this.FlytoRoom(pickedFeature)
+  },
+
+  FlytoRoom(feature) {
+    debugger
+    var longitude = Cesium.Math.toRadians(
+      feature.getProperty('lng')
+    )
+    var latitude = Cesium.Math.toRadians(feature.getProperty('lat'))
+    var height = feature.getProperty('dminvalue')
+
+    var positionCartographic = new Cesium.Cartographic(
+      longitude,
+      latitude,
+      height //* 0.5
+    )
+    var position = this.viewer.scene.globe.ellipsoid.cartographicToCartesian(
+      positionCartographic
+    )
+
+    var camera = this.viewer.scene.camera
+    var heading = camera.heading
+    var pitch = camera.pitch
+
+    var offset = this.offsetFromHeadingPitchRange(
+      heading,
+      pitch,
+      30
+    )
+
+    var transform = Cesium.Transforms.eastNorthUpToFixedFrame(position)
+    Cesium.Matrix4.multiplyByPoint(transform, offset, position)
+
+    camera.flyTo({
+      destination: position,
+      orientation: {
+        heading: heading,
+        pitch: pitch
+      },
+      easingFunction: Cesium.EasingFunction.QUADRATIC_OUT
+    })
+  },
+
+  offsetFromHeadingPitchRange(heading, pitch, range) {
+    pitch = Cesium.Math.clamp(
+      pitch,
+      -Cesium.Math.PI_OVER_TWO,
+      Cesium.Math.PI_OVER_TWO
+    )
+    heading = Cesium.Math.zeroToTwoPi(heading) - Cesium.Math.PI_OVER_TWO
+
+    var pitchQuat = Cesium.Quaternion.fromAxisAngle(
+      Cesium.Cartesian3.UNIT_Y,
+      -pitch
+    )
+    var headingQuat = Cesium.Quaternion.fromAxisAngle(
+      Cesium.Cartesian3.UNIT_Z,
+      -heading
+    )
+    var rotQuat = Cesium.Quaternion.multiply(
+      headingQuat,
+      pitchQuat,
+      headingQuat
+    )
+    var rotMatrix = Cesium.Matrix3.fromQuaternion(rotQuat)
+
+    var offset = Cesium.Cartesian3.clone(Cesium.Cartesian3.UNIT_X)
+    Cesium.Matrix3.multiplyByVector(rotMatrix, offset, offset)
+    Cesium.Cartesian3.negate(offset, offset)
+    Cesium.Cartesian3.multiplyByScalar(offset, range, offset)
+    return offset
   },
 
   // Set feature infobox description
