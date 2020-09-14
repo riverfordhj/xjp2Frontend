@@ -22,7 +22,7 @@
         <template slot-scope="scope">
           <el-popover trigger="hover" placement="top">
             <ul>
-              <li v-for="item in scope.row.specialGroup" :key="item">特殊人群：{{ item.type }}</li>
+              <li v-for="item in scope.row.specialGroup" :key="item.Id">特殊人群：{{ item.type }}</li>
             </ul>
             <div slot="reference" class="name-wrapper">
               <el-tag size="medium">{{ scope.row.person.name }}</el-tag>
@@ -172,8 +172,9 @@ export default {
     },
     handleLocalFilter() {
       // debugger
+      var value = this.listQuery.name
       if (this.listQuery.name) {
-        this.filterdPersonHouseInfo = this.personHouseInfo.filter(item => item.name.indexOf(this.listQuery.name) !== -1)
+        this.filterdPersonHouseInfo = this.personHouseInfo.filter(item => item.person.name.indexOf(value) !== -1)
       } else {
         this.filterdPersonHouseInfo = this.personHouseInfo
       }
