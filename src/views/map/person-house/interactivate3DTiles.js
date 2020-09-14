@@ -28,6 +28,8 @@ var interactOperate = {
   middleDown: false,
   leftDown: false,
 
+  // 当前 roomNO
+  roomNO: '',
   // 设置room浮动提示html元素
   SetupOverlap() {
     this.nameOverlay = document.createElement('div')
@@ -106,12 +108,9 @@ var interactOperate = {
     }
 
     // A feature was picked, so show it's overlay content
-    const buildingId = pickedFeature.getProperty('buildingid')
-    const unitid = pickedFeature.getProperty('unitid')
-    const roomId = pickedFeature.getProperty('roomid')
-    const name = `${buildingId}-${unitid}-${roomId}`
+    const name = this.getRoomNO(pickedFeature)
 
-    if (name === '') {
+    if (!name) {
       this.nameOverlay.style.display = 'none'
       return
     }
@@ -131,65 +130,110 @@ var interactOperate = {
       pickedFeature.color = this.colorHighlight
     }
   },
+  // 构造房间号，70-2-1002
+  getRoomNO(room) {
+    if (!Cesium.defined(room) || !Cesium.defined(room.getProperty)) {
+      return ''
+    }
+
+    const buildingId = room.getProperty('buildingid')
+    const unitid = room.getProperty('unitid')
+    const roomId = room.getProperty('roomid')
+
+    if (!buildingId || !unitid || !roomId) {
+      return ''
+    }
+    return `${buildingId}-${unitid}-${roomId}`
+  },
   // mouseclick事件处理
   onLeftClick(movement) {
+    // debugger
+    // Pick a new feature
+    const room = this.pickFeature(movement.position)
+
+    if (room === null) {
+      this.orginClickHandler(movement.position)
+      return
+    }
+    // 设置高亮效果
+    this.setSelectedFeature(room)
+
+    // 显示属性面板
+    this.setInfobox(room)
+
+    // this.FlytoRoom(pickedFeature)
+  },
+  // 高亮处理选择room
+  setSelectedFeature(room) {
+    // Select the feature if it's not already selected
+    if (this.selected.feature === room) {
+      return
+    }
     // If a feature was previously selected, undo the highlight
     if (Cesium.defined(this.selected.feature)) {
-      try {
-        this.selected.feature.color = this.selected.originalColor
-      } catch (ex) {
-        console.log(ex)
-      }
+      this.selected.feature.color = this.selected.originalColor
       this.selected.feature = undefined
     }
 
-    // Pick a new feature
-    var pickedFeature = this.viewer.scene.pick(movement.position)
-    // debugger
-    if (!Cesium.defined(pickedFeature)) {
-      this.orginClickHandler(movement)
-      return
-    }
+    if (!Cesium.defined(room.getProperty)) return
 
-    // Select the feature if it's not already selected
-    if (this.selected.feature === pickedFeature) {
-      return
-    }
-
-    if (!Cesium.defined(pickedFeature.getProperty)) return
-
-    this.selected.feature = pickedFeature
+    this.selected.feature = room
 
     // Save the selected feature's original color
-    if (pickedFeature === this.highlighted.feature) {
+    if (room === this.highlighted.feature) {
       Cesium.Color.clone(this.highlighted.originalColor, this.selected.originalColor)
       this.highlighted.feature = undefined
     } else {
-      Cesium.Color.clone(pickedFeature.color, this.selected.originalColor)
+      Cesium.Color.clone(room.color, this.selected.originalColor)
     }
 
     // Highlight newly selected feature
-    pickedFeature.color = this.colorSelected
-
-    this.setInfobox(pickedFeature)
-
-    this.FlytoRoom(pickedFeature)
+    room.color = this.colorSelected
+  },
+  // 根据屏幕坐标选取 room model
+  pickFeature(position) {
+    const pickedFeature = this.viewer.scene.pick(position)
+    // debugger
+    if (!Cesium.defined(pickedFeature)) {
+      return null
+    } else {
+      return pickedFeature
+    }
+  },
+  // 根据屏幕坐标及roomNO选取 room model
+  pickFeatureByRoomNO(position, roomNO) {
+    const features = this.viewer.scene.drillPick(position)
+    debugger
+    for (let i = 0; i < features.length; i++) {
+      const feature = features[i]
+      if (!Cesium.defined(feature)) {
+        continue
+      } else {
+        const rN = this.getRoomNO(feature)
+        if (rN === roomNO) {
+          return feature
+        }
+      }
+    }
+    return null
   },
 
-  FlytoRoom(feature) {
-    debugger
+  FlytoRoom(position, roomNO) {
+    // debugger
+    this.roomNO = roomNO
+
     var longitude = Cesium.Math.toRadians(
-      feature.getProperty('lng')
+      position.long
     )
-    var latitude = Cesium.Math.toRadians(feature.getProperty('lat'))
-    var height = feature.getProperty('dminvalue')
+    var latitude = Cesium.Math.toRadians(position.lat)
+    var height = position.height
 
     var positionCartographic = new Cesium.Cartographic(
       longitude,
       latitude,
       height //* 0.5
     )
-    var position = this.viewer.scene.globe.ellipsoid.cartographicToCartesian(
+    var pos = this.viewer.scene.globe.ellipsoid.cartographicToCartesian(
       positionCartographic
     )
 
@@ -203,17 +247,43 @@ var interactOperate = {
       30
     )
 
-    var transform = Cesium.Transforms.eastNorthUpToFixedFrame(position)
-    Cesium.Matrix4.multiplyByPoint(transform, offset, position)
+    var transform = Cesium.Transforms.eastNorthUpToFixedFrame(pos)
+    Cesium.Matrix4.multiplyByPoint(transform, offset, pos)
 
     camera.flyTo({
-      destination: position,
+      destination: pos,
       orientation: {
         heading: heading,
         pitch: pitch
       },
-      easingFunction: Cesium.EasingFunction.QUADRATIC_OUT
+      easingFunction: Cesium.EasingFunction.QUADRATIC_OUT,
+      complete: this.flytoComplete.bind(this)
     })
+  },
+  // 飞到room后，根据屏幕中心点选取room
+  flytoComplete() {
+    // debugger
+    const ow = document.getElementById('cesiumContainer').offsetWidth / 2
+    const oh = document.getElementById('cesiumContainer').offsetHeight / 2
+
+    const position = {
+      x: ow,
+      y: oh
+    }
+
+    // this.onLeftClick(para)
+
+    // Pick a new feature
+    const room = this.pickFeatureByRoomNO(position, this.roomNO)
+
+    if (room === null) {
+      return
+    }
+    // 设置高亮效果
+    this.setSelectedFeature(room)
+
+    // 显示属性面板
+    this.setInfobox(room)
   },
 
   offsetFromHeadingPitchRange(heading, pitch, range) {

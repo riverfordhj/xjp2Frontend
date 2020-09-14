@@ -9,7 +9,8 @@
     @close="close"
   >
     <!-- <el-scrollbar :native="false" style="height:100%, height: 100%"> -->
-    <el-table :data="personHouseInfo.personInRoom" height="290" border style="width: 100%">
+    <el-input v-model="searchPositionValue" placeholder="房号" style="width: 500px;" class="filter-item" @keyup.enter.native="handleRoomSearch" />
+    <el-table :data="personHouseInfo.personInRoom" height="350" border style="width: 100%">
       <el-table-column prop="name" label="姓名" width="80" />
       <el-table-column prop="personId" label="身份证" width="170" />
       <el-table-column prop="phone" label="电话" width="120" />
@@ -27,6 +28,8 @@
 <script>
 import DialogDrag from 'vue-dialog-drag'
 
+// import { interactOperate } from '../interactivate3DTiles.js'
+
 export default {
   name: 'PersonHouseInfomationPage',
   components: {
@@ -42,7 +45,8 @@ export default {
   },
   data() {
     return {
-      option: { top: 250, left: 20, height: 350, width: 800, buttonPin: false }
+      option: { top: 250, left: 20, height: 450, width: 800, buttonPin: false },
+      searchPositionValue: '114.336181640625,30.577966690063477,41,70-2-1002'
     }
   },
   computed: {
@@ -54,6 +58,16 @@ export default {
   },
   watch: {},
   methods: {
+    handleRoomSearch() {
+      // debugger
+      const data = this.searchPositionValue.split(',')
+      const position = { // 70-2-1002
+        long: Number(data[0]),
+        lat: Number(data[1]),
+        height: Number(data[2])
+      }
+      this.personHouseInfo.interactOperate.FlytoRoom(position, data[3])
+    },
     close() {
       this.personHouseInfo.show = false
     }

@@ -114,7 +114,9 @@ export default {
         title: '人房数据页',
         show: false,
         roomid: '',
-        personInRoom: []
+        personInRoom: [],
+        viewer: this.viewer,
+        interactOperate
       }
     }
   },
