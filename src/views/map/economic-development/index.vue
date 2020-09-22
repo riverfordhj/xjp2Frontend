@@ -56,7 +56,7 @@ export default {
 
         // Get the array of entities
         var neighborhoodEntities = dataSource.entities.values;
-        debugger;
+        // debugger;
 
         for (var i = 0; i < neighborhoodEntities[0]._children.length; i++) {
           var entity = neighborhoodEntities[0]._children[i]._children[0];
@@ -87,7 +87,7 @@ export default {
             position: new Cesium.Cartesian3(0.0, 1000000.0, 0.0),
           };
         }
-        debugger;
+        // debugger;
         viewer.flyTo(dataSource);
       });
     },

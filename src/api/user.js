@@ -1,6 +1,7 @@
 import request from '@/utils/request'
 
 export function login(data) {
+  // debugger
   return request({
     url: '/auth/Login',
     method: 'post',
@@ -10,7 +11,7 @@ export function login(data) {
 
 export function getInfo(token) {
   return request({
-    url: '/auth/GetUserInfo',///user/info
+    url: '/auth/GetUserInfo', // /user/info
     method: 'get',
     params: { token }
   })

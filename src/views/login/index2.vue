@@ -52,8 +52,8 @@
         <el-form
           ref="loginForm"
           label-position="left"
-          :model="loginForm"
           :rules="loginRules"
+          :model="loginForm"
         >
           <h3 class="title">平台登录</h3>
           <el-form-item prop="username">
@@ -101,16 +101,16 @@ import { validUsername } from '@/utils/validate'
 export default {
   name: '',
   data() {
-    const validateUsername = (rule, value, callback) => {
-      // if (!validUsername(value)) {
-      //   callback(new Error('Please enter the correct user name'))
-      // } else {
-      //   callback()
-      // }
-    }
+		const validateUsername = (rule, value, callback) => {
+			if(!validUsername(value)){
+				callback(new Error('请输入正确的用户名'))
+			} else(
+				callback()
+			)
+		}
     const validatePassword = (rule, value, callback) => {
       if (value.length < 6) {
-        callback(new Error('密码不可少于6位！'))
+        callback(new Error('密码不能小于6位'))
       } else {
         callback()
       }
@@ -122,7 +122,7 @@ export default {
         password: ''
       },
       loginRules: {
-        username: [{ required: true, trigger: 'blur' }],
+				username: [{required:true, trigger: 'blur', validator: validateUsername}],
         password: [{ required: true, trigger: 'blur', validator: validatePassword }]
       },
       loading: false,

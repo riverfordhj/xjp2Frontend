@@ -4,88 +4,48 @@ export {
 }
 
 var Cesium = require('cesium/Cesium')
+import { getPersonByRoom } from '@/api/person.js'
 
 var interactOperate = {
-  viewer: {},
+  viewer: null, // cesium viewer
+  personHouseDataForm: null,
+  // 当前高亮颜色
   colorHighlight: Cesium.Color.YELLOW.withAlpha(0.3),
+  // 当前选中要素颜色
   colorSelected: Cesium.Color.LIME.withAlpha(0.3),
+  // 当前选中要素，mouseclick
   selected: {
     feature: undefined,
     originalColor: new Cesium.Color()
   },
+  // 当前高亮要素，mousemove
   highlighted: {
     feature: undefined,
     originalColor: new Cesium.Color()
   },
+  // 鼠标移动到room时，显示该html元素
+  nameOverlay: null,
+  middleDown: false,
+  leftDown: false,
 
-  setMouseOver: function (v) {
-    if (v) {
-      this.viewer.screenSpaceEventHandler.setInputAction(
-        this.onMouseMove,
-        Cesium.ScreenSpaceEventType.MOUSE_MOVE
-      )
-    } else {
-      this.restoreHighlight()
-
-      this.nameOverlay.style.display = 'none'
-      this.viewer.screenSpaceEventHandler.removeInputAction(
-        Cesium.ScreenSpaceEventType.MOUSE_MOVE
-      )
-    }
-  },
-  setMouseClick: function (v) {
-    if (v) {
-      this.orginClickHandler = this.viewer.screenSpaceEventHandler.getInputAction(
-        Cesium.ScreenSpaceEventType.LEFT_CLICK
-      )
-      this.viewer.screenSpaceEventHandler.setInputAction(
-        this.onLeftClick,
-        Cesium.ScreenSpaceEventType.LEFT_CLICK
-      )
-    } else {
-      // 设置为原来的
-      this.viewer.screenSpaceEventHandler.setInputAction(
-        this.orginClickHandler,
-        Cesium.ScreenSpaceEventType.LEFT_CLICK
-      )
-    }
+  // 当前 roomNO
+  roomNO: '',
+  // 设置room浮动提示html元素
+  SetupOverlap() {
+    this.nameOverlay = document.createElement('div')
+    this.nameOverlay.className = 'backdrop'
+    this.nameOverlay.style.display = 'none'
+    this.nameOverlay.style.position = 'absolute'
+    this.nameOverlay.style.bottom = '0'
+    this.nameOverlay.style.left = '0'
+    this.nameOverlay.style['pointer-events'] = 'none'
+    this.nameOverlay.style.padding = '4px'
+    this.nameOverlay.style.backgroundColor = 'black'
+    this.nameOverlay.style.color = 'white'
+    this.viewer.container.appendChild(this.nameOverlay)
   },
 
-  //Set feature infobox description
-  setInfobox(pickedFeature) {
-    var featureName = pickedFeature.getProperty('gid')
-    debugger
-    const selectedEntity = new Cesium.Entity()
-    selectedEntity.name = featureName
-    selectedEntity.description =
-      'Loading <div class="cesium-infoBox-loading"></div>'
-    this.viewer.selectedEntity = selectedEntity
-
-    var names = pickedFeature._content.batchTable.getPropertyNames(
-      pickedFeature._batchId
-    )
-
-    // 普通3dtiles 获取属性表格
-    var html = get3dTilesHtml(pickedFeature)
-
-    if (!html) {
-      html = '<table class="cesium-infoBox-defaultTable"><tbody>'
-
-      for (var i = 0; i < names.length; i++) {
-        var n = names[i]
-        html +=
-          '<tr><th>' +
-          n +
-          '</th><td>' +
-          pickedFeature.getProperty(n) +
-          '</td></tr>'
-      }
-      html += '</tbody></table>'
-    }
-
-    selectedEntity.description = html
-  },
-
+  // 恢复高亮 3D feature 显示
   restoreHighlight() {
     // If a feature was previously highlighted, undo the highlight
     if (Cesium.defined(this.highlighted.feature)) {
@@ -97,259 +57,350 @@ var interactOperate = {
       this.highlighted.feature = undefined
     }
   },
-
-  install: function (viewer) {
-    this.viewer = viewer
-
-    var nameOverlay = document.createElement('div')
-    viewer.container.appendChild(nameOverlay)
-    nameOverlay.className = 'backdrop'
-    nameOverlay.style.display = 'none'
-    nameOverlay.style.position = 'absolute'
-    nameOverlay.style.bottom = '0'
-    nameOverlay.style.left = '0'
-    nameOverlay.style['pointer-events'] = 'none'
-    nameOverlay.style.padding = '4px'
-    nameOverlay.style.backgroundColor = 'black'
-    nameOverlay.style.color = 'white'
-    this.nameOverlay = nameOverlay
-
-    var leftDown = false
-    var middleDown = false
-
-    viewer.screenSpaceEventHandler.setInputAction(function onMouseMove(movement) {
-      leftDown = true
-    }, Cesium.ScreenSpaceEventType.LEFT_DOWN)
-
-    viewer.screenSpaceEventHandler.setInputAction(function onMouseMove(movement) {
-      leftDown = false
-    }, Cesium.ScreenSpaceEventType.LEFT_UP)
-
-    viewer.screenSpaceEventHandler.setInputAction(function onMouseMove(movement) {
-      middleDown = true
-    }, Cesium.ScreenSpaceEventType.MIDDLE_DOWN)
-
-    viewer.screenSpaceEventHandler.setInputAction(function onMouseMove(movement) {
-      middleDown = false
-    }, Cesium.ScreenSpaceEventType.MIDDLE_UP)
-
-    this.onMouseMove = (movement) => {
+  // 设置mousemove事件处理
+  setMouseOver(v) {
+    if (v) {
+      this.viewer.screenSpaceEventHandler.setInputAction(
+        this.onMouseMove.bind(this), // cesium 鼠标事件中调用该函数，因此需绑定this对象
+        Cesium.ScreenSpaceEventType.MOUSE_MOVE
+      )
+    } else {
       this.restoreHighlight()
 
-      if (middleDown || leftDown) {
-        nameOverlay.style.display = 'none'
-        return
-      }
+      this.nameOverlay.style.display = 'none'
+      this.viewer.screenSpaceEventHandler.removeInputAction(
+        Cesium.ScreenSpaceEventType.MOUSE_MOVE
+      )
+    }
+  },
+  // 设置mouseclick 事件处理
+  setMouseClick(v) {
+    if (v) {
+      this.orginClickHandler = this.viewer.screenSpaceEventHandler.getInputAction(
+        Cesium.ScreenSpaceEventType.LEFT_CLICK
+      )
+      this.viewer.screenSpaceEventHandler.setInputAction(
+        this.onLeftClick.bind(this), // cesium 鼠标事件中调用该函数，因此需绑定this对象
+        Cesium.ScreenSpaceEventType.LEFT_CLICK
+      )
+    } else {
+      // 设置为原来的
+      this.viewer.screenSpaceEventHandler.setInputAction(
+        this.orginClickHandler,
+        Cesium.ScreenSpaceEventType.LEFT_CLICK
+      )
+    }
+  },
+  // mousemove事件处理
+  onMouseMove(movement) {
+    this.restoreHighlight()
 
-      // Pick a new feature
-      var pickedFeature = viewer.scene.pick(movement.endPosition)
-      if (!Cesium.defined(pickedFeature) || !Cesium.defined(pickedFeature.getProperty)) {
-        nameOverlay.style.display = 'none'
-        return
-      }
-
-      // A feature was picked, so show it's overlay content
-      var name = pickedFeature.getProperty('gid')
-      if (!Cesium.defined(name)) {
-        name = pickedFeature.getProperty('id')
-      }
-      if (!Cesium.defined(name)) {
-        name = pickedFeature.getProperty('ID')
-      }
-      if (name === '') {
-        nameOverlay.style.display = 'none'
-        return
-      }
-
-      nameOverlay.style.display = 'block'
-      nameOverlay.style.bottom =
-        viewer.canvas.clientHeight - movement.endPosition.y + 'px'
-      nameOverlay.style.left = movement.endPosition.x + 'px'
-
-      // nameOverlay.textContent = '水岸星城党员群众服务中心'
-      nameOverlay.textContent = name
-
-      // Highlight the feature if it's not already selected.
-      if (pickedFeature !== this.selected.feature) {
-        this.highlighted.feature = pickedFeature
-        Cesium.Color.clone(pickedFeature.color, this.highlighted.originalColor)
-        pickedFeature.color = this.colorHighlight
-      }
+    if (this.middleDown || this.leftDown) {
+      this.nameOverlay.style.display = 'none'
+      return
     }
 
-    this.onLeftClick = (movement) => {
-      // If a feature was previously selected, undo the highlight
-      if (Cesium.defined(this.selected.feature)) {
-        try {
-          this.selected.feature.color = this.selected.originalColor
-        } catch (ex) {
-          console.log(ex)
-        }
-        this.selected.feature = undefined
-      }
+    // Pick a new feature
+    var pickedFeature = this.viewer.scene.pick(movement.endPosition)
+    if (!Cesium.defined(pickedFeature) || !Cesium.defined(pickedFeature.getProperty)) {
+      this.nameOverlay.style.display = 'none'
+      return
+    }
 
-      // Pick a new feature
-      var pickedFeature = viewer.scene.pick(movement.position)
-      if (!Cesium.defined(pickedFeature)) {
-        this.orginClickHandler(movement)
-        return
-      }
+    // A feature was picked, so show it's overlay content
+    const name = this.getRoomNO(pickedFeature)
 
-      // Select the feature if it's not already selected
-      if (this.selected.feature === pickedFeature) {
-        return
-      }
+    if (!name) {
+      this.nameOverlay.style.display = 'none'
+      return
+    }
 
-      if (!Cesium.defined(pickedFeature.getProperty)) return
+    this.nameOverlay.style.display = 'block'
+    this.nameOverlay.style.bottom = this.viewer.canvas.clientHeight - movement.endPosition.y + 'px'
+    this.nameOverlay.style.left = movement.endPosition.x + 'px'
 
-      this.selected.feature = pickedFeature
+    // nameOverlay.textContent = '水岸星城党员群众服务中心'
+    // debugger
+    this.nameOverlay.textContent = name
 
-      // Save the selected feature's original color
-      if (pickedFeature === this.highlighted.feature) {
-        Cesium.Color.clone(this.highlighted.originalColor, this.selected.originalColor)
-        this.highlighted.feature = undefined
+    // Highlight the feature if it's not already selected.
+    if (pickedFeature !== this.selected.feature) {
+      this.highlighted.feature = pickedFeature
+      Cesium.Color.clone(pickedFeature.color, this.highlighted.originalColor)
+      pickedFeature.color = this.colorHighlight
+    }
+  },
+  // 构造房间号，70-2-1002
+  getRoomNO(room) {
+    if (!Cesium.defined(room) || !Cesium.defined(room.getProperty)) {
+      return ''
+    }
+
+    const buildingId = room.getProperty('buildingid')
+    const unitid = room.getProperty('unitid')
+    const roomId = room.getProperty('roomid')
+
+    if (!buildingId || !unitid || !roomId) {
+      return ''
+    }
+    return `${buildingId}-${unitid}-${roomId}`
+  },
+  // mouseclick事件处理
+  onLeftClick(movement) {
+    // debugger
+    // Pick a new feature
+    const room = this.pickFeature(movement.position)
+
+    if (room === null) {
+      this.orginClickHandler(movement.position)
+      return
+    }
+    // 设置高亮效果
+    this.setSelectedFeature(room)
+
+    // 显示属性面板
+    this.setInfobox(room)
+
+    // this.FlytoRoom(pickedFeature)
+  },
+  // 高亮处理选择room
+  setSelectedFeature(room) {
+    // Select the feature if it's not already selected
+    if (this.selected.feature === room) {
+      return
+    }
+    // If a feature was previously selected, undo the highlight
+    if (Cesium.defined(this.selected.feature)) {
+      this.selected.feature.color = this.selected.originalColor
+      this.selected.feature = undefined
+    }
+
+    if (!Cesium.defined(room.getProperty)) return
+
+    this.selected.feature = room
+
+    // Save the selected feature's original color
+    if (room === this.highlighted.feature) {
+      Cesium.Color.clone(this.highlighted.originalColor, this.selected.originalColor)
+      this.highlighted.feature = undefined
+    } else {
+      Cesium.Color.clone(room.color, this.selected.originalColor)
+    }
+
+    // Highlight newly selected feature
+    room.color = this.colorSelected
+  },
+  // 根据屏幕坐标选取 room model
+  pickFeature(position) {
+    const pickedFeature = this.viewer.scene.pick(position)
+    // debugger
+    if (!Cesium.defined(pickedFeature)) {
+      return null
+    } else {
+      return pickedFeature
+    }
+  },
+  // 根据屏幕坐标及roomNO选取 room model
+  pickFeatureByRoomNO(position, roomNO) {
+    const features = this.viewer.scene.drillPick(position)
+    debugger
+    for (let i = 0; i < features.length; i++) {
+      const feature = features[i]
+      if (!Cesium.defined(feature)) {
+        continue
       } else {
-        Cesium.Color.clone(pickedFeature.color, this.selected.originalColor)
+        const rN = this.getRoomNO(feature)
+        if (rN === roomNO) {
+          return feature
+        }
+      }
+    }
+    return null
+  },
+
+  FlytoRoom(position, roomNO) {
+    // debugger
+    this.roomNO = roomNO
+
+    var longitude = Cesium.Math.toRadians(
+      position.long
+    )
+    var latitude = Cesium.Math.toRadians(position.lat)
+    var height = position.height
+
+    var positionCartographic = new Cesium.Cartographic(
+      longitude,
+      latitude,
+      height //* 0.5
+    )
+    var pos = this.viewer.scene.globe.ellipsoid.cartographicToCartesian(
+      positionCartographic
+    )
+
+    var camera = this.viewer.scene.camera
+    var heading = camera.heading
+    var pitch = camera.pitch
+
+    var offset = this.offsetFromHeadingPitchRange(
+      heading,
+      pitch,
+      30
+    )
+
+    var transform = Cesium.Transforms.eastNorthUpToFixedFrame(pos)
+    Cesium.Matrix4.multiplyByPoint(transform, offset, pos)
+
+    camera.flyTo({
+      destination: pos,
+      orientation: {
+        heading: heading,
+        pitch: pitch
+      },
+      easingFunction: Cesium.EasingFunction.QUADRATIC_OUT,
+      complete: this.flytoComplete.bind(this)
+    })
+  },
+  // 飞到room后，根据屏幕中心点选取room
+  flytoComplete() {
+    // debugger
+    const ow = document.getElementById('cesiumContainer').offsetWidth / 2
+    const oh = document.getElementById('cesiumContainer').offsetHeight / 2
+
+    const position = {
+      x: ow,
+      y: oh
+    }
+
+    // this.onLeftClick(para)
+
+    // Pick a new feature
+    const room = this.pickFeatureByRoomNO(position, this.roomNO)
+
+    if (room === null) {
+      return
+    }
+    // 设置高亮效果
+    this.setSelectedFeature(room)
+
+    // 显示属性面板
+    this.setInfobox(room)
+  },
+
+  offsetFromHeadingPitchRange(heading, pitch, range) {
+    pitch = Cesium.Math.clamp(
+      pitch,
+      -Cesium.Math.PI_OVER_TWO,
+      Cesium.Math.PI_OVER_TWO
+    )
+    heading = Cesium.Math.zeroToTwoPi(heading) - Cesium.Math.PI_OVER_TWO
+
+    var pitchQuat = Cesium.Quaternion.fromAxisAngle(
+      Cesium.Cartesian3.UNIT_Y,
+      -pitch
+    )
+    var headingQuat = Cesium.Quaternion.fromAxisAngle(
+      Cesium.Cartesian3.UNIT_Z,
+      -heading
+    )
+    var rotQuat = Cesium.Quaternion.multiply(
+      headingQuat,
+      pitchQuat,
+      headingQuat
+    )
+    var rotMatrix = Cesium.Matrix3.fromQuaternion(rotQuat)
+
+    var offset = Cesium.Cartesian3.clone(Cesium.Cartesian3.UNIT_X)
+    Cesium.Matrix3.multiplyByVector(rotMatrix, offset, offset)
+    Cesium.Cartesian3.negate(offset, offset)
+    Cesium.Cartesian3.multiplyByScalar(offset, range, offset)
+    return offset
+  },
+
+  // Set feature infobox description
+  setInfobox(pickedFeature) {
+    const roomInfo = {}
+    roomInfo.CommunityName = pickedFeature.getProperty('community')
+    roomInfo.BuildingName = pickedFeature.getProperty('buildingid')
+    const unit = pickedFeature.getProperty('unitid')
+    const roomId = pickedFeature.getProperty('roomid')
+    roomInfo.RoomNO = `${unit}-${roomId}`
+
+    this.personHouseDataForm.roomid = `${roomInfo.CommunityName}-${roomInfo.BuildingName}-${roomInfo.RoomNO}`
+    // debugger
+    this.getPersonInRoom(roomInfo) // JSON.stringify(
+
+    // debugger
+    this.setSelectedEntity(pickedFeature)
+  },
+  // 获取后台数据
+  getPersonInRoom(roomInfo) {
+    getPersonByRoom(roomInfo).then(response => { // login{      username: 'hj',      password: 'password'    }
+      // debugger
+      if (this.personHouseDataForm.show !== true) {
+        this.personHouseDataForm.show = true
       }
 
-      // Highlight newly selected feature
-      pickedFeature.color = this.colorSelected
+      this.personHouseDataForm.personInRoom = response
+    }).catch(error => {
+      console.log(error)
+    })
+  },
+  // 设置entity, 及属性，并在viewer中选择
+  setSelectedEntity(pickedFeature) {
+    const selectedEntity = new Cesium.Entity()
+    selectedEntity.name = pickedFeature.getProperty('roomid')
+    selectedEntity.description =
+      'Loading <div class="cesium-infoBox-loading"></div>'
+    this.viewer.selectedEntity = selectedEntity
 
-      this.setInfobox(pickedFeature);
+    var names = pickedFeature._content.batchTable.getPropertyNames(
+      pickedFeature._batchId
+    )
+
+    let html = '<table class="cesium-infoBox-defaultTable"><tbody>'
+
+    for (var i = 0; i < names.length; i++) {
+      var n = names[i]
+      html +=
+        '<tr><th>' +
+        n +
+        '</th><td>' +
+        pickedFeature.getProperty(n) +
+        '</td></tr>'
     }
+    html += '</tbody></table>'
+
+    selectedEntity.description = html
+  },
+  // 对cesium viewer 进行配置，响应鼠标事件，对 3dtile feature 选择、高亮显示
+  install(viewer, personHouseDataForm) {
+    // debugger
+
+    this.viewer = viewer
+    this.personHouseDataForm = personHouseDataForm
+
+    this.SetupOverlap()
+
+    this.leftDown = false
+    this.middleDown = false
+
+    viewer.screenSpaceEventHandler.setInputAction(() => {
+      this.leftDown = true
+    }, Cesium.ScreenSpaceEventType.LEFT_DOWN)
+
+    viewer.screenSpaceEventHandler.setInputAction(() => {
+      this.leftDown = false
+    }, Cesium.ScreenSpaceEventType.LEFT_UP)
+
+    viewer.screenSpaceEventHandler.setInputAction(() => {
+      this.middleDown = true
+    }, Cesium.ScreenSpaceEventType.MIDDLE_DOWN)
+
+    viewer.screenSpaceEventHandler.setInputAction(() => {
+      this.middleDown = false
+    }, Cesium.ScreenSpaceEventType.MIDDLE_UP)
 
     this.setMouseOver(true)
     this.setMouseClick(true)
   }
-}
-
-// 若3dTiles 具有"file"属性，获取selectedEntity的描述Html
-function get3dTilesHtml(pickedFeature) {
-  if (
-    !pickedFeature.tileset.properties ||
-    !pickedFeature.tileset.properties.length
-  ) {
-    return false
-  }
-
-  var fileParams
-
-  // 如果有文件名，那么依据文件名
-  if (pickedFeature.hasProperty('file')) {
-    var file = pickedFeature.getProperty('file')
-
-    for (var i = 0; i < pickedFeature.tileset.properties.length; i++) {
-      var params = pickedFeature.tileset.properties[i]
-      if (params.file === file) {
-        fileParams = params.params
-      }
-    }
-  } else {
-    fileParams = pickedFeature.tileset.properties[0].params
-  }
-
-  if (!fileParams) return false
-
-  // 名称和 id
-  var html = '<table class="cesium-infoBox-defaultTable"><tbody>'
-  html +=
-    '<tr><th>名称(name)</th><td>' +
-    pickedFeature.getProperty('name') +
-    '</td></tr>'
-
-  html +=
-    '<tr><th>楼层(LevelName)</th><td>' +
-    pickedFeature.getProperty('LevelName') +
-    '</td></tr>'
-
-  html +=
-    '<tr><th>分类(CategoryName)</th><td>' +
-    pickedFeature.getProperty('CategoryName') +
-    '</td></tr>'
-
-  html +=
-    '<tr><th>族(FamilyName)</th><td>' +
-    pickedFeature.getProperty('FamilyName') +
-    '</td></tr>'
-
-  html +=
-    '<tr><th>族类型(FamilySymbolName)</th><td>' +
-    pickedFeature.getProperty('FamilySymbolName') +
-    '</td></tr>'
-
-  html +=
-    '<tr><th>ID(id)</th><td>' + pickedFeature.getProperty('id') + '</td></tr>'
-
-  // 依据group分类
-  var groups = {}
-
-  function getValue(value, defp) {
-    if (defp.type === 'YesNo') return value === 1 ? '是' : '否'
-    if (defp.type === 'Length') return (value * 0.3048).toFixed(2) + 'm'
-    if (defp.type === 'Area') return (value * 0.3048 * 0.3048).toFixed(2) + '㎡'
-    if (defp.type === 'Volume') {
-      return (value * 0.3048 * 0.3048 * 0.3048).toFixed(2) + 'm³'
-    }
-
-    return value
-  }
-
-  function addGroup(name, value) {
-    var defp
-
-    for (let i = 0; i < fileParams.length; i++) {
-      var fp = fileParams[i]
-      if (name === fp.name) {
-        defp = fp
-        break
-      }
-    }
-    if (!defp) return
-
-    var rows = groups[defp.group]
-
-    if (!rows) {
-      rows = []
-    }
-    var row =
-      '<tr><th>' +
-      defp.name +
-      '</th><td>' +
-      getValue(value, defp) +
-      '</td></tr>'
-    rows.push(row)
-    groups[defp.group] = rows
-  }
-
-  function groupName(group) {
-    if (group === 'PG_IDENTITY_DATA') return '标识数据'
-    if (group === 'PG_GEOMETRY') return '尺寸标注'
-    if (group === 'PG_PHASING') return '阶段化'
-    if (group === 'PG_CONSTRAINTS') return '约束'
-    if (group === 'INVALID') return '其他'
-    if (group === 'PG_MATERIALS') return '材质和装饰'
-    if (group === 'PG_CONSTRUCTION') return '构造'
-
-    return group
-  }
-
-  var names = pickedFeature._content.batchTable.getPropertyNames(
-    pickedFeature._batchId
-  )
-  for (let i = 0; i < names.length; i++) {
-    var n = names[i]
-
-    addGroup(n, pickedFeature.getProperty(n))
-  }
-
-  for (const group in groups) {
-    html += '<tr><th colspan="2">' + groupName(group) + '</th></tr>'
-
-    var rows = groups[group]
-    for (let i = 0; i < rows.length; i++) {
-      html += rows[i]
-    }
-  }
-
-  return html
 }

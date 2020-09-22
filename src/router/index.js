@@ -90,7 +90,7 @@ export const constantRoutes = [
     children: [
       {
         path: 'person-house-map',
-        name: '人房地图',
+        name: 'PersonHouseMap',
         component: () => import('@/views/map/person-house/base-map'), // cesium-test
         meta: {
           title: '人房地图',
@@ -199,7 +199,7 @@ export const constantRoutes = [
     children: [
       {
         path: 'manage-data',
-        name: '数据管理',
+        name: 'PersonHouseData',
         component: () => import('@/views/population/manage-data'),
         meta: {
           title: '数据管理',
@@ -223,7 +223,16 @@ export const constantRoutes = [
           title: '人口查询',
           icon: 'search'
         }
-      }
+			},
+			{
+				path: 'company',
+				name: 'companyInfo',
+				component: () => import('@/views/population/company'),
+				meta: {
+					title: '入驻公司信息',
+					icon: 'dataManager' 
+				}
+			}
     ]
   },
 

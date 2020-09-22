@@ -16,7 +16,7 @@
 <script>
 import echarts from 'echarts'
 require('echarts/theme/macarons') // echarts theme
-import { getPeopleByBuilding } from '@/api/people.js'
+import { getPeopleByBuilding } from '@/api/person.js'
 
 export default {
   name: '',

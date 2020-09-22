@@ -1,0 +1,24 @@
+[
+  {
+    "id": 1,
+    "label": "实体模型",
+    "children": [
+      {
+        "id": 11,
+        "label": "水岸新城",
+        "url": "http://localhost/xjp/3D/saxc/saxc/tileset.json"
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "label": "单体模型",
+    "children": [
+      {
+        "id": 12,
+        "label": "水岸新城",
+        "url": "http://localhost/xjp/3D/saxc/dth-SAXC/tileset.json"
+      }
+    ]
+  }
+]

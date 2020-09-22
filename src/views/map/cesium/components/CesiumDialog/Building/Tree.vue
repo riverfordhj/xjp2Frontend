@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import { getPeopleByResidents } from '@/api/people.js'
+import { getPeopleByResidents } from '@/api/person.js'
 import { getHousesByBuilding } from '@/api/house.js'
 import { getBuildingByName } from '@/api/building.js'
 export default {
