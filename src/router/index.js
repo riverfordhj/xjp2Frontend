@@ -224,12 +224,34 @@ export const constantRoutes = [
           icon: 'search'
         }
 			},
+			// {
+			// 	path: 'company',
+			// 	name: 'companyInfo',
+			// 	component: () => import('@/views/population/company'),
+			// 	meta: {
+			// 		title: '入驻公司信息',
+			// 		icon: 'dataManager' 
+			// 	}
+			// }
+    ]
+	},
+	
+	{
+    path: '/buildingCompany',
+		component: Layout,
+		redirect: '/buildingCompany/company',
+		// name: '楼宇经济',
+    // meta: { 
+		// 	title: '楼宇经济',
+		// 	icon: ''
+	  // },
+    children: [
 			{
 				path: 'company',
-				name: 'companyInfo',
-				component: () => import('@/views/population/company'),
+				name: 'CompanyInfo',
+				component: () => import('@/views/buildingEconomy/company'),
 				meta: {
-					title: '入驻公司信息',
+					title: '楼宇经济',
 					icon: 'dataManager' 
 				}
 			}
