@@ -15,6 +15,36 @@
 			<el-table-column type="expand" style="width: 100%">
       <template slot-scope="props">
         <el-form label-position="left" inline class="table-expand">
+					<el-form-item label="街道">
+						<span>{{ props.row.streetName }}</span>
+					</el-form-item>
+					<el-form-item label="楼宇名称">
+						<span>{{ props.row.buildingName }}</span>
+					</el-form-item>
+
+					<el-form-item label="楼层">
+						<span>{{ props.row.floor }}</span>
+					</el-form-item>
+					<el-form-item label="租赁/购买">
+						<span>{{ props.row.category }}</span>
+					</el-form-item>
+					<el-form-item label="租赁/购买面积">
+						<span>{{ props.row.area}}</span>
+					</el-form-item>
+					<el-form-item label="入驻时间">
+						<span>{{ props.row.settlingTime }}</span>
+					</el-form-item>
+					<el-form-item label="搬离时间">
+						<span>{{ props.row.moveAwayTime }}</span>
+					</el-form-item>
+
+					<el-form-item label="企业税收额（万元）">
+						<span>{{ props.row.corporateTax }}</span>
+					</el-form-item>
+					<el-form-item label="缴税时长">
+						<span>{{ props.row.duration }}</span>
+					</el-form-item>
+					
 					<el-form-item label="企业名称">
 						<span>{{ props.row.companyName }}</span>
 					</el-form-item>
@@ -67,7 +97,7 @@ export default {
 	name: 'CompanyInfo',
 	data() {
 		return {
-			companyData: [],
+			buildingEconomyData: [],
 			inputValue: '',
 			filterData: [],
 			loading: false
@@ -75,25 +105,42 @@ export default {
 	},
 	methods: {
 		handleCompanyInfo () {
-			this.loading = true;
+			var _self = this;
+			_self.loading = true;
 			getCompanyInfo().then(res => {
-				this.companyData = res;
-				this.filterData = res;
-				this.loading = false;
+				
+				res.forEach(item =>{
+					let row = {};
+					for(let o in item){
+						let tar = item[o];
+						if(typeof tar === 'object' &&  tar != null){
+							for(let key in tar){
+								row[key] = tar[key]
+							}
+						}else{
+							row[o] = item[o];
+						}
+					}
+				  _self.buildingEconomyData.push(row)
+				})
+			
+				_self.filterData = _self.buildingEconomyData;
+					// debugger;
+				_self.loading = false;
 			}).catch(err => {
 				console.log(err);
-				this.loading = false;
+				_self.loading = false;
 			});
 		},
 		searchCompany (value){
-			if(this.companyData.length === 0){
+			if(this.buildingEconomyData.length === 0){
 				this.$message({
 					message: '请先进行查询操作',
 					type: 'warning'
 				});
 			}
 			this.filterData = [];
-			this.companyData.forEach((item) => {
+			this.buildingEconomyData.forEach((item) => {
 				if(!!~item.companyName.indexOf(value)){
 					this.filterData.push(item);
 				}
@@ -120,7 +167,7 @@ export default {
     font-size: 0;
   }
   .table-expand >>> label {
-    width: 90px;
+    width: 140px;
     color: #99a9bf;
   }
   .table-expand .el-form-item {
