@@ -9,6 +9,13 @@
 				clearable
 				@change="searchCompany">
 			</el-input>
+			<el-select v-model="value" placeholder="请选择" clearable @change="selectBuilding">
+				<el-option
+					v-for="item in buildingsData"
+					:key="item.id"
+					:value="item.name">
+				</el-option>
+ 		 </el-select>
 		</div>
 		<el-table
 			:data="filterData" height="920" border	style="width: 100%">
@@ -36,6 +43,10 @@
 					</el-form-item>
 					<el-form-item label="搬离时间">
 						<span>{{ props.row.moveAwayTime }}</span>
+					</el-form-item>
+
+					<el-form-item label="是否独立法人企业">
+						<span>{{ props.row.legalRepresentative }}</span>
 					</el-form-item>
 
 					<el-form-item label="企业税收额（万元）">
@@ -67,11 +78,11 @@
 			</el-table-column>
 			<el-table-column prop="unifiedSocialCreditCode" label="统一社会信用代码" width="180">
 			</el-table-column>
+			<el-table-column prop="buildingName" label="楼宇名称" width="180">
+			</el-table-column>
 			<el-table-column prop="actualOfficeAddress" label="实际办公地址" width="180">
 			</el-table-column>
 			<el-table-column prop="registeredCapital" label="注册资本(万元)" width="180">
-			</el-table-column>
-			<el-table-column prop="isIndependentLegalEntity" label="是否独立法人企业" width="180">
 			</el-table-column>
 			<el-table-column prop="legalRepresentative" label="公司法人代表" width="140">
 			</el-table-column>
@@ -100,7 +111,10 @@ export default {
 			buildingEconomyData: [],
 			inputValue: '',
 			filterData: [],
-			loading: false
+			buildingNames: [],
+			buildingsData: [],
+			loading: false,
+			value: ''
 		}
 	},
 	methods: {
@@ -108,7 +122,7 @@ export default {
 			var _self = this;
 			_self.loading = true;
 			getCompanyInfo().then(res => {
-				
+				//扁平化数据（数组）的元素对象;提取buildingNames属性
 				res.forEach(item =>{
 					let row = {};
 					for(let o in item){
@@ -119,12 +133,23 @@ export default {
 							}
 						}else{
 							row[o] = item[o];
+							if(o === 'buildingName' && !_self.buildingNames.includes(tar)){
+								_self.buildingNames.push(tar);
+							}
+							
 						}
 					}
 				  _self.buildingEconomyData.push(row)
 				})
 			
 				_self.filterData = _self.buildingEconomyData;
+			  _self.buildingNames.forEach( (item, index) => {
+					let objItem = {
+						id : index,
+						name : item 
+					}
+					_self.buildingsData.push(objItem);
+				})
 					// debugger;
 				_self.loading = false;
 			}).catch(err => {
@@ -142,6 +167,20 @@ export default {
 			this.filterData = [];
 			this.buildingEconomyData.forEach((item) => {
 				if(!!~item.companyName.indexOf(value)){
+					this.filterData.push(item);
+				}
+			});
+		},
+		selectBuilding (curValue){
+			if(this.buildingEconomyData.length === 0){
+				this.$message({
+					message: '请先进行查询操作',
+					type: 'warning'
+				});
+			}
+			this.filterData = [];
+			this.buildingEconomyData.forEach((item) => {
+				if(!!~item.buildingName.indexOf(curValue)){
 					this.filterData.push(item);
 				}
 			});
