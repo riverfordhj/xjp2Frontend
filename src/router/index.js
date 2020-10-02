@@ -256,6 +256,23 @@ export const constantRoutes = [
 				}
 			}
     ]
+	},
+	
+	{
+    path: '/table',
+		component: Layout,
+		redirect: '/table/buildingEcoTable',
+    children: [
+			{
+				path: 'buildingEcoTable',
+				name: 'buildingEcoTable',
+				component: () => import('@/views/table/buildingEcoTable'),
+				meta: {
+					title: '表格',
+					icon: 'table' 
+				}
+			}
+    ]
   },
 
   {

@@ -62,7 +62,7 @@ export default {
   watch: {},
   methods: {
     handleRoomSearch() {
-      // debugger
+      // debuggert
       const data = this.searchPositionValue.split(',')
       const position = { // 70-2-1002
         long: Number(data[0]),

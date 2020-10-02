@@ -13,7 +13,7 @@
 				<el-option
 					v-for="item in buildingsData"
 					:key="item.id"
-					:value="item.name">
+					:value="item.buildingName">
 				</el-option>
  		 </el-select>
 		</div>
@@ -102,7 +102,8 @@
 </template>
 
 <script>
-import { getCompanyInfo } from '@/api/company.js';
+import { getCompanyInfo, getCompanyBuildings, getCompanysByBuilding } from '@/api/company.js';
+import { flatCompanyInfo } from '@/utils/tools.js'
 
 export default {
 	name: 'CompanyInfo',
@@ -111,53 +112,29 @@ export default {
 			buildingEconomyData: [],
 			inputValue: '',
 			filterData: [],
-			buildingNames: [],
 			buildingsData: [],
 			loading: false,
 			value: ''
 		}
 	},
+	mounted (){
+		this.getBuildingInfo();
+	},
 	methods: {
 		handleCompanyInfo () {
-			var _self = this;
-			_self.loading = true;
+			this.loading = true;
 			getCompanyInfo().then(res => {
-				//扁平化数据（数组）的元素对象;提取buildingNames属性
-				res.forEach(item =>{
-					let row = {};
-					for(let o in item){
-						let tar = item[o];
-						if(typeof tar === 'object' &&  tar != null){
-							for(let key in tar){
-								row[key] = tar[key]
-							}
-						}else{
-							row[o] = item[o];
-							if(o === 'buildingName' && !_self.buildingNames.includes(tar)){
-								_self.buildingNames.push(tar);
-							}
-							
-						}
-					}
-				  _self.buildingEconomyData.push(row)
-				})
-			
-				_self.filterData = _self.buildingEconomyData;
-			  _self.buildingNames.forEach( (item, index) => {
-					let objItem = {
-						id : index,
-						name : item 
-					}
-					_self.buildingsData.push(objItem);
-				})
-					// debugger;
-				_self.loading = false;
+				this.buildingEconomyData = flatCompanyInfo(res);
+				this.filterData = this.buildingEconomyData;
+
+				this.loading = false;
 			}).catch(err => {
 				console.log(err);
-				_self.loading = false;
+				this.loading = false;
 			});
 		},
 		searchCompany (value){
+			//检索指定公司信息
 			if(this.buildingEconomyData.length === 0){
 				this.$message({
 					message: '请先进行查询操作',
@@ -171,20 +148,29 @@ export default {
 				}
 			});
 		},
+		getBuildingInfo() {
+			//get请求buildings数据
+			getCompanyBuildings().then(res => {
+				this.buildingsData = res;
+			})
+		},
 		selectBuilding (curValue){
-			if(this.buildingEconomyData.length === 0){
-				this.$message({
-					message: '请先进行查询操作',
+			//根据选择的楼栋名，请求入驻该楼栋的所有公司信息
+			let singleBuildingData = this.buildingsData.find(item =>{
+				return item.buildingName === curValue;
+			});
+			// debugger;
+			getCompanysByBuilding(singleBuildingData.id).then(res => {
+				this.buildingEconomyData = flatCompanyInfo(res);
+				this.filterData = this.buildingEconomyData;
+			}).catch(err => {
+					this.$message({
+					message: '请求数据失败',
 					type: 'warning'
 				});
-			}
-			this.filterData = [];
-			this.buildingEconomyData.forEach((item) => {
-				if(!!~item.buildingName.indexOf(curValue)){
-					this.filterData.push(item);
-				}
 			});
-		}
+		},
+
 	}
 }
 </script>

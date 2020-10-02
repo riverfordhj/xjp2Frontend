@@ -152,6 +152,7 @@ export default {
       })
     },
     getPersonsByBuildingData() {
+			debugger
       getPersonsByBuilding(this.listQuery.building).then(response => {
         // debugger
         this.filterdPersonHouseInfo = this.personHouseInfo = response
