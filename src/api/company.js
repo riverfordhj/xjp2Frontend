@@ -28,3 +28,11 @@ export function getCompanySomeFileds(){
 		method: 'get'
 	})
 }
+
+export function updateCompanyFields(arrayData){
+	return request({
+		url: '/Companies/CompanyFields',
+		method: 'post',
+		data: arrayData
+	})
+}
