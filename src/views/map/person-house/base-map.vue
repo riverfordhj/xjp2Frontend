@@ -127,6 +127,9 @@ export default {
   },
   methods: {
     initMap() {
+      Cesium.Ion.defaultAccessToken =
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI5MjMyYjZiMC1lZmY1LTQzNmEtODg1NS01NmQzMmE2NWY2ZjMiLCJpZCI6NDQ1MSwic2NvcGVzIjpbImFzciIsImdjIl0sImlhdCI6MTU0MDg4NTM2Mn0.7OzWWlmUmJv_EJo0RFpuiL2G_KLgZBENAAXOgU1O1qM'
+
       this.viewer = new Cesium.Viewer('cesiumContainer', {
         shouldAnimate: true,
         baseLayerPicker: false,
