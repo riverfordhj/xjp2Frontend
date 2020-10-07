@@ -1,6 +1,7 @@
 <template>
-  <dialog-drag
-    v-show="personHouseInfo.show"
+<div v-show="personHouseInfo.show">
+<button @click="flyToPosition">定位</button>
+<dialog-drag
     id="dialog-2"
     class="dialog-3"
     :title="personHouseDataFormTitle"
@@ -23,6 +24,11 @@
     </el-table>
     <!-- </el-scrollbar> -->
   </dialog-drag>
+<<<<<<< HEAD
+=======
+</div>
+  
+>>>>>>> origin/NetEnd
 </template>
 
 <script>
@@ -59,7 +65,11 @@ export default {
   watch: {},
   methods: {
     handleRoomSearch() {
+<<<<<<< HEAD
       // debugger
+=======
+      // debuggert
+>>>>>>> origin/NetEnd
       const data = this.searchPositionValue.split(',')
       const position = { // 70-2-1002
         long: Number(data[0]),
@@ -70,7 +80,14 @@ export default {
     },
     close() {
       this.personHouseInfo.show = false
+<<<<<<< HEAD
     }
+=======
+		},
+		flyToPosition() {
+			
+		}
+>>>>>>> origin/NetEnd
   }
 }
 </script>

@@ -101,6 +101,16 @@ import { validUsername } from '@/utils/validate'
 export default {
   name: '',
   data() {
+<<<<<<< HEAD
+=======
+		const validateUsername = (rule, value, callback) => {
+			if(!validUsername(value)){
+				callback(new Error('请输入正确的用户名'))
+			} else(
+				callback()
+			)
+		}
+>>>>>>> origin/NetEnd
     const validatePassword = (rule, value, callback) => {
       if (value.length < 6) {
         callback(new Error('密码不能小于6位'))
@@ -115,6 +125,7 @@ export default {
         password: ''
       },
       loginRules: {
+				username: [{required:true, trigger: 'blur', validator: validateUsername}],
         password: [{ required: true, trigger: 'blur', validator: validatePassword }]
       },
       loading: false,

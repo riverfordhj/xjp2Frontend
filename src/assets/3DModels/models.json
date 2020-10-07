@@ -5,7 +5,7 @@
     "children": [
       {
         "id": 11,
-        "label": "峯岚天下3栋",
+        "label": "水岸新城",
         "url": "http://localhost/xjp/3D/saxc/saxc/tileset.json"
       }
     ]
@@ -16,7 +16,7 @@
     "children": [
       {
         "id": 12,
-        "label": "峯岚天下3栋",
+        "label": "水岸新城",
         "url": "http://localhost/xjp/3D/saxc/dth-SAXC/tileset.json"
       }
     ]

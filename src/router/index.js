@@ -223,9 +223,51 @@ export const constantRoutes = [
           title: '人口查询',
           icon: 'search'
         }
-      }
+			},
+			// {
+			// 	path: 'company',
+			// 	name: 'companyInfo',
+			// 	component: () => import('@/views/population/company'),
+			// 	meta: {
+			// 		title: '入驻公司信息',
+			// 		icon: 'dataManager' 
+			// 	}
+			// }
     ]
-  },
+	},
+	
+	{
+    path: '/buildingCompany',
+		component: Layout,
+		redirect: '/buildingCompany/company',
+		name: '楼宇经济',
+    meta: { 
+			title: '楼宇经济',
+      icon: 'population'
+	  },
+    children: [
+			{
+				path: 'company',
+				name: 'CompanyInfo',
+				component: () => import('@/views/buildingEconomy/company'),
+				meta: {
+					title: '公司信息查询',
+					icon: 'table' 
+				}
+			},
+			{
+				path: 'buildingEcoTable',
+				name: 'buildingEcoTable',
+				component: () => import('@/views/buildingEconomy/buildingEcoTable'),
+				meta: {
+					title: '公司信息管理',
+					icon: 'dataManager' 
+				}
+			},
+    ]
+	},
+	
+	
 
   {
     path: '/education',
