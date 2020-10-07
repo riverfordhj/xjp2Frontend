@@ -240,40 +240,34 @@ export const constantRoutes = [
     path: '/buildingCompany',
 		component: Layout,
 		redirect: '/buildingCompany/company',
-		// name: '楼宇经济',
-    // meta: { 
-		// 	title: '楼宇经济',
-		// 	icon: ''
-	  // },
+		name: '楼宇经济',
+    meta: { 
+			title: '楼宇经济',
+      icon: 'population'
+	  },
     children: [
 			{
 				path: 'company',
 				name: 'CompanyInfo',
 				component: () => import('@/views/buildingEconomy/company'),
 				meta: {
-					title: '楼宇经济',
-					icon: 'dataManager' 
+					title: '公司信息查询',
+					icon: 'table' 
 				}
-			}
-    ]
-	},
-	
-	{
-    path: '/table',
-		component: Layout,
-		redirect: '/table/buildingEcoTable',
-    children: [
+			},
 			{
 				path: 'buildingEcoTable',
 				name: 'buildingEcoTable',
-				component: () => import('@/views/table/buildingEcoTable'),
+				component: () => import('@/views/buildingEconomy/buildingEcoTable'),
 				meta: {
-					title: '表格',
-					icon: 'table' 
+					title: '公司信息管理',
+					icon: 'dataManager' 
 				}
-			}
+			},
     ]
-  },
+	},
+	
+	
 
   {
     path: '/education',

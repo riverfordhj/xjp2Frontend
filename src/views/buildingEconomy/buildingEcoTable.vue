@@ -11,7 +11,12 @@
         <template slot-scope="{row}">
           <span>{{ row.companyName }}</span>
         </template>
-    </el-table-column>
+	 </el-table-column>
+   <!-- <el-table-column align="center" label="楼栋名" width="180">
+				<template slot-scope="{row}">
+					<span>{{ row.buildingName }}</span>
+				</template>
+	 </el-table-column> -->
 	 <el-table-column align="center" label="联系人" width="180">
         <template slot-scope="{row}">
           <span>{{ row.contacts }}</span>
@@ -64,24 +69,6 @@
         </template>
       </el-table-column>
 
-	
-
-		<!-- <el-table-column label="Actions" align="center" width="430" class-name="small-padding fixed-width">
-        <template slot-scope="{row,$index}">
-          <el-button type="primary" size="mini" @click="handleUpdate(row)">
-            Edit
-          </el-button>
-          <el-button v-if="row.status!='published'" size="mini" type="success" @click="handleModifyStatus(row,'published')">
-            Publish
-          </el-button>
-          <el-button v-if="row.status!='draft'" size="mini" @click="handleModifyStatus(row,'draft')">
-            Draft
-          </el-button>
-          <el-button v-if="row.status!='deleted'" size="mini" type="danger" @click="handleDelete(row,$index)">
-            Delete
-          </el-button>
-        </template>
-      </el-table-column> -->
 	</el-table>
 	<el-dialog
 		title="新建"
@@ -92,6 +79,15 @@
 			<el-form-item label="企业名称">
 				<el-input v-model="formData.companyName" placeholder="企业名称"></el-input>
 			</el-form-item>
+			<!-- <el-form-item label="楼栋名称">
+				<el-select v-model="formData.buildingName" placeholder="请选择" clearable >
+					<el-option
+						v-for="item in buildingsData"
+						:key="item.id"
+						:value="item.buildingName">
+					</el-option>
+				</el-select>
+			</el-form-item> -->
 			<el-form-item label="联系人">
 				<el-input v-model="formData.contacts" placeholder="联系人"></el-input>
 			</el-form-item>
@@ -114,7 +110,7 @@
 </template>
 
 <script>
-import {getCompanySomeFileds, updateCompanyFields} from '@/api/company.js'
+import {getCompanySomeFileds, updateCompanyFields, getCompanyBuildings} from '@/api/company.js'
 
 export default {
 	name: 'buildingEcoTable',
@@ -126,17 +122,26 @@ export default {
 				companyName:'',
 				contacts: '',
 				phone: '',
-				businessDirection: ''
-			}
+				businessDirection: '',
+				// buildingName: ''
+			},
+			// buildingsData: []
 		}
 	},
 	mounted (){
 		this.getCompanyFields();
+		// this.getBuildingInfo();
 	},
 	methods: {
+		getBuildingInfo() {
+			//get请求buildings数据
+			getCompanyBuildings().then(res => {
+				this.buildingsData = res;
+			})
+		},
 		getCompanyFields () {
 			getCompanySomeFileds().then( res => {
-				// debugger;
+				debugger;
 				res.map(item => {
 					item.edit = false;
 					item.originBusinessDirection = res.businessDirection
@@ -157,7 +162,8 @@ export default {
 				"companyName": row.companyName,
         "contacts": row.contacts,
         "phone": row.phone,
-        "businessDirection": row.businessDirection
+				"businessDirection": row.businessDirection,
+				// "buildingName": row.buildingName 
 			}).then(res => {
 
 				console.log(res);
@@ -175,6 +181,7 @@ export default {
 		},
 		onSubmit(){
 		  updateCompanyFields(this.formData).then(res => {
+				debugger; 
 				console.log(res);
 				this.$message({
 					message: "新建成功",
@@ -189,22 +196,7 @@ export default {
 		cancelEdit(row){
 			row.edit = false;
 		}
-		// handleUpdate(){
 
-		// },
-		// handleModifyStatus(row, status){
-		// 	debugger;
-		// 	this.$message({
-    //     message: '操作Success',
-    //     type: 'success'
-    //   })
-    //   row.status = status
-
-		// },
-		// handleDelete(row, index) {
-		// 	debugger;
-		// 	this.companyFiledsData.splice(index, 1)
-		// }
 	}
 }
 </script>
