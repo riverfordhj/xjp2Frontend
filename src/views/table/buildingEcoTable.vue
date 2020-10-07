@@ -185,6 +185,9 @@ export default {
 				console.log(err);
 				this.dialogVisible = false;
 			})
+		},
+		cancelEdit(row){
+			row.edit = false;
 		}
 		// handleUpdate(){
 
