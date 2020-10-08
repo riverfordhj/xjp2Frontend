@@ -68,11 +68,7 @@ export default {
       listQuery: {
         page: 1,
         limit: 20,
-<<<<<<< HEAD
-        name: undefined,
-=======
         name: '',
->>>>>>> origin/NetEnd
         subdivsion: undefined,
         building: undefined,
         sort: '+id'
@@ -156,10 +152,7 @@ export default {
       })
     },
     getPersonsByBuildingData() {
-<<<<<<< HEAD
-=======
 			debugger
->>>>>>> origin/NetEnd
       getPersonsByBuilding(this.listQuery.building).then(response => {
         // debugger
         this.filterdPersonHouseInfo = this.personHouseInfo = response

@@ -1,34 +1,31 @@
 <template>
-<div v-show="personHouseInfo.show">
-<button @click="flyToPosition">定位</button>
-<dialog-drag
-    id="dialog-2"
-    class="dialog-3"
-    :title="personHouseDataFormTitle"
-    pinned="false"
-    :options="option"
-    @close="close"
-  >
-    <!-- <el-scrollbar :native="false" style="height:100%, height: 100%"> -->
-    <el-input v-model="searchPositionValue" placeholder="房号" style="width: 500px;" class="filter-item" @keyup.enter.native="handleRoomSearch" />
-    <el-table :data="personHouseInfo.personInRoom" height="350" border style="width: 100%">
-      <el-table-column prop="name" label="姓名" width="80" />
-      <el-table-column prop="personId" label="身份证" width="170" />
-      <el-table-column prop="phone" label="电话" width="120" />
-      <el-table-column prop="ethnicGroups" label="民族" />
-      <el-table-column prop="address" label="户籍地址" />
-      <el-table-column prop="company" label="公司" />
-      <el-table-column prop="isOverseasChinese" label="海外华人" />
-      <el-table-column prop="politicalState" label="政治面貌" />
-      <el-table-column prop="organizationalRelation" label="组织关系" />
-    </el-table>
+  <div v-show="personHouseInfo.show">
+    <button @click="flyToPosition">定位</button>
+    <dialog-drag
+      id="dialog-2"
+      class="dialog-3"
+      :title="personHouseDataFormTitle"
+      pinned="false"
+      :options="option"
+      @close="close"
+    >
+      <!-- <el-scrollbar :native="false" style="height:100%, height: 100%"> -->
+      <el-input v-model="searchPositionValue" placeholder="房号" style="width: 500px;" class="filter-item" @keyup.enter.native="handleRoomSearch" />
+      <el-table :data="personHouseInfo.personInRoom" height="350" border style="width: 100%">
+        <el-table-column prop="name" label="姓名" width="80" />
+        <el-table-column prop="personId" label="身份证" width="170" />
+        <el-table-column prop="phone" label="电话" width="120" />
+        <el-table-column prop="ethnicGroups" label="民族" />
+        <el-table-column prop="address" label="户籍地址" />
+        <el-table-column prop="company" label="公司" />
+        <el-table-column prop="isOverseasChinese" label="海外华人" />
+        <el-table-column prop="politicalState" label="政治面貌" />
+        <el-table-column prop="organizationalRelation" label="组织关系" />
+      </el-table>
     <!-- </el-scrollbar> -->
-  </dialog-drag>
-<<<<<<< HEAD
-=======
-</div>
-  
->>>>>>> origin/NetEnd
+    </dialog-drag>
+  </div>
+
 </template>
 
 <script>
@@ -65,11 +62,7 @@ export default {
   watch: {},
   methods: {
     handleRoomSearch() {
-<<<<<<< HEAD
-      // debugger
-=======
       // debuggert
->>>>>>> origin/NetEnd
       const data = this.searchPositionValue.split(',')
       const position = { // 70-2-1002
         long: Number(data[0]),
@@ -80,14 +73,10 @@ export default {
     },
     close() {
       this.personHouseInfo.show = false
-<<<<<<< HEAD
+    },
+    flyToPosition() {
+
     }
-=======
-		},
-		flyToPosition() {
-			
-		}
->>>>>>> origin/NetEnd
   }
 }
 </script>
