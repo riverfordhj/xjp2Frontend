@@ -8,7 +8,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 const cesiumSource = './node_modules/cesium/Source'
 const cesiumWorkers = '../Build/Cesium/Workers'
 
-function resolve (dir) {
+function resolve(dir) {
   return path.join(__dirname, dir)
 }
 
@@ -50,7 +50,7 @@ module.exports = {
       //   }
       // }
       '/api': {
-        target: "https://localhost:44318",
+        target: 'http://112.17.184.211:19898/XjpBackend2', // https://localhost:44318
         secure: false
       }
     },
@@ -93,7 +93,7 @@ module.exports = {
 
     }
   },
-  chainWebpack (config) {
+  chainWebpack(config) {
     config.plugins.delete('preload') // TODO: need test
     config.plugins.delete('prefetch') // TODO: need test
 
@@ -128,7 +128,7 @@ module.exports = {
     config
       // https://webpack.js.org/configuration/devtool/#development
       .when(process.env.NODE_ENV === 'development',
-        config => config.devtool('source-map')//cheap-source-map
+        config => config.devtool('source-map')// cheap-source-map
       )
 
     config
