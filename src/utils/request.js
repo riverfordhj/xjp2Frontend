@@ -4,12 +4,23 @@ import store from '@/store'
 import { getToken } from '@/utils/auth'
 
 // axios.defaults.headers.post['Content-Type'] = 'application/json'
-
+// axios
+//         .request({
+//           url: '/appsetting.json', // 读取public目录下3维模型配置文件
+//           method: 'get'
+//         })
+//         .then((res) => {
+//           debugger
+//           const url = res.data[0].webapiBaseURL
+//           webapiBaseURL = url
+//           config.baseURL = webapiBaseURL
+//           return config
+//         })
 // create an axios instance
 const service = axios.create({
-  baseURL: '/api', // process.env.VUE_APP_BASE_API, // url = base url + request url
+  baseURL: 'http://112.17.184.211:19898/XjpBackend2/api', // process.env.VUE_APP_BASE_API, // url = base url + request url
   withCredentials: false, // send cookies when cross-domain requests
-  timeout: 20000, // request timeout
+  timeout: 20000 // request timeout
   // headers: { 'Content-Type': 'application/json' }
 })
 
@@ -17,6 +28,7 @@ const service = axios.create({
 service.interceptors.request.use(
   config => {
     // debugger
+    // config.baseURL = 'http://112.17.184.211:19898/XjpBackend2'
     // do something before request is sent
     // config.headers['Content-Type'] = 'application/json'
     if (store.getters.token) {

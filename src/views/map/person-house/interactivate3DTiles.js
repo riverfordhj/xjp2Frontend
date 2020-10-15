@@ -319,14 +319,14 @@ var interactOperate = {
   // Set feature infobox description
   setInfobox(pickedFeature) {
     const roomInfo = {}
-    roomInfo.CommunityName = pickedFeature.getProperty('community')
+    roomInfo.SubdivisionName = pickedFeature.getProperty('residence')
     roomInfo.BuildingName = pickedFeature.getProperty('buildingid')
     const unit = pickedFeature.getProperty('unitid')
     const roomId = pickedFeature.getProperty('roomid')
     roomInfo.RoomNO = `${unit}-${roomId}`
 
-    this.personHouseDataForm.roomid = `${roomInfo.CommunityName}-${roomInfo.BuildingName}-${roomInfo.RoomNO}`
-    // debugger
+    this.personHouseDataForm.roomid = `${roomInfo.SubdivisionName}-${roomInfo.BuildingName}-${roomInfo.RoomNO}`
+    debugger
     this.getPersonInRoom(roomInfo) // JSON.stringify(
 
     // debugger
@@ -335,7 +335,7 @@ var interactOperate = {
   // 获取后台数据
   getPersonInRoom(roomInfo) {
     getPersonByRoom(roomInfo).then(response => { // login{      username: 'hj',      password: 'password'    }
-      // debugger
+      debugger
       if (this.personHouseDataForm.show !== true) {
         this.personHouseDataForm.show = true
       }
