@@ -124,7 +124,7 @@ export default {
 		handleCompanyInfo () {
 			this.loading = true;
 			getCompanyInfo().then(res => {
-				debugger;
+				//debugger;
 				this.buildingEconomyData = flatCompanyInfo(res);
 				this.filterData = this.buildingEconomyData;
 

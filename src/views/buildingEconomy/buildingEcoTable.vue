@@ -154,7 +154,7 @@ export default {
 		//为每条信息（对象）添加新属性
 		handleCompanyFields(res) {
 			this.companyFiledsData = res.map(item => {
-				debugger;
+				// debugger;
 				item.edit = false;
 				item.originBusinessDirection = item.businessDirection
 				return item;
@@ -163,7 +163,7 @@ export default {
 		//请求数据
 		getCompanyFields () {
 			getCompanySomeFileds().then( res => {
-				debugger;
+				// debugger;
 				this.handleCompanyFields(res);
 			}).catch( err =>{
 				console.log(err);
@@ -171,7 +171,7 @@ export default {
 		},
 		//确认修改信息
 		confirmEdit (row){
-			debugger;
+			// debugger;
 			row.edit = false;
 			row.originBusinessDirection = row.businessDirection;
 			this.loading = true;
@@ -183,7 +183,7 @@ export default {
 				"businessDirection": row.businessDirection,
 				"buildingName": row.buildingName 
 			}).then(res => {
-				debugger;
+				// debugger;
 				this.loading = false;
 				this.handleCompanyFields(res);
 				this.$message({
@@ -199,7 +199,7 @@ export default {
 		onSubmit(){
 			this.loading = true;
 		  updateCompanyFields(this.formData).then(res => {
-				debugger; 
+				// debugger; 
 				this.loading = false;
 				this.handleCompanyFields(res);
 				this.$message({
