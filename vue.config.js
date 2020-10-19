@@ -50,7 +50,8 @@ module.exports = {
       //   }
       // }
       '/api': {
-        target: 'http://112.17.184.211:19898/XjpBackend2', // https://localhost:44318
+				//target: 'http://112.17.184.211:19898/XjpBackend2',
+				target: 'https://localhost:44318',
         secure: false
       }
     },
@@ -63,7 +64,8 @@ module.exports = {
     resolve: {
       alias: {
         '@': resolve('src'),
-        'cesium': path.resolve(__dirname, cesiumSource)
+				'cesium': path.resolve(__dirname, cesiumSource),
+				'public': resolve('public')
       }
     },
     plugins: [

@@ -166,8 +166,7 @@ export const constantRoutes = [
         path: 'party-building',
         name: '基层党建',
         // component: () => import('@/views/map/party-building/index'),
-        component: () =>
-          import('@/views/map/monomerization_cesium/index_party'),
+        component: () => import('@/views/map/monomerization_cesium/index_party'),
         meta: {
           title: '基层党建',
           icon: 'party-building'
@@ -177,13 +176,12 @@ export const constantRoutes = [
         path: 'governance',
         name: '综治维稳',
         // component: () => import('@/views/map/party-building/index'),
-        component: () =>
-          import('@/views/map/monomerization_cesium/index_governance'),
+        component: () => import('@/views/map/monomerization_cesium/index_governance'),
         meta: {
           title: '综治维稳',
           icon: 'safety'
         }
-      }
+			}
     ]
   },
 
@@ -249,7 +247,7 @@ export const constantRoutes = [
 			{
 				path: 'company',
 				name: 'CompanyInfo',
-				component: () => import('@/views/buildingEconomy/company'),
+				component: () => import('@/views/buildingEconomy/buildingEcoTable/company'),
 				meta: {
 					title: '公司信息查询',
 					icon: 'table' 
@@ -258,12 +256,21 @@ export const constantRoutes = [
 			{
 				path: 'buildingEcoTable',
 				name: 'buildingEcoTable',
-				component: () => import('@/views/buildingEconomy/buildingEcoTable'),
+				component: () => import('@/views/buildingEconomy/buildingEcoTable/buildingEcoTable'),
 				meta: {
 					title: '公司信息管理',
 					icon: 'dataManager' 
 				}
 			},
+			{
+				path: 'buildingEco',
+				name: 'buildingEcoMap',
+				component: () => import('@/views/buildingEconomy/buildingEcoMap/index.vue'),
+				meta: {
+					title: '楼宇地图',
+					icon: 'map'
+				}
+			}
     ]
 	},
 	

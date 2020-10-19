@@ -26,6 +26,8 @@ import '@/permission' // permission control
 // import * as VueWindow from '@hscmap/vue-window'
 import * as VueMenu from '@hscmap/vue-menu'
 
+
+
 // Vue.use(VueWindow)
 Vue.use(VueMenu)
 

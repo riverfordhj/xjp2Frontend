@@ -1,5 +1,8 @@
 <template>
+<div>
   <div id="cesiumContainer" ref="cesiumContainer" />
+
+</div>
 </template>
 
 <script>
