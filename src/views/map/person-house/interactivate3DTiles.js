@@ -145,6 +145,20 @@ var interactOperate = {
     }
     return `${buildingId}-${unitid}-${roomId}`
   },
+  // 构造房间号，2-1002
+  getSimpleRoomNO(room) {
+    if (!Cesium.defined(room) || !Cesium.defined(room.getProperty)) {
+      return ''
+    }
+
+    const unitid = room.getProperty('unitid')
+    const roomId = room.getProperty('roomid')
+
+    if (!unitid || !roomId) {
+      return ''
+    }
+    return `${unitid}-${roomId}`
+  },
   // mouseclick事件处理
   onLeftClick(movement) {
     // debugger
@@ -209,7 +223,7 @@ var interactOperate = {
       if (!Cesium.defined(feature)) {
         continue
       } else {
-        const rN = this.getRoomNO(feature)
+        const rN = this.getSimpleRoomNO(feature)
         if (rN === roomNO) {
           return feature
         }

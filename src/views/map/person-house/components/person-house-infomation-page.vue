@@ -1,6 +1,5 @@
 <template>
   <div v-show="personHouseInfo.show">
-    <button @click="flyToPosition">定位</button>
     <dialog-drag
       id="dialog-2"
       class="dialog-3"
@@ -154,25 +153,11 @@ export default {
           lat: room.latitude,
           height: room.height
         }
-        this.personHouseInfo.interactOperate.FlytoRoom(position, this.cureentBuildingName + '-' + room.name)
+        this.personHouseInfo.interactOperate.FlytoRoom(position, room.name)
       }
-    },
-    // 过滤小区、房号
-    handleLocalFilter() {
-      // debuggert
-      const data = this.searchPositionValue.split(',')
-      const position = { // 70-2-1002
-        long: Number(data[0]),
-        lat: Number(data[1]),
-        height: Number(data[2])
-      }
-      this.personHouseInfo.interactOperate.FlytoRoom(position, data[3])
     },
     close() {
       this.personHouseInfo.show = false
-    },
-    flyToPosition() {
-      
     }
   }
 }
