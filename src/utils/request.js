@@ -18,7 +18,7 @@ import { getToken } from '@/utils/auth'
 //         })
 // create an axios instance
 const service = axios.create({
-  baseURL: 'http://112.17.184.211:19898/XjpBackend2/api', // process.env.VUE_APP_BASE_API, // url = base url + request url
+  baseURL: '/api', // http://202.114.148.160:19898/XjpBackend2 112.17.184.211 process.env.VUE_APP_BASE_API, // url = base url + request url
   withCredentials: false, // send cookies when cross-domain requests
   timeout: 20000 // request timeout
   // headers: { 'Content-Type': 'application/json' }

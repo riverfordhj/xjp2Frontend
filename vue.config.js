@@ -50,7 +50,7 @@ module.exports = {
       //   }
       // }
       '/api': {
-        target: 'http://112.17.184.211:19898/XjpBackend2', // https://localhost:44318
+        target: 'https://localhost:44318', // http://112.17.184.211:19898/XjpBackend2
         secure: false
       }
     },

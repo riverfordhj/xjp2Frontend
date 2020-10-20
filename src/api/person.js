@@ -55,3 +55,11 @@ export function getPeopleByBuilding(BuildingName) {
     }
   })
 }
+
+// 通过楼栋号查找room
+export function getRoomByBuilding(buildingId) {
+  return request({
+    url: `/person/getRoomByBuilding/${buildingId}`,
+    method: 'get'
+  })
+}

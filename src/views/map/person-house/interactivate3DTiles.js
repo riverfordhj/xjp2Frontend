@@ -203,7 +203,7 @@ var interactOperate = {
   // 根据屏幕坐标及roomNO选取 room model
   pickFeatureByRoomNO(position, roomNO) {
     const features = this.viewer.scene.drillPick(position)
-    debugger
+    // debugger
     for (let i = 0; i < features.length; i++) {
       const feature = features[i]
       if (!Cesium.defined(feature)) {
@@ -326,7 +326,7 @@ var interactOperate = {
     roomInfo.RoomNO = `${unit}-${roomId}`
 
     this.personHouseDataForm.roomid = `${roomInfo.SubdivisionName}-${roomInfo.BuildingName}-${roomInfo.RoomNO}`
-    debugger
+    // debugger
     this.getPersonInRoom(roomInfo) // JSON.stringify(
 
     // debugger
@@ -335,7 +335,7 @@ var interactOperate = {
   // 获取后台数据
   getPersonInRoom(roomInfo) {
     getPersonByRoom(roomInfo).then(response => { // login{      username: 'hj',      password: 'password'    }
-      debugger
+      // debugger
       if (this.personHouseDataForm.show !== true) {
         this.personHouseDataForm.show = true
       }
