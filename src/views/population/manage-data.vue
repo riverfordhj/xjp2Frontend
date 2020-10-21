@@ -14,6 +14,7 @@
       <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         查询
       </el-button>
+      <el-button class="filter-item" type="primary" icon="el-icon-edit" @click="showPivotdialog">打开统计分析窗口</el-button>
     </div>
 
     <el-table :data="filterdPersonHouseInfo" height="800" border style="width: 100%" :row-class-name="tableRowClassName">
@@ -46,11 +47,24 @@
       <el-table-column prop="person.organizationalRelation" label="组织关系" />
     </el-table>
 
+    <!-- pivot 窗口 -->
+    <el-dialog title="提示" :visible.sync="pivotdialogVisible" width="80%">
+      <div id="pivot">
+        <span>Pivot</span>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import { getSubdivsions, getBuildingsBySub, getPersons, getPersonsByBuilding } from '@/api/person.js'
+
+// const { JSDOM } = require('jsdom')
+// const { window } = new JSDOM('')
+// const jquery = require('jquery')(window)
+const $ = require('jquery')
+// import jquery from 'jquery'
+const { pivot, pivotUI } = require('pivottable')
 
 export default {
   name: 'PersonHouseData',
@@ -99,19 +113,14 @@ export default {
         timestamp: [{ type: 'date', required: true, message: 'timestamp is required', trigger: 'change' }],
         title: [{ required: true, message: 'title is required', trigger: 'blur' }]
       },
-      downloadLoading: false
+      downloadLoading: false,
+
+      pivotdialogVisible: false // pivot 控制窗口显示
     }
   },
 
   computed: {
-    // filterList() {
-    //   if (this.listQuery.name) {
-    //     return this.personHouseInfo.filter(item => item.name.indexof(this.listQuery.name) !== -1)
-    //   }
-    //   else {
-    //     return this.personHouseInfo
-    //   }
-    // }
+
   },
   created() {
     this.getSubdivsionsData()
@@ -152,7 +161,7 @@ export default {
       })
     },
     getPersonsByBuildingData() {
-			debugger
+      // debugger
       getPersonsByBuilding(this.listQuery.building).then(response => {
         // debugger
         this.filterdPersonHouseInfo = this.personHouseInfo = response
@@ -203,6 +212,21 @@ export default {
       // const value = Number(str)
       // // debugger
       // return value
+    },
+    showPivotdialog() {
+      this.pivotdialogVisible = true
+      debugger
+      $('#pivot').pivotUI(
+        [
+          { color: 'blue', shape: 'circle' },
+          { color: 'red', shape: 'triangle' }
+        ],
+        {
+          rows: ['color'],
+          cols: ['shape']
+        }
+      )
+      // click(e => console.log('jqery is ok!'))
     }
   }
 }

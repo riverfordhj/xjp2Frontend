@@ -46,15 +46,15 @@ export function getPeopleByResidents(HouseId) {
   })
 }
 
-export function getPeopleByBuilding(BuildingName) {
-  return request({
-    url: '/people/getPeopleByBuilding',
-    method: 'get',
-    params: {
-      BuildingName: BuildingName
-    }
-  })
-}
+// export function getPeopleByBuilding(BuildingName) {
+//   return request({
+//     url: '/people/getPeopleByBuilding',
+//     method: 'get',
+//     params: {
+//       BuildingName: BuildingName
+//     }
+//   })
+// }
 
 // 通过楼栋号查找room
 export function getRoomByBuilding(buildingId) {

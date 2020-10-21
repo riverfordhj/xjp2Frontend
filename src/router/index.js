@@ -217,10 +217,10 @@ export const constantRoutes = [
       },
       {
         path: 'inquery-population',
-        name: '人口查询',
+        name: 'PersonStatistics',
         component: () => import('@/views/population/inquery-population'),
         meta: {
-          title: '人口查询',
+          title: '统计分析',
           icon: 'search'
         }
 			},
