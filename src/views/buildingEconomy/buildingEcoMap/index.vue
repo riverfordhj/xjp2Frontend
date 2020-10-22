@@ -1,11 +1,13 @@
 <template>
 	<div>
 		<div id="cesiumContainer"></div>
+		<company-info-panel :company-datas="companyDatas"></company-info-panel>
 	</div>
 </template>
 
 <script>
 import { interactOperate } from './interactivate.js';
+import companyInfoPanel from './components/companyInfoPanel.vue';
 
 var Cesium = require('cesium/Cesium');
 import 'cesium/Widgets/widgets.css';
@@ -24,8 +26,15 @@ export default {
 				{
 					url: 'http://localhost:80/xjp/3D/sanjiaolu/v+/tileset.json'
 				}
-			]
+			],
+			companyDatas:{
+				show: false,
+				compaiesFullInfo: []
+			}
 		}
+	},
+	components: {
+		companyInfoPanel
 	},
 	mounted() {
 		this.init();
@@ -61,7 +70,7 @@ export default {
 					color: 'rgba(255,255,255,0.01)'
 				}
 			));
-			interactOperate.install(this.viewer); 
+			interactOperate.install(this.viewer, this.companyDatas); 
 			
 		},
 		load3DTiles(viewer, url, isFlyto, classificationType, style) {

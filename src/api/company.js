@@ -45,3 +45,11 @@ export function deleteCompany(arr){
 		data: arr
 	})
 }
+
+export function getInfoByFloor(arrData){
+	return request({
+		url: '/Companies/GetInfoByFloor',
+		method: 'post',
+		data: arrData
+	})
+}

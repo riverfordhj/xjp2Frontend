@@ -1,4 +1,6 @@
 var Cesium = require('cesium/Cesium');
+import { getInfoByFloor } from '@/api/company.js'
+import { flatCompanyInfo } from '@/utils/tools.js'
 
 // 定义3dTiles模型所选要素的交互形式
 export {
@@ -8,7 +10,7 @@ export {
 
 var interactOperate = {
   viewer: null, // cesium viewer
- 
+	companyDatas: null,
   // 当前高亮颜色
   colorHighlight: Cesium.Color.YELLOW.withAlpha(0.3),
   // 当前选中要素颜色
@@ -296,34 +298,30 @@ var interactOperate = {
 
   // Set feature infobox description
   setInfobox(pickedFeature) {
-    // const roomInfo = {}
-    // roomInfo.SubdivisionName = pickedFeature.getProperty('residence')
-    // roomInfo.BuildingName = pickedFeature.getProperty('buildingid')
-    // const unit = pickedFeature.getProperty('unitid')
-    // const roomId = pickedFeature.getProperty('roomid')
-    // roomInfo.RoomNO = `${unit}-${roomId}`
+    const companyInfo = {}
+    companyInfo.buildingName = pickedFeature.getProperty('buildingid')
+    companyInfo.floor = pickedFeature.getProperty('floor')
+   
 
-    // this.personHouseDataForm.roomid = `${roomInfo.SubdivisionName}-${roomInfo.BuildingName}-${roomInfo.RoomNO}`
-    // debugger
-    // this.getPersonInRoom(roomInfo) // JSON.stringify(
+   
+    this.getCompanyFullInfo(companyInfo) // JSON.stringify(
 
     // debugger
     this.setSelectedEntity(pickedFeature)
 	},
 	
-  // 获取后台数据
-  // getPersonInRoom(roomInfo) {
-  //   getPersonByRoom(roomInfo).then(response => { // login{      username: 'hj',      password: 'password'    }
-  //     debugger
-  //     if (this.personHouseDataForm.show !== true) {
-  //       this.personHouseDataForm.show = true
-  //     }
-
-  //     this.personHouseDataForm.personInRoom = response
-  //   }).catch(error => {
-  //     console.log(error)
-  //   })
-	// },
+	getCompanyFullInfo(companyInfo){
+		getInfoByFloor(companyInfo).then(res => {
+			if(this.companyDatas.show !== true){
+				this.companyDatas.show = true;
+			}
+			debugger;
+			this.companyDatas.compaiesFullInfo = flatCompanyInfo(res);
+		}).catch(err => {
+			console.log(err);
+		});
+	},
+ 
 	
   // 设置entity, 及属性，并在viewer中选择
   setSelectedEntity(pickedFeature) {
@@ -353,11 +351,11 @@ var interactOperate = {
     selectedEntity.description = html
   },
   // 对cesium viewer 进行配置，响应鼠标事件，对 3dtile feature 选择、高亮显示
-  install(viewer) {
+  install(viewer, companyDatas) {
     // debugger
 
     this.viewer = viewer
-
+    this.companyDatas = companyDatas
     this.SetupOverlap()
 
     this.leftDown = false
