@@ -215,10 +215,10 @@ export const constantRoutes = [
       },
       {
         path: 'inquery-population',
-        name: '人口查询',
+        name: 'PersonStatistics',
         component: () => import('@/views/population/inquery-population'),
         meta: {
-          title: '人口查询',
+          title: '统计分析',
           icon: 'search'
         }
 			},
@@ -265,7 +265,7 @@ export const constantRoutes = [
 			{
 				path: 'buildingEco',
 				name: 'buildingEcoMap',
-				component: () => import('@/views/buildingEconomy/buildingEcoMap/index.vue'),
+				component: () => import('@/views/buildingEconomy/buildingEcoMap/buildingEcoMap.vue'),
 				meta: {
 					title: '楼宇地图',
 					icon: 'map'

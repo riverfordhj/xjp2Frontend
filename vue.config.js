@@ -87,7 +87,11 @@ module.exports = {
       }]),
       new webpack.DefinePlugin({
         CESIUM_BASE_URL: JSON.stringify('./')
-      })
+      }),
+      // new webpack.ProvidePlugin({
+      //   $: 'jquery',
+      //   'jQuery': 'jquery'
+      // })
     ],
     module: {
       // unknownContextCritical: /^.\/.*$/

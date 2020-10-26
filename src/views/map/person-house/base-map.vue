@@ -19,7 +19,7 @@
       class="dialog-3"
       title="图层目录"
       pinned="false"
-      :options="{ top: 60, height: 350, width: 280, buttonPin: false }"
+      :options="{ top: 60, width: 280, buttonPin: false }"
       @close="closeLayerTreePanel"
     >
       <el-scrollbar :native="false" style="height: 100%">

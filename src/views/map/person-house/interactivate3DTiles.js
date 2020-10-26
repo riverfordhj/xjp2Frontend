@@ -125,7 +125,7 @@ var interactOperate = {
 
     // Highlight the feature if it's not already selected.
     if (pickedFeature !== this.selected.feature) {
-      this.highlighted.feature = pickedFeature
+	    this.highlighted.feature = pickedFeature
       Cesium.Color.clone(pickedFeature.color, this.highlighted.originalColor)
       pickedFeature.color = this.colorHighlight
     }
@@ -144,6 +144,20 @@ var interactOperate = {
       return ''
     }
     return `${buildingId}-${unitid}-${roomId}`
+  },
+  // 构造房间号，2-1002
+  getSimpleRoomNO(room) {
+    if (!Cesium.defined(room) || !Cesium.defined(room.getProperty)) {
+      return ''
+    }
+
+    const unitid = room.getProperty('unitid')
+    const roomId = room.getProperty('roomid')
+
+    if (!unitid || !roomId) {
+      return ''
+    }
+    return `${unitid}-${roomId}`
   },
   // mouseclick事件处理
   onLeftClick(movement) {
@@ -167,7 +181,7 @@ var interactOperate = {
   setSelectedFeature(room) {
     // Select the feature if it's not already selected
     if (this.selected.feature === room) {
-      return
+      return;
     }
     // If a feature was previously selected, undo the highlight
     if (Cesium.defined(this.selected.feature)) {
@@ -175,7 +189,9 @@ var interactOperate = {
       this.selected.feature = undefined
     }
 
-    if (!Cesium.defined(room.getProperty)) return
+    if (!Cesium.defined(room.getProperty)){
+			return;
+		} 
 
     this.selected.feature = room
 
@@ -193,7 +209,7 @@ var interactOperate = {
   // 根据屏幕坐标选取 room model
   pickFeature(position) {
     const pickedFeature = this.viewer.scene.pick(position)
-    // debugger
+     debugger
     if (!Cesium.defined(pickedFeature)) {
       return null
     } else {
@@ -203,13 +219,13 @@ var interactOperate = {
   // 根据屏幕坐标及roomNO选取 room model
   pickFeatureByRoomNO(position, roomNO) {
     const features = this.viewer.scene.drillPick(position)
-    debugger
+    // debugger
     for (let i = 0; i < features.length; i++) {
       const feature = features[i]
       if (!Cesium.defined(feature)) {
         continue
       } else {
-        const rN = this.getRoomNO(feature)
+        const rN = this.getSimpleRoomNO(feature)
         if (rN === roomNO) {
           return feature
         }
@@ -240,13 +256,13 @@ var interactOperate = {
     var camera = this.viewer.scene.camera
     var heading = camera.heading
     var pitch = camera.pitch
-
+   
     var offset = this.offsetFromHeadingPitchRange(
       heading,
       pitch,
       30
     )
-
+    debugger;
     var transform = Cesium.Transforms.eastNorthUpToFixedFrame(pos)
     Cesium.Matrix4.multiplyByPoint(transform, offset, pos)
 
@@ -326,7 +342,7 @@ var interactOperate = {
     roomInfo.RoomNO = `${unit}-${roomId}`
 
     this.personHouseDataForm.roomid = `${roomInfo.SubdivisionName}-${roomInfo.BuildingName}-${roomInfo.RoomNO}`
-    debugger
+    // debugger
     this.getPersonInRoom(roomInfo) // JSON.stringify(
 
     // debugger
@@ -335,7 +351,7 @@ var interactOperate = {
   // 获取后台数据
   getPersonInRoom(roomInfo) {
     getPersonByRoom(roomInfo).then(response => { // login{      username: 'hj',      password: 'password'    }
-      debugger
+      // debugger
       if (this.personHouseDataForm.show !== true) {
         this.personHouseDataForm.show = true
       }

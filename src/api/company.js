@@ -21,7 +21,6 @@ export function getCompanysByBuilding(id){
 	})
 }
 
-
 export function getCompanySomeFileds(){
 	return request({
 		url: '/Companies/getBuildingEcoFields',
@@ -37,7 +36,6 @@ export function updateCompanyFields(arrayData){
 	})
 }
 
-
 export function deleteCompany(arr){
 	return request({
 		url: '/Companies/DeleteCompanyByName',
@@ -51,5 +49,12 @@ export function getInfoByFloor(arrData){
 		url: '/Companies/GetInfoByFloor',
 		method: 'post',
 		data: arrData
+	})
+}
+
+export function getFloorInfoByBuilding(id){
+	return request({
+		url: `/CompanyBuildings/GetFloorInfoByBuilding/${id}`,
+		method: 'get'
 	})
 }

@@ -9,7 +9,7 @@
 				clearable
 				@change="searchCompany">
 			</el-input>
-			<el-select v-model="value" placeholder="请选择" clearable @change="selectBuilding">
+			<el-select v-model="value" placeholder="请选择楼栋" clearable @change="selectBuilding">
 				<el-option
 					v-for="item in buildingsData"
 					:key="item.id"

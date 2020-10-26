@@ -3,14 +3,30 @@
 		<dialog-drag
       id="dialog-1"
       class="dialog-3"
-      :title="cmtitle"
+      :title="companyInFloorTitle"
       pinned="false"
       :options="option"
       @close="close"
     >
       <!-- <el-scrollbar :native="false" style="height:100%, height: 100%"> -->
-     
-      <el-table :data="companyDataForms.compaiesFullInfo" height="600" border style="width: 100%">
+		  <div class="selectForm">
+				<el-input v-model="filter" placeholder="过滤条件(楼栋，楼层)" style="width: 200px;"  />
+				<el-select v-model="buildingsData.buildingValue" placeholder="请选择楼栋"  @change="getFloorInfos">
+					<el-option
+						v-for="item in filteredBuildingsData"
+						:key="item.id"
+						:value="item.buildingName">
+					</el-option>
+				</el-select>
+				<el-select v-model="buildingFloorData.FloorValue" placeholder="请选择楼层"  @change="flyToTarget" >
+					<el-option
+						v-for="item in filteredFloorsInfo"
+						:key="item.id"
+						:value="item.floorNum">
+					</el-option>
+				</el-select>
+			</div>
+      <el-table :data="companyDataForms.compaiesFullInfo" height="550" border style="width: 100%">
 				<el-table-column prop="buildingName" label="楼宇名称" width="120">
 				</el-table-column>
 				<el-table-column prop="companyName" label="企业名称" width="180">
@@ -36,7 +52,6 @@
 				<el-table-column prop="corporateTax" label="企业税收额（万元)" width="140"/>
 				<el-table-column prop="floor" label="楼层" width="80"/>
 				<el-table-column prop="category" label="租赁/购买" width="100"/>
-   
      
       </el-table>
     <!-- </el-scrollbar> -->
@@ -46,7 +61,7 @@
 
 <script>
 import DialogDrag from 'vue-dialog-drag';
-
+import { getFloorInfoByBuilding, getCompanyBuildings } from '@/api/company.js';
 
 export default {
 	name: 'companyInfoPanel',
@@ -64,24 +79,87 @@ export default {
 	data(){
 		return {
 			option: { top: 250, left: 20, height: 650, width: 1200, buttonPin: false },
-			companyDataForms: this.companyDatas
+			companyDataForms: this.companyDatas,
+			buildingsData: {
+				buildingValue: '',
+				buildings: []
+			},
+			buildingFloorData: {
+				FloorValue: '',
+				FloorInfos: []
+			},
+			filter:'',
 		}
 	},
+	created(){
+		this.getBuildings();
+	},
 	computed:{
-		cmtitle(){
-			return this.companyDataForms.compaiesFullInfo.buildingName + this.companyDataForms.compaiesFullInfo.floor;
+		companyInFloorTitle(){
+			return '楼层入驻公司信息： ' + this.companyDataForms.title;
+		},
+		filteredBuildingsData(){
+			if(this.filter){
+				//debugger;
+				let filterArr = this.filter.split(/[，,]/gim);
+				return this.buildingsData.buildings.filter(item => item.buildingName.indexOf(filterArr[0]) !== -1);
+			}else{
+				return this.buildingsData.buildings;
+			}
+		},
+		filteredFloorsInfo(){
+			if(this.filter){
+				//debugger;
+				let filterArr = this.filter.split(/[，,]/gim);
+				return this.buildingFloorData.FloorInfos.filter(item => item.floorNum.indexOf(filterArr[1])!== -1);
+			}else{
+				return this.buildingFloorData.FloorInfos;
+			}
+			
 		}
 	},
 	methods: {
-		close() {
+		close (){
       this.companyDatas.show = false
-    },
+		},
+		//请求后端楼栋数据
+		getBuildings() {
+			getCompanyBuildings().then(res => {
+					this.buildingsData.buildings = res;
+			}).catch(err =>{
+				console.log(err);
+			})
+		},
+		getFloorInfos (curValue){
+			const targetBuilding = this.buildingsData.buildings.find(item => item.buildingName === curValue);
+			//向后端请求目标楼栋的楼层信息
+			getFloorInfoByBuilding(targetBuilding.id).then(res => {
+				this.buildingFloorData.FloorInfos = res[0].floor;
+			}).catch(err => {
+				console.log(err);
+			})
+		},
+		//定位到选定楼层
+		flyToTarget (curFloorNum){
+			const curFloorInfo = this.buildingFloorData.FloorInfos.find(item => item.floorNum === curFloorNum);
+			if(curFloorInfo){
+				const position = {
+					long: curFloorInfo.lat,
+					lat: curFloorInfo.long,
+					height: curFloorInfo.height
+				};
+				this.companyDatas.interactOperate.FlytoFloor(position, curFloorInfo.floorNum);
+			}
+		}
 	}
 }
 </script>
 <style src="vue-dialog-drag/dist/vue-dialog-drag.css"></style>
 <style src="vue-dialog-drag/dist/dialog-styles.css"></style>
 
-<style>
-
+<style scoped>
+ .selectForm{
+	 margin-top: -5px;
+	 margin-bottom: 8px;
+ }
 </style>

@@ -107,15 +107,17 @@ var interactOperate = {
       this.nameOverlay.style.display = 'none'
       return
     }
-
+		
+		const buildingFloor = this.getBuildingFloor(pickedFeature);
+		if(!buildingFloor){
+			this.nameOverlay.style.display = 'none';
+		}
 
     this.nameOverlay.style.display = 'block'
     this.nameOverlay.style.bottom = this.viewer.canvas.clientHeight - movement.endPosition.y + 'px'
     this.nameOverlay.style.left = movement.endPosition.x + 'px'
-
-    // nameOverlay.textContent = '水岸星城党员群众服务中心'
     // debugger
-    this.nameOverlay.textContent = name
+    this.nameOverlay.textContent = buildingFloor;
 
     // Highlight the feature if it's not already selected.
     if (pickedFeature !== this.selected.feature) {
@@ -123,7 +125,15 @@ var interactOperate = {
       Cesium.Color.clone(pickedFeature.color, this.highlighted.originalColor)
       pickedFeature.color = this.colorHighlight
     }
-  },
+	},
+	
+	//获取pickedFeature属性，返回拼接字符串
+	getBuildingFloor (pickedFeature){
+		const buildingName = pickedFeature.getProperty('buildingid');
+		const floorNum = pickedFeature.getProperty('floor');
+
+		return `${buildingName}-第${floorNum}层`;
+	},
 
   // mouseclick事件处理
   onLeftClick(movement) {
@@ -141,7 +151,6 @@ var interactOperate = {
     // 显示属性面板
     this.setInfobox(room)
 
-    // this.FlytoRoom(pickedFeature)
   },
   // 高亮处理选择room
   setSelectedFeature(room) {
@@ -180,27 +189,40 @@ var interactOperate = {
       return pickedFeature
     }
   },
-  // 根据屏幕坐标及roomNO选取 room model
-  pickFeatureByRoomNO(position, roomNO) {
+  // 根据屏幕坐标及特定值选取 feature
+  pickTargetFeature(position, targetValue) {
     const features = this.viewer.scene.drillPick(position)
-    debugger
+    //debugger
     for (let i = 0; i < features.length; i++) {
       const feature = features[i]
       if (!Cesium.defined(feature)) {
         continue
       } else {
-        const rN = this.getRoomNO(feature)
-        if (rN === roomNO) {
+        const floorNum = this.getFloorNum(feature);
+        if (floorNum === targetValue) {
           return feature
         }
       }
     }
     return null
-  },
+	},
+	
+	getFloorNum(feature){
+		if(!Cesium.defined(feature) || !Cesium.defined(feature.getProperty)){
+			return ''
+		};
+		
+		const floor = feature.getProperty('floor');
+		if(!floor){
+			return '';
+		}else{
+			return floor;
+		}
+	
+	},
 
-  FlytoRoom(position, roomNO) {
-    // debugger
-    this.roomNO = roomNO
+  FlytoFloor(position, targetValue) {
+		this.floorNO = targetValue;
 
     var longitude = Cesium.Math.toRadians(
       position.long
@@ -215,8 +237,8 @@ var interactOperate = {
     )
     var pos = this.viewer.scene.globe.ellipsoid.cartographicToCartesian(
       positionCartographic
-    )
-
+		)
+		
     var camera = this.viewer.scene.camera
     var heading = camera.heading
     var pitch = camera.pitch
@@ -251,10 +273,8 @@ var interactOperate = {
       y: oh
     }
 
-    // this.onLeftClick(para)
-
     // Pick a new feature
-    const room = this.pickFeatureByRoomNO(position, this.roomNO)
+    const room = this.pickTargetFeature(position, this.floorNO)
 
     if (room === null) {
       return
@@ -300,9 +320,9 @@ var interactOperate = {
   setInfobox(pickedFeature) {
     const companyInfo = {}
     companyInfo.buildingName = pickedFeature.getProperty('buildingid')
-    companyInfo.floor = pickedFeature.getProperty('floor')
-   
-
+		companyInfo.floor = pickedFeature.getProperty('floor')
+		
+		this.companyDatas.title = `${companyInfo.buildingName} - 第${companyInfo.floor}层`;
    
     this.getCompanyFullInfo(companyInfo) // JSON.stringify(
 
@@ -310,27 +330,27 @@ var interactOperate = {
     this.setSelectedEntity(pickedFeature)
 	},
 	
+	//后端获取数据
 	getCompanyFullInfo(companyInfo){
 		getInfoByFloor(companyInfo).then(res => {
 			if(this.companyDatas.show !== true){
 				this.companyDatas.show = true;
 			}
-			debugger;
 			this.companyDatas.compaiesFullInfo = flatCompanyInfo(res);
 		}).catch(err => {
 			console.log(err);
 		});
 	},
  
-	
   // 设置entity, 及属性，并在viewer中选择
   setSelectedEntity(pickedFeature) {
     const selectedEntity = new Cesium.Entity()
-    selectedEntity.name = pickedFeature.getProperty('roomid')
+    selectedEntity.name = this.getBuildingFloor(pickedFeature);
     selectedEntity.description =
       'Loading <div class="cesium-infoBox-loading"></div>'
     this.viewer.selectedEntity = selectedEntity
 
+		debugger;
     var names = pickedFeature._content.batchTable.getPropertyNames(
       pickedFeature._batchId
     )
@@ -349,7 +369,8 @@ var interactOperate = {
     html += '</tbody></table>'
 
     selectedEntity.description = html
-  },
+	},
+	
   // 对cesium viewer 进行配置，响应鼠标事件，对 3dtile feature 选择、高亮显示
   install(viewer, companyDatas) {
     // debugger
