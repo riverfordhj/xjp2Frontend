@@ -6,7 +6,7 @@ import { getToken } from '@/utils/auth'
 // let webapiBaseURL = undefined;
 // axios.get('/appsetting.json').then((res) => {
 // 	webapiBaseURL = res.data[0].webapiBaseURL;
-// })
+// });
 
 // create an axios instance
 const service = axios.create({
@@ -21,7 +21,7 @@ const service = axios.create({
 service.interceptors.request.use(
   config => {
     // debugger
-    //config.baseURL = webapiBaseURL; //在请求发起前，修改baseURL
+    // config.baseURL = webapiBaseURL; //在请求发起前，修改baseURL
     // do something before request is sent
     // config.headers['Content-Type'] = 'application/json'
     if (store.getters.token) {

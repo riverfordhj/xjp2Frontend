@@ -263,12 +263,37 @@ export const constantRoutes = [
 				}
 			},
 			{
+				path: 'companyTax',
+				name: 'companyTax',
+				component: () => import('@/views/buildingEconomy/buildingEcoTable/companyTax'),
+				meta: {
+					title: '公司纳税信息',
+					icon: 'dataManager' 
+				}
+			},
+			{
 				path: 'buildingEco',
 				name: 'buildingEcoMap',
 				component: () => import('@/views/buildingEconomy/buildingEcoMap/buildingEcoMap.vue'),
 				meta: {
 					title: '楼宇地图',
 					icon: 'map'
+				}
+			},{
+				path: 'inquery-buildingEco',
+				name: 'IqueryBuildingEco',
+				component: () => import('@/views/buildingEconomy/inquery-buildingEco.vue'),
+				meta: {
+					title: '楼宇统计分析',
+					icon: 'search'
+				}
+			},{
+				path: 'inqueryBuildingTax',
+				name: 'inqueryBuildingTax',
+				component: () => import('@/views/buildingEconomy/inquery-companyTax.vue'),
+				meta: {
+					title: '公司税收统计分析',
+					icon: 'search'
 				}
 			}
     ]

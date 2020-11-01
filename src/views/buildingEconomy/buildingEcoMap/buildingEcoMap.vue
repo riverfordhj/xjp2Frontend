@@ -6,6 +6,7 @@
 </template>
 
 <script>
+import axios from 'axios'
 import { interactOperate } from './interactivate.js';
 import companyInfoPanel from './components/companyInfoPanel.vue';
 
@@ -19,20 +20,21 @@ export default {
 	data () {
 		return {
 			viewer: null,
-			dataSet: [
-				{
-					url: 'http://localhost:80/xjp/3D/sanjiaolu/st-sanjiaolu/tileset.json'
-				},
-				{
-					url: 'http://localhost:80/xjp/3D/sanjiaolu/v+/tileset.json'
-				}
-			],
+			// dataSet: [
+			// 	{
+			// 		url: 'http://localhost:80/xjp/3D/sanjiaolu/st-sanjiaolu/tileset.json'
+			// 	},
+			// 	{
+			// 		url: 'http://localhost:80/xjp/3D/sanjiaolu/v+/tileset.json'
+			// 	}
+			// ],
 			companyDatas:{
 				show: false,
 				title: '',
 				compaiesFullInfo: [],
 				interactOperate
-			}
+			},
+			modelTreeData: []
 		}
 	},
 	components: {
@@ -59,19 +61,31 @@ export default {
         animation: false,
         infoBox: true,
         requestRenderMode: true
-      });
+			});
+			this.viewer.terrainProvider = Cesium.createWorldTerrain();//使用官方的地形图层
 		},
 		loadData (){
-			this.load3DTiles(this.viewer, this.dataSet[0].url, false, null, null); 
-			this.load3DTiles(
-				this.viewer, 
-				this.dataSet[1].url,   
-				true,
-				Cesium.ClassificationType.CESIUM_3D_TILE,
-				new Cesium.Cesium3DTileStyle({
-					color: 'rgba(255,255,255,0.01)'
-				}
-			));
+			axios.request({
+				url: '/3DModelsSetting.json', // 读取public目录下3维模型配置文件
+        method: 'get'
+			}).then((res) =>{
+				this.modelTreeData = res.data;
+				
+				var st_sanjiaolu = this.modelTreeData[0].children[8].url;
+				var dth_V = this.modelTreeData[2].children[0].url;
+
+				this.load3DTiles(this.viewer, st_sanjiaolu, false, null, null); 
+				this.load3DTiles(
+					this.viewer, 
+					dth_V,   
+					true,
+					Cesium.ClassificationType.CESIUM_3D_TILE,
+					new Cesium.Cesium3DTileStyle({
+						color: 'rgba(255,255,255,0.01)'
+					}
+				));
+			})
+		
 			this.companyDatas.interactOperate.install(this.viewer, this.companyDatas); 
 			
 		},
@@ -86,9 +100,12 @@ export default {
 
       tiltTileset.readyPromise.then((tileset) => {
         viewer.scene.primitives.add(tileset)
-        // 如默认tree中勾选，设置模型可见
+				// 如默认tree中勾选，设置模型可见
+				var boundingSphere = tileset.boundingSphere;
+				var hpr = new Cesium.HeadingPitchRange(0.0, -0.5, boundingSphere *2);
         if (isFlyto){
-					viewer.flyTo(tileset);
+					// viewer.flyTo(tileset);
+					viewer.camera.flyToBoundingSphere(boundingSphere, hpr);
 				}
       })
     }

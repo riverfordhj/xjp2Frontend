@@ -58,3 +58,10 @@ export function getFloorInfoByBuilding(id){
 		method: 'get'
 	})
 }
+
+export function getCompanyTaxInfo(){
+	return request({
+		url: '/Companies/GetCompanyTaxInfo',
+		method: 'get'
+	})
+}

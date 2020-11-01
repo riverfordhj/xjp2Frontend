@@ -1,4 +1,4 @@
-[
+﻿[
   {
     "id": 1,
     "label": "实体模型",
@@ -6,77 +6,77 @@
       {
         "id": 100,
         "label": "水岸星城",
-        "url": "http://112.17.184.211:19898/3D/shuianxingcheng/st-shuianxingcheng/tileset.json"
+        "url": "http://202.114.148.160:9000/model/53581940107611ebbb4c23b7c961e103/tileset.json"
       },
       {
         "id": 101,
         "label": "惠誉花园",
-        "url": "http://112.17.184.211:19898/3D/huiyuhuayuan/st-huiyuhuayuan-3dtile/tileset.json"
+        "url": "http://202.114.148.160:9000/model/bab324e0107611ebbb4c23b7c961e103/tileset.json"
       },
       {
         "id": 102,
         "label": "长轮",
-        "url": "http://112.17.184.211:19898/3D/changlun/st-changlun/tileset.json"
+        "url": "http://202.114.148.160:9000/model/f8dfe460107611ebbb4c23b7c961e103/tileset.json"
       },
       {
         "id": 103,
         "label": "诚善里",
-        "url": "http://112.17.184.211:19898/3D/chengshanli/st-chengshanli/tileset.json"
+        "url": "http://202.114.148.160:9000/model/e9bd6160107611ebbb4c23b7c961e103/tileset.json"
       },
       {
         "id": 104,
         "label": "国际城",
-        "url": "http://112.17.184.211:19898/3D/guojicheng/st-guojicheng/tileset.json"
+        "url": "http://202.114.148.160:9000/model/db391a30107611ebbb4c23b7c961e103/tileset.json"
       },
       {
         "id": 105,
         "label": "湖北大学",
-        "url": "http://112.17.184.211:19898/3D/hubeidaxue/st-hubeidaxue/tileset.json"
+        "url": "http://202.114.148.160:9000/model/cb935d70107611ebbb4c23b7c961e103/tileset.json"
       },
       {
         "id": 106,
         "label": "秦园路",
-        "url": "http://112.17.184.211:19898/3D/qinyuanlu/st-qinyuanlu/tileset.json"
+        "url": "http://202.114.148.160:9000/model/965e2630107611ebbb4c23b7c961e103/tileset.json"
       },
       {
         "id": 107,
         "label": "秦臻路",
-        "url": "http://112.17.184.211:19898/3D/qinzhenlu/st-qinzhenlu/tileset.json"
+        "url": "http://202.114.148.160:9000/model/856c6170107611ebbb4c23b7c961e103/tileset.json"
       },
       {
         "id": 108,
         "label": "三角路",
-        "url": "http://112.17.184.211:19898/3D/sanjiaolu/st-sanjiaolu/tileset.json"
+        "url": "http://202.114.148.160:9000/model/75afe860107611ebbb4c23b7c961e103/tileset.json"
       },
       {
         "id": 109,
         "label": "水岸国际",
-        "url": "http://112.17.184.211:19898/3D/shuianguoji/st-shuianguoji/tileset.json"
+        "url": "http://202.114.148.160:9000/model/85f3eb80107711ebbb4c23b7c961e103/tileset.json"
       },
       {
         "id": 110,
         "label": "团结",
-        "url": "http://112.17.184.211:19898/3D/tuanjie/st-tuanjie/tileset.json"
+        "url": "http://202.114.148.160:9000/model/34347310107611ebbb4c23b7c961e103/tileset.json"
       },
       {
         "id": 111,
         "label": "武车四村",
-        "url": "http://112.17.184.211:19898/3D/wuchesicun/st-wuchesicun/tileset.json"
+        "url": "http://202.114.148.160:9000/model/245c34a0107611ebbb4c23b7c961e103/tileset.json"
       },
       {
         "id": 112,
         "label": "徐东",
-        "url": "http://112.17.184.211:19898/3D/xudong/st-xudong/tileset.json"
+        "url": "http://202.114.148.160:9000/model/0e06e3d0107611ebbb4c23b7c961e103/tileset.json"
       },
       {
         "id": 113,
         "label": "油料所",
-        "url": "http://112.17.184.211:19898/3D/youliaosuo/st-youliaosuo/tileset.json"
+        "url": "http://202.114.148.160:9000/model/fc646cb0107511ebbb4c23b7c961e103/tileset.json"
       },
       {
         "id": 114,
         "label": "喻家湖",
-        "url": "http://112.17.184.211:19898/3D/yujiahu/st-yujiahu/tileset.json"
+        "url": "http://202.114.148.160:9000/model/e11fae60107511ebbb4c23b7c961e103/tileset.json"
       }
     ]
   },
@@ -87,78 +87,94 @@
       {
         "id": 200,
         "label": "水岸星城",
-        "url": "http://112.17.184.211:19898/3D/shuianxingcheng/dth-shuianxingcheng/tileset.json"
+        "url": "http://202.114.148.160:9000/model/4c13e650107611ebbb4c23b7c961e103/tileset.json"
       },
       {
         "id": 201,
         "label": "惠誉花园",
-        "url": "http://112.17.184.211:19898/3D/huiyuhuayuan/dth-huiyuhuayuan-3dtile/tileset.json"
+        "url": "http://202.114.148.160:9000/model/a6b24b60107611ebbb4c23b7c961e103/tileset.json"
       },
       {
         "id": 202,
         "label": "长轮",
-        "url": "http://112.17.184.211:19898/3D/changlun/dth-changlun/tileset.json"
+        "url": "http://202.114.148.160:9000/model/f1d29ff0107611ebbb4c23b7c961e103/tileset.json"
       },
       {
         "id": 203,
         "label": "诚善里",
-        "url": "http://112.17.184.211:19898/3D/chengshanli/dth-chengshanli/tileset.json"
+        "url": "http://202.114.148.160:9000/model/e385e380107611ebbb4c23b7c961e103/tileset.json"
       },
       {
         "id": 204,
         "label": "国际城",
-        "url": "http://112.17.184.211:19898/3D/guojicheng/dth-guojicheng/tileset.json"
+        "url": "http://202.114.148.160:9000/model/d54f2010107611ebbb4c23b7c961e103/tileset.json"
       },
       {
         "id": 205,
         "label": "湖北大学",
-        "url": "http://112.17.184.211:19898/3D/hubeidaxue/dth-hubeidaxue/tileset.json"
+        "url": "http://202.114.148.160:9000/model/c3e4a8e0107611ebbb4c23b7c961e103/tileset.json"
       },
       {
         "id": 206,
         "label": "秦园路",
-        "url": "http://112.17.184.211:19898/3D/qinyuanlu/dth-qinyuanlu/tileset.json"
+        "url": "http://202.114.148.160:9000/model/8e4d5470107611ebbb4c23b7c961e103/tileset.json"
       },
       {
         "id": 207,
         "label": "秦臻路",
-        "url": "http://112.17.184.211:19898/3D/qinzhenlu/dth-qinzhenlu/tileset.json"
+        "url": "http://202.114.148.160:9000/model/7ef89de0107611ebbb4c23b7c961e103/tileset.json"
       },
       {
         "id": 208,
         "label": "三角路",
-        "url": "http://112.17.184.211:19898/3D/sanjiaolu/dth-sanjiaolu/tileset.json"
+        "url": "http://202.114.148.160:9000/model/6e9adbc0107611ebbb4c23b7c961e103/tileset.json"
       },
       {
         "id": 209,
         "label": "水岸国际",
-        "url": "http://112.17.184.211:19898/3D/shuianguoji/dth-shuianguoji/tileset.json"
+        "url": "http://202.114.148.160:9000/model/77e4d450107711ebbb4c23b7c961e103/tileset.json"
       },
       {
         "id": 210,
         "label": "团结",
-        "url": "http://112.17.184.211:19898/3D/tuanjie/dth-tuanjie/tileset.json"
+        "url": "http://202.114.148.160:9000/model/2df924a0107611ebbb4c23b7c961e103/tileset.json"
       },
       {
         "id": 211,
         "label": "武车四村",
-        "url": "http://112.17.184.211:19898/3D/wuchesicun/dth-wuchesicun/tileset.json"
+        "url": "http://202.114.148.160:9000/model/19dab100107611ebbb4c23b7c961e103/tileset.json"
       },
       {
         "id": 212,
         "label": "徐东",
-        "url": "http://112.17.184.211:19898/3D/xudong/dth-xudong/tileset.json"
+        "url": "http://202.114.148.160:9000/model/06bd80c0107611ebbb4c23b7c961e103/tileset.json"
       },
       {
         "id": 213,
         "label": "油料所",
-        "url": "http://112.17.184.211:19898/3D/youliaosuo/dth-youliaosuo/tileset.json"
+        "url": "http://202.114.148.160:9000/model/f09c1130107511ebbb4c23b7c961e103/tileset.json"
       },
       {
         "id": 214,
         "label": "喻家湖",
-        "url": "http://112.17.184.211:19898/3D/yujiahu/dth-yujiahu/tileset.json"
+        "url": "http://202.114.148.160:9000/model/d764fd30107511ebbb4c23b7c961e103/tileset.json"
       }
     ]
-  }
+  },
+  {
+    "id": 3,
+    "label": "单体大厦模型",
+    "children": [
+      {
+        "id": 300,
+        "label": "V+大厦",
+        "url": "http://202.114.148.160:9000/model/77101120192811ebbb4c23b7c961e103/tileset.json"
+      },
+      {
+        "id": 301,
+        "label": "福来中心",
+        "url": "http://202.114.148.160:9000/model/6ed6a8c0192811ebbb4c23b7c961e103/tileset.json"
+      }
+    ]
+   }
 ]
