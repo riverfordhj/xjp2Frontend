@@ -19,10 +19,10 @@
       class="dialog-3"
       title="图层目录"
       pinned="false"
-      :options="{top:60, height: 350, width: 280, buttonPin: false }"
+      :options="{ top: 60, height: 350, width: 280, buttonPin: false }"
       @close="closeLayerTreePanel"
     >
-      <el-scrollbar :native="false" style="height:100%">
+      <el-scrollbar :native="false" style="height: 100%">
         <el-tree
           show-checkbox
           :data="modelTreeData"
@@ -71,35 +71,12 @@ export default {
 
       layerTreeVisible: false,
       modelTreeData: modelsConfigData,
-      // [
-      //   {
-      //     id: 1,
-      //     label: '实体模型',
-      //     children: [
-      //       {
-      //         id: 11,
-      //         label: '峯岚天下3栋',
-      //         url: 'http://localhost/xjp/3D/saxc/saxc/tileset.json' // fftx/1building3DTiles
-      //       }
-      //     ]
-      //   },
-      //   {
-      //     id: 2,
-      //     label: '单体模型',
-      //     children: [
-      //       {
-      //         id: 12,
-      //         label: '峯岚天下3栋',
-      //         url: 'http://localhost/xjp/3D/saxc/dth-SAXC/tileset.json' // fftx/dth3DTiles
-      //       }
-      //     ]
-      //   }
-      // ],
       defaultProps: {
         children: 'children',
         label: 'label'
       },
-      defaultChecked: [11, 12], // 模型树check状态
+      defaultChecked: [11, 21], // 模型树check状态
+      // defaultChecked: [11, 21, 12, 22], // 模型树check状态
 
       // dialogVisible: false,
       currentModelId: -1, // 当前被设置的模型id
