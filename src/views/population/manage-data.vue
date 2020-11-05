@@ -1,12 +1,12 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input v-model="listQuery.name" placeholder="姓名" style="width: 80px;" class="filter-item" @keyup.enter.native="handleLocalFilter" />
+      <el-input v-model="listQuery.filter" placeholder="过滤(小区，楼栋，房号)" style="width: 180px;" class="filter-item" @keyup.enter.native="handleLocalFilter" />
       <el-select v-model="listQuery.subdivsion" placeholder="小区" clearable style="width: 150px" class="filter-item" @change="getBuildingsData">
-        <el-option v-for="item in subdivsions" :key="item.id" :label="item.name" :value="item.id" />
+        <el-option v-for="item in filteredSubdivsions" :key="item.id" :label="item.name" :value="item.id" />
       </el-select>
       <el-select v-model="listQuery.building" placeholder="楼栋" clearable class="filter-item" style="width: 130px">
-        <el-option v-for="item in buildings" :key="item.id" :label="item.name" :value="item.id" />
+        <el-option v-for="item in filteredBuildings" :key="item.id" :label="item.name" :value="item.id" />
       </el-select>
       <el-select v-model="listQuery.sort" style="width: 140px" class="filter-item" @change="handleFilter">
         <el-option v-for="item in sortOptions" :key="item.key" :label="item.label" :value="item.key" />
@@ -92,6 +92,8 @@ export default {
         name: '',
         subdivsion: undefined,
         building: undefined,
+        // room: undefined,
+        filter: '',
         sort: '+id'
       },
 
@@ -127,7 +129,23 @@ export default {
   },
 
   computed: {
-
+    filteredSubdivsions() {
+      // debugger
+      if (this.listQuery.filter) {
+        //	debugger;
+        const value = this.listQuery.filter.split(/[，,]/g)
+        return this.subdivsions.filter(item => item.name.indexOf(value[0]) !== -1)
+      } else {
+        return this.subdivsions
+      }
+    },
+    filteredBuildings() {
+      if (this.listQuery.filter) {
+        const value = this.listQuery.filter.split(/[，,]/g)
+        if (value[1]) { return this.buildings.filter(item => item.name.indexOf(value[1]) !== -1) }
+      }
+      return this.buildings
+    }
   },
   created() {
     this.getSubdivsionsData()
