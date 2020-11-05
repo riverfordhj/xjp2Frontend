@@ -54,7 +54,7 @@
       <el-table-column prop="bulidingName" label="楼栋" />
     </el-table>
 
-    <!-- pivot 窗口 -->
+    <!-- pivot 窗口 ss-->
     <el-dialog title="提示" :visible.sync="pivotdialogVisible" width="80%">
       <div id="pivot">
         <span>Pivot</span>
