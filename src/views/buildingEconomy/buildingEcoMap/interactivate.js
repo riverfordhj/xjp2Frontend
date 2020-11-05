@@ -1,14 +1,16 @@
+var Cesium = require('cesium/Cesium');
+import { getInfoByFloor } from '@/api/company.js'
+import { flatCompanyInfo } from '@/utils/tools.js'
+
 // 定义3dTiles模型所选要素的交互形式
 export {
   interactOperate
 }
 
-var Cesium = require('cesium/Cesium')
-import { getPersonByRoom } from '@/api/person.js'
 
 var interactOperate = {
   viewer: null, // cesium viewer
-  personHouseDataForm: null,
+	companyDatas: null,
   // 当前高亮颜色
   colorHighlight: Cesium.Color.YELLOW.withAlpha(0.3),
   // 当前选中要素颜色
@@ -28,8 +30,7 @@ var interactOperate = {
   middleDown: false,
   leftDown: false,
 
-  // 当前 roomNO
-  roomNO: '',
+
   // 设置room浮动提示html元素
   SetupOverlap() {
     this.nameOverlay = document.createElement('div')
@@ -106,59 +107,34 @@ var interactOperate = {
       this.nameOverlay.style.display = 'none'
       return
     }
-
-    // A feature was picked, so show it's overlay content
-    const name = this.getRoomNO(pickedFeature)
-
-    if (!name) {
-      this.nameOverlay.style.display = 'none'
-      return
-    }
+		
+		const buildingFloor = this.getBuildingFloor(pickedFeature);
+		if(!buildingFloor){
+			this.nameOverlay.style.display = 'none';
+		}
 
     this.nameOverlay.style.display = 'block'
     this.nameOverlay.style.bottom = this.viewer.canvas.clientHeight - movement.endPosition.y + 'px'
     this.nameOverlay.style.left = movement.endPosition.x + 'px'
-
-    // nameOverlay.textContent = '水岸星城党员群众服务中心'
     // debugger
-    this.nameOverlay.textContent = name
+    this.nameOverlay.textContent = buildingFloor;
 
     // Highlight the feature if it's not already selected.
     if (pickedFeature !== this.selected.feature) {
-	    this.highlighted.feature = pickedFeature
+      this.highlighted.feature = pickedFeature
       Cesium.Color.clone(pickedFeature.color, this.highlighted.originalColor)
       pickedFeature.color = this.colorHighlight
     }
-  },
-  // 构造房间号，70-2-1002
-  getRoomNO(room) {
-    if (!Cesium.defined(room) || !Cesium.defined(room.getProperty)) {
-      return ''
-    }
+	},
+	
+	//获取pickedFeature属性，返回拼接字符串
+	getBuildingFloor (pickedFeature){
+		const buildingName = pickedFeature.getProperty('buildingid');
+		const floorNum = pickedFeature.getProperty('floor');
 
-    const buildingId = room.getProperty('buildingid')
-    const unitid = room.getProperty('unitid')
-    const roomId = room.getProperty('roomid')
+		return `${buildingName}-第${floorNum}层`;
+	},
 
-    if (!buildingId || !unitid || !roomId) {
-      return ''
-    }
-    return `${buildingId}-${unitid}-${roomId}`
-  },
-  // 构造房间号，2-1002
-  getSimpleRoomNO(room) {
-    if (!Cesium.defined(room) || !Cesium.defined(room.getProperty)) {
-      return ''
-    }
-
-    const unitid = room.getProperty('unitid')
-    const roomId = room.getProperty('roomid')
-
-    if (!unitid || !roomId) {
-      return ''
-    }
-    return `${unitid}-${roomId}`
-  },
   // mouseclick事件处理
   onLeftClick(movement) {
     // debugger
@@ -175,13 +151,12 @@ var interactOperate = {
     // 显示属性面板
     this.setInfobox(room)
 
-    // this.FlytoRoom(pickedFeature)
   },
   // 高亮处理选择room
   setSelectedFeature(room) {
     // Select the feature if it's not already selected
     if (this.selected.feature === room) {
-      return;
+      return
     }
     // If a feature was previously selected, undo the highlight
     if (Cesium.defined(this.selected.feature)) {
@@ -189,9 +164,7 @@ var interactOperate = {
       this.selected.feature = undefined
     }
 
-    if (!Cesium.defined(room.getProperty)){
-			return;
-		} 
+    if (!Cesium.defined(room.getProperty)) return
 
     this.selected.feature = room
 
@@ -209,34 +182,47 @@ var interactOperate = {
   // 根据屏幕坐标选取 room model
   pickFeature(position) {
     const pickedFeature = this.viewer.scene.pick(position)
-     debugger
+    // debugger
     if (!Cesium.defined(pickedFeature)) {
       return null
     } else {
       return pickedFeature
     }
   },
-  // 根据屏幕坐标及roomNO选取 room model
-  pickFeatureByRoomNO(position, roomNO) {
+  // 根据屏幕坐标及特定值选取 feature
+  pickTargetFeature(position, targetValue) {
     const features = this.viewer.scene.drillPick(position)
-    // debugger
+    //debugger
     for (let i = 0; i < features.length; i++) {
       const feature = features[i]
       if (!Cesium.defined(feature)) {
         continue
       } else {
-        const rN = this.getSimpleRoomNO(feature)
-        if (rN === roomNO) {
+        const floorNum = this.getFloorNum(feature);
+        if (floorNum === targetValue) {
           return feature
         }
       }
     }
     return null
-  },
+	},
+	
+	getFloorNum(feature){
+		if(!Cesium.defined(feature) || !Cesium.defined(feature.getProperty)){
+			return ''
+		};
+		
+		const floor = feature.getProperty('floor');
+		if(!floor){
+			return '';
+		}else{
+			return floor;
+		}
+	
+	},
 
-  FlytoRoom(position, roomNO) {
-    // debugger
-    this.roomNO = roomNO
+  FlytoFloor(position, targetValue) {
+		this.floorNO = targetValue;
 
     var longitude = Cesium.Math.toRadians(
       position.long
@@ -251,18 +237,18 @@ var interactOperate = {
     )
     var pos = this.viewer.scene.globe.ellipsoid.cartographicToCartesian(
       positionCartographic
-    )
-
+		)
+		
     var camera = this.viewer.scene.camera
     var heading = camera.heading
     var pitch = camera.pitch
-   
+
     var offset = this.offsetFromHeadingPitchRange(
       heading,
       pitch,
       30
     )
-    debugger;
+
     var transform = Cesium.Transforms.eastNorthUpToFixedFrame(pos)
     Cesium.Matrix4.multiplyByPoint(transform, offset, pos)
 
@@ -287,10 +273,8 @@ var interactOperate = {
       y: oh
     }
 
-    // this.onLeftClick(para)
-
     // Pick a new feature
-    const room = this.pickFeatureByRoomNO(position, this.roomNO)
+    const room = this.pickTargetFeature(position, this.floorNO)
 
     if (room === null) {
       return
@@ -334,41 +318,39 @@ var interactOperate = {
 
   // Set feature infobox description
   setInfobox(pickedFeature) {
-    const roomInfo = {}
-    roomInfo.SubdivisionName = pickedFeature.getProperty('residence')
-    roomInfo.BuildingName = pickedFeature.getProperty('buildingid')
-    const unit = pickedFeature.getProperty('unitid')
-    const roomId = pickedFeature.getProperty('roomid')
-    roomInfo.RoomNO = `${unit}-${roomId}`
-
-    this.personHouseDataForm.roomid = `${roomInfo.SubdivisionName}-${roomInfo.BuildingName}-${roomInfo.RoomNO}`
-    // debugger
-    this.getPersonInRoom(roomInfo) // JSON.stringify(
+    const companyInfo = {}
+    companyInfo.buildingName = pickedFeature.getProperty('buildingid')
+		companyInfo.floor = pickedFeature.getProperty('floor')
+		
+		this.companyDatas.title = `${companyInfo.buildingName} - 第${companyInfo.floor}层`;
+   
+    this.getCompanyFullInfo(companyInfo) // JSON.stringify(
 
     // debugger
     this.setSelectedEntity(pickedFeature)
-  },
-  // 获取后台数据
-  getPersonInRoom(roomInfo) {
-    getPersonByRoom(roomInfo).then(response => { // login{      username: 'hj',      password: 'password'    }
-      // debugger
-      if (this.personHouseDataForm.show !== true) {
-        this.personHouseDataForm.show = true
-      }
-
-      this.personHouseDataForm.personInRoom = response
-    }).catch(error => {
-      console.log(error)
-    })
-  },
+	},
+	
+	//后端获取数据
+	getCompanyFullInfo(companyInfo){
+		getInfoByFloor(companyInfo).then(res => {
+			if(this.companyDatas.show !== true){
+				this.companyDatas.show = true;
+			}
+			this.companyDatas.compaiesFullInfo = flatCompanyInfo(res);
+		}).catch(err => {
+			console.log(err);
+		});
+	},
+ 
   // 设置entity, 及属性，并在viewer中选择
   setSelectedEntity(pickedFeature) {
     const selectedEntity = new Cesium.Entity()
-    selectedEntity.name = pickedFeature.getProperty('roomid')
+    selectedEntity.name = this.getBuildingFloor(pickedFeature);
     selectedEntity.description =
       'Loading <div class="cesium-infoBox-loading"></div>'
     this.viewer.selectedEntity = selectedEntity
 
+		debugger;
     var names = pickedFeature._content.batchTable.getPropertyNames(
       pickedFeature._batchId
     )
@@ -387,14 +369,14 @@ var interactOperate = {
     html += '</tbody></table>'
 
     selectedEntity.description = html
-  },
+	},
+	
   // 对cesium viewer 进行配置，响应鼠标事件，对 3dtile feature 选择、高亮显示
-  install(viewer, personHouseDataForm) {
+  install(viewer, companyDatas) {
     // debugger
 
     this.viewer = viewer
-    this.personHouseDataForm = personHouseDataForm
-
+    this.companyDatas = companyDatas
     this.SetupOverlap()
 
     this.leftDown = false

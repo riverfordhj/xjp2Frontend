@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function getCompanyInfo(){
 	return request({
-		url: '/Companies',
+		url: '/Companies/GetBuildingCompany',
 		method: 'get'
 	})
 }
@@ -21,10 +21,9 @@ export function getCompanysByBuilding(id){
 	})
 }
 
-
 export function getCompanySomeFileds(){
 	return request({
-		url: '/Companies/getDemoData',
+		url: '/Companies/getBuildingEcoFields',
 		method: 'get'
 	})
 }
@@ -34,5 +33,35 @@ export function updateCompanyFields(arrayData){
 		url: '/Companies/CompanyFields',
 		method: 'post',
 		data: arrayData
+	})
+}
+
+export function deleteCompany(arr){
+	return request({
+		url: '/Companies/DeleteCompanyByName',
+		method: 'post',
+		data: arr
+	})
+}
+
+export function getInfoByFloor(arrData){
+	return request({
+		url: '/Companies/GetInfoByFloor',
+		method: 'post',
+		data: arrData
+	})
+}
+
+export function getFloorInfoByBuilding(id){
+	return request({
+		url: `/CompanyBuildings/GetFloorInfoByBuilding/${id}`,
+		method: 'get'
+	})
+}
+
+export function getCompanyTaxInfo(){
+	return request({
+		url: '/Companies/GetCompanyTaxInfo',
+		method: 'get'
 	})
 }

@@ -19,6 +19,33 @@ function flatCompanyInfo (response){
 	return result;
 }
 
+/**
+ * 
+ * @param {被克隆的对象} origin 
+ * @param {副本对象} target 
+ */
+
+var deepClone = function (origin, target){
+	var target = target || {};
+	var toStr = Object.prototype.toString;
+	var arrType = '[object Array]';
+	for(var item in origin){
+		if(origin.hasOwnProperty(item)){
+			if(typeof(origin[item]) === 'object' && origin[item] !== null){
+				if(toStr.call(origin[item]) === arrType){
+					target[item] = [];
+				}else{
+					target[item] = {};
+				}
+				deepClone(origin[item], target[item]);
+			}else{
+				target[item] = origin[item];
+			}
+		}
+	}
+	return target
+}
+
 export {
-	flatCompanyInfo
+	flatCompanyInfo, deepClone
 };

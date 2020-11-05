@@ -78,13 +78,13 @@ export default {
 
   computed: {
     personHouseDataFormTitle() {
-      return (
-        this.personHouseInfo.title + ' 房号：' + this.personHouseInfo.roomid
-      )
+      return this.personHouseInfo.title + ' 房号：' + this.personHouseInfo.roomid;
+      
     },
     filteredSubdivsions() {
       // debugger
       if (this.Address.filter) {
+				debugger;
         const value = this.Address.filter.split(/[，,]/g)
         return this.subdivsions.filter(item => item.name.indexOf(value[0]) !== -1)
       } else {

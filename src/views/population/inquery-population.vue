@@ -23,7 +23,7 @@ import 'pivottable/dist/pivot.css'
 import 'pivottable'
 import d3 from 'd3'
 import c3 from 'c3'
-import {c3_renderers} from './c3_renderers'
+import {c3_renderers} from '../c3_renderers'
 
 import { getSubdivsions, getBuildingsBySub, getRoomByBuilding, getPersons, getPersonsByBuilding } from '@/api/person.js'
 
