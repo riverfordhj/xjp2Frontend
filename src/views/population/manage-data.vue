@@ -14,7 +14,11 @@
       <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         查询
       </el-button>
-      <el-button class="filter-item" type="primary" icon="el-icon-edit" @click="showPivotdialog">打开统计分析窗口</el-button>
+
+      <el-input v-model="listQuery.str" placeholder="请输入姓名、身份证号、电话查询" style="width: 280px;" class="filter-item" @keyup.enter.native="searchPerson" />
+      <el-button class="filter-item" type="primary" icon="el-icon-search" @click="searchPerson">
+        查询
+      </el-button>
     </div>
 
     <el-table :data="filterdPersonHouseInfo" height="800" border style="width: 100%" :row-class-name="tableRowClassName">
@@ -45,6 +49,9 @@
       <el-table-column prop="person.isOverseasChinese" label="海外华人" />
       <el-table-column prop="person.politicalState" label="政治面貌" />
       <el-table-column prop="person.organizationalRelation" label="组织关系" />
+      <el-table-column prop="communityName" label="社区" />
+      <el-table-column prop="subdivsionName" label="小区" />
+      <el-table-column prop="bulidingName" label="楼栋" />
     </el-table>
 
     <!-- pivot 窗口 -->
@@ -57,7 +64,7 @@
 </template>
 
 <script>
-import { getSubdivsions, getBuildingsBySub, getPersons, getPersonsByBuilding } from '@/api/person.js'
+import { getSubdivsions, getBuildingsBySub, getPersons, getPersonsByBuilding, getPersonsBySubdivision, getPersonsBySearch } from '@/api/person.js'
 
 // const { JSDOM } = require('jsdom')
 // const { window } = new JSDOM('')
@@ -128,6 +135,7 @@ export default {
   mounted() {
   },
   methods: {
+
     getSubdivsionsData() {
       getSubdivsions().then(response => {
         // debugger
@@ -188,6 +196,17 @@ export default {
       } else {
         this.filterdPersonHouseInfo = this.personHouseInfo
       }
+    },
+    searchPerson() {
+      // var value = this.listQuery.str
+      // getPersonsBySearch(value)
+      getPersonsBySearch(this.listQuery.str).then(response => {
+        // debugger
+        this.filterdPersonHouseInfo = response
+      }).catch(error => {
+        debugger
+        console.log(error)
+      })
     },
     tableRowClassName({ row, rowIndex }) {
       // debugger

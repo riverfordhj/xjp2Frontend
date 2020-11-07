@@ -28,6 +28,20 @@ export function getPersonsByBuilding(buildingId) {
   })
 }
 
+export function getPersonsBySubdivision(SubdivisionId) {
+  return request({
+    url: `/person/GetPersonsBySubdivision/${SubdivisionId}`,
+    method: 'get'
+  })
+}
+
+export function getPersonsBySearch(str) {
+  return request({
+    url: `/person/GetPersonsBySearch/${str}`,
+    method: 'get'
+  })
+}
+
 export function getPersonByRoom(roomInfo) {
   return request({
     url: '/person/GetPersonsInRoom',
