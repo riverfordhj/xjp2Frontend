@@ -69,7 +69,7 @@
 <script>
 import { getCompanyTaxInfo } from '@/api/company.js';
 
-import intervalSelection from './components/intervalSelection.vue'
+import intervalSelection from '../components/intervalSelection.vue'
 
 export default {
 	name: 'companyTax',

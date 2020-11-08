@@ -1,3 +1,4 @@
+
 <template>
   <div class="app-container">
     <div class="filter-container">
@@ -9,26 +10,21 @@
         <el-option v-for="item in filteredBuildings" :key="item.id" :label="item.name" :value="item.id" />
       </el-select>
     </div>
-
-    <div id="output" style="margin: 30px;" />
+    <!-- 引入统计组件 -->
+		<pivot-table-panel :statistical-data="persons"></pivot-table-panel>
   </div>
 
 </template>
 
 <script>
-const $ = require('jquery')
-import 'jqueryui/jquery-ui'
-// import jquery from 'jquery'
-import 'pivottable/dist/pivot.css'
-import 'pivottable'
-import d3 from 'd3'
-import c3 from 'c3'
-import {c3_renderers} from '../c3_renderers'
-
+import pivotTablePanel from '@/components/pivotTablePanel.vue'
 import { getSubdivsions, getBuildingsBySub, getRoomByBuilding, getPersons, getPersonsByBuilding } from '@/api/person.js'
 
 export default {
-  name: 'PersonStatistics',
+	name: 'PersonStatistics',
+	components:{
+		pivotTablePanel
+	},
   data() {
     return {
       subdivsions: [],
@@ -40,7 +36,6 @@ export default {
         room: undefined,
         filter: ''
       },
-      renderers: null
     }
   },
   computed: {
@@ -63,9 +58,6 @@ export default {
     },
   },
   created() {
-    c3_renderers.call(this, $, c3)
-    this.renderers = $.extend($.pivotUtilities.renderers,$.pivotUtilities.c3_renderers)
-
     this.getSubdivsionsData()
   },
   mounted() {
@@ -76,7 +68,6 @@ export default {
         // debugger
         this.subdivsions = response
       }).catch(error => {
-        // debugger
         console.log(error)
       })
     },
@@ -86,7 +77,6 @@ export default {
         // debugger
         this.buildings = response
       }).catch(error => {
-        debugger
         console.log(error)
       })
     },
@@ -95,35 +85,14 @@ export default {
       getPersonsByBuilding(buildingId).then(response => {
         // debugger
         this.persons = response
-        this.setPivot()
       }).catch(error => {
-        debugger
         console.log(error)
       })
     },
-    setPivot() {
-      const self = this
-      // debugger
-      // const pivotUIT = pivottable;
-      $('#output').pivotUI(
-        this.persons,
-        {
-          renderers: self.renderers
-        }
-        // [
-        //   { color: 'blue', shape: 'circle' },
-        //   { color: 'red', shape: 'triangle' }
-        // ],
-        // {
-        //   rows: ['color'],
-        //   cols: ['shape']
-        // }
-      )
-    }
   }
 }
 </script>
 
 <style >
-
 </style>
+

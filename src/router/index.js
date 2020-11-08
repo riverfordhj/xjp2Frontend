@@ -221,16 +221,7 @@ export const constantRoutes = [
           title: '统计分析',
           icon: 'search'
         }
-			},
-			// {
-			// 	path: 'company',
-			// 	name: 'companyInfo',
-			// 	component: () => import('@/views/population/company'),
-			// 	meta: {
-			// 		title: '入驻公司信息',
-			// 		icon: 'dataManager' 
-			// 	}
-			// }
+			}
     ]
 	},
 	
@@ -279,18 +270,20 @@ export const constantRoutes = [
 					title: '楼宇地图',
 					icon: 'map'
 				}
-			},{
+			},
+			{
 				path: 'inquery-buildingEco',
 				name: 'IqueryBuildingEco',
-				component: () => import('@/views/buildingEconomy/inquery-buildingEco.vue'),
+				component: () => import('@/views/buildingEconomy/inqueryBuilding/inquery-buildingEco.vue'),
 				meta: {
 					title: '楼宇统计分析',
 					icon: 'search'
 				}
-			},{
+			},
+			{
 				path: 'inqueryBuildingTax',
 				name: 'inqueryBuildingTax',
-				component: () => import('@/views/buildingEconomy/inquery-companyTax.vue'),
+				component: () => import('@/views/buildingEconomy/inqueryCompanyTax/inquery-companyTax.vue'),
 				meta: {
 					title: '公司税收统计分析',
 					icon: 'search'

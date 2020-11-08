@@ -2,24 +2,16 @@
 	<div>
 		<!-- 组件intervalSelection：向外触发事件selectedInterval、resetStatistics -->
 		<interval-selection :form-title="formTitle" @selectedInterval="useInterval" @resetStatistics="handleResetting"></interval-selection>
-		<div id="output"></div>
+		<pivot-table-panel :statistical-data="statisticsArray"></pivot-table-panel>
 	</div>
 </template>
 
 <script>
-const $ = require('jquery')
-import 'jqueryui/jquery-ui'
-// import jquery from 'jquery'
-import 'pivottable/dist/pivot.css'
-import 'pivottable'
-import d3 from 'd3'
-import c3 from 'c3'
-import {c3_renderers} from '../c3_renderers'
 
 import { getCompanyTaxInfo } from '@/api/company.js'
 
-//引入 intervalSelection 组件
-import intervalSelection from './buildingEcoTable/components/intervalSelection.vue'
+import intervalSelection from '../components/intervalSelection.vue'
+import pivotTablePanel from '@/components/pivotTablePanel.vue'
 
 export default {
 	name: 'inqueryBuildingTax',
@@ -27,23 +19,20 @@ export default {
 		return {
 			companyTaxInfo: [],
 			formTitle: '合计查询区间:',
+			statisticsArray: []
 		}
 	},
 	components: {
-		intervalSelection
+		intervalSelection,
+		pivotTablePanel
 	},
-	created(){
-		c3_renderers.call(this, $, c3);
-		this.renderers = $.extend($.pivotUtilities.renderers, $.pivotUtilities.c3_renderers);
-		
+	mounted(){
 		this.getCompanyTaxData();
-
 	},
 	methods:{
 		getCompanyTaxData(){
 			getCompanyTaxInfo().then(res => {
 				this.companyTaxInfo = res;
-				this.setPivot(this.companyTaxInfo);
 			}).catch(
 				err => console.log(err)
 			)
@@ -52,20 +41,11 @@ export default {
 			this.filterTaxInfo = this.companyTaxInfo.filter(item => {
 				return item.totalTax >= intervalObj.min && item.totalTax <= intervalObj.max;
 			})
-			this.setPivot(this.filterTaxInfo);
+			this.statisticsArray =  this.filterTaxInfo;
 		},
 		handleResetting(){
-			this.setPivot(this.companyTaxInfo);
-		},
-		setPivot(data) {
-      const self = this;
-      $('#output').pivotUI(
-        data,
-        {
-          renderers: self.renderers
-        }
-      )
-    }
+			this.statisticsArray = this.companyTaxInfo;
+		}
 	
 	}
 

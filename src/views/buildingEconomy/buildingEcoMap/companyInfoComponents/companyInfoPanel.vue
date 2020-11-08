@@ -46,7 +46,7 @@
 import DialogDrag from 'vue-dialog-drag';
 import { getFloorInfoByBuilding, getCompanyBuildings } from '@/api/company.js';
 
-import filterPanel from './commonComponents/filterPanel.vue'
+import filterPanel from './filterComponents/filterPanel.vue'
 
 export default {
 	name: 'companyInfoPanel',

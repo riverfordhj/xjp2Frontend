@@ -8,7 +8,7 @@
 <script>
 import axios from 'axios'
 import { interactOperate } from './interactivate.js';
-import companyInfoPanel from './components/companyInfoPanel.vue';
+import companyInfoPanel from './companyInfoComponents/companyInfoPanel.vue';
 
 var Cesium = require('cesium/Cesium');
 import 'cesium/Widgets/widgets.css';
