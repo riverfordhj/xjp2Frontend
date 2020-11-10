@@ -127,7 +127,7 @@ export default {
       pivotdialogVisible: false // pivot 控制窗口显示
     }
   },
-
+  // 数据管理，小区楼栋筛选
   computed: {
     filteredSubdivsions() {
       // debugger
@@ -145,6 +145,14 @@ export default {
         if (value[1]) { return this.buildings.filter(item => item.name.indexOf(value[1]) !== -1) }
       }
       return this.buildings
+    },
+    filteredRooms() {
+      if (this.Address.filter) {
+        const value = this.Address.filter.split(/[，,]/g)
+        if (value[2])
+          return this.rooms.filter(item => item.name.indexOf(value[2]) !== -1)
+      }
+      return this.rooms
     }
   },
   created() {
