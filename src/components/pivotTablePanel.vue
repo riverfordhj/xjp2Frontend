@@ -25,7 +25,6 @@ export default {
 		}
 	},
 	mounted(){
-		debugger;
 		// this.renderers = $.extend($.pivotUtilities.renderers,$.pivotUtilities.c3_renderers)
 	},
 	methods:{

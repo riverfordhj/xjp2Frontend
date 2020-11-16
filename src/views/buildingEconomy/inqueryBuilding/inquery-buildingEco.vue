@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import { getFloorInfoByBuilding, getCompanyBuildings, getInfoByFloor, getCompanysByBuildingWithCH, getCompanyInfo } from '@/api/company.js';
+import { getFloorInfoByBuilding, getCompanyBuildings, GetCompanysByFloor_ZH, GetCompanysByBuilding_ZH, GetWholeCompanys_ZH } from '@/api/company.js';
 import { flatCompanyInfo } from '@/utils/tools.js'
 
 import pivotTablePanel from '@/components/pivotTablePanel.vue'
@@ -111,9 +111,9 @@ export default {
 		},
 		getWholeCompanyInfo(){
 			//请求所有公司信息, 并统计显示
-			getCompanyInfo().then(res =>{
-				debugger;
-				this.wholeCompanyInfo = flatCompanyInfo(res);
+			GetWholeCompanys_ZH().then(res =>{
+				//debugger;
+				this.wholeCompanyInfo = res;
 				
 			}).catch(err =>{
 				console.log(err);
@@ -140,7 +140,7 @@ export default {
 		},
 		getCompanyInfoByBuilding(buildingId){
 			//请求指定楼栋中的公司信息，并统计显示
-			getCompanysByBuildingWithCH(buildingId).then(res => {
+			GetCompanysByBuilding_ZH(buildingId).then(res => {
 				this.companyInfoInBuilding = flatCompanyInfo(res);
 				this.statisticsArray = this.companyInfoInBuilding;
 				// debugger;
@@ -152,7 +152,7 @@ export default {
 			if(curFloorNum !== this.selectedValues.floor && curFloorNum !== ''){
 				this.selectedValues.floor = curFloorNum;
 				//请求指定楼层中的公司信息，并统计显示
-				getInfoByFloor(this.selectedValues).then(res =>{
+				GetCompanysByFloor_ZH(this.selectedValues).then(res =>{
 					this.companyInfoInFloor = res;
 					this.statisticsArray = this.companyInfoInFloor;
 				})

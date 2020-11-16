@@ -44,18 +44,25 @@ export function deleteCompany(arr){
 	})
 }
 
-export function getCompanysByBuildingWithCH(id){
+export function GetCompanysByBuilding_ZH(id){
 	return request({
-		url: `/Companies/GetCompanysByBuildingWithCH/${id}`,
+		url: `/Companies/GetCompanysByBuilding_ZH/${id}`,
 		method: 'get'
 	})
 }
 
-export function getInfoByFloor(arrData){
+export function GetCompanysByFloor_ZH(arrData){
 	return request({
-		url: '/Companies/GetInfoByFloor',
+		url: '/Companies/GetCompanysByFloor_ZH',
 		method: 'post',
 		data: arrData
+	})
+}
+
+export function GetWholeCompanys_ZH(){
+	return request({
+		url: '/Companies/GetWholeCompanys_ZH',
+		method: 'get'
 	})
 }
 
