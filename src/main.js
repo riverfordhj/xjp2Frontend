@@ -27,10 +27,11 @@ import '@/permission' // permission control
 import * as VueMenu from '@hscmap/vue-menu'
 
 
-import 'jqueryui/jquery-ui'
-import 'pivottable/dist/pivot.css'
-import 'pivottable'
-import 'pivottable/dist/c3_renderers'
+// import 'jqueryui/jquery-ui'
+// import 'pivottable/dist/pivot.css'
+// import 'pivottable'
+// import 'pivottable/dist/c3_renderers'
+// import 'pivottable/dist/pivot.zh.js'
 
 
 // Vue.use(VueWindow)

@@ -1,7 +1,6 @@
 <template>
 	<div class="container">
 	  <div class="toolbar">
-			<el-button class="bt-request" :loading="loading" type="primary" icon="el-icon-search" @click="handleCompanyInfo">查询</el-button>
 			<el-input
 				class="company-search"
 				placeholder="请输入企业名称，进行检索"
@@ -15,65 +14,68 @@
 					:key="item.id"
 					:value="item.buildingName">
 				</el-option>
- 		 </el-select>
+ 		 	</el-select>
+			<el-button class="bt-request" :loading="loading" type="primary" icon="el-icon-search" @click="handleCompanyInfo">查询全部</el-button>
 		</div>
 		<el-table
 			:data="filterData" height="920" border	style="width: 100%">
 			<el-table-column type="expand" style="width: 100%">
-      <template slot-scope="props">
-        <el-form label-position="left" inline class="table-expand">
-					<el-form-item label="街道">
-						<span>{{ props.row.streetName }}</span>
-					</el-form-item>
-					<el-form-item label="楼宇名称">
-						<span>{{ props.row.buildingName }}</span>
-					</el-form-item>
+				<template slot-scope="props">
+					<el-form label-position="left" inline class="table-expand">
+						<el-form-item label="街道">
+							<span>{{ props.row.streetName }}</span>
+						</el-form-item>
+						<el-form-item label="楼宇名称">
+							<span>{{ props.row.buildingName }}</span>
+						</el-form-item>
 
-					<el-form-item label="楼层">
-						<span>{{ props.row.floor }}</span>
-					</el-form-item>
-					<el-form-item label="租赁/购买">
-						<span>{{ props.row.category }}</span>
-					</el-form-item>
-					<el-form-item label="租赁/购买面积">
-						<span>{{ props.row.area}}</span>
-					</el-form-item>
-					<el-form-item label="入驻时间">
-						<span>{{ props.row.settlingTime }}</span>
-					</el-form-item>
-					<el-form-item label="搬离时间">
-						<span>{{ props.row.moveAwayTime }}</span>
-					</el-form-item>
+						<el-form-item label="楼层">
+							<span>{{ props.row.floor }}</span>
+						</el-form-item>
+						<el-form-item label="租赁/购买">
+							<span>{{ props.row.category }}</span>
+						</el-form-item>
+						<el-form-item label="入驻时间">
+							<span>{{ props.row.settlingTime }}</span>
+						</el-form-item>
+						<el-form-item label="搬离时间">
+							<span>{{ props.row.moveAwayTime }}</span>
+						</el-form-item>
 
-					<el-form-item label="是否独立法人企业">
-						<span>{{ props.row.legalRepresentative }}</span>
-					</el-form-item>
+						<el-form-item label="是否独立法人企业">
+							<span>{{ props.row.legalRepresentative }}</span>
+						</el-form-item>
 
-					<el-form-item label="企业税收额（万元）">
-						<span>{{ props.row.corporateTax }}</span>
-					</el-form-item>
-					<el-form-item label="缴税时长">
-						<span>{{ props.row.duration }}</span>
-					</el-form-item>
-					
-					<el-form-item label="企业名称">
-						<span>{{ props.row.companyName }}</span>
-					</el-form-item>
-					<el-form-item label="注册地址">
-            <span>{{ props.row.registrationPlace }}</span>
-          </el-form-item>
-          <el-form-item label="企业类型">
-            <span>{{ props.row.enterpriseType }}</span>
-          </el-form-item>
-          <el-form-item label="企业背景">
-            <span>{{ props.row.enterpriseBackground }}</span>
-          </el-form-item>
-          <el-form-item label="备注">
-            <span>{{ props.row.note }}</span>
-          </el-form-item>
-        </el-form>
-      </template>
-    </el-table-column>
+						<el-form-item label="企业税收额（万元）">
+							<span>{{ props.row.corporateTax }}</span>
+						</el-form-item>
+						<el-form-item label="缴税时长">
+							<span>{{ props.row.duration }}</span>
+						</el-form-item>
+						
+						<el-form-item label="企业名称">
+							<span>{{ props.row.companyName }}</span>
+						</el-form-item>
+						<el-form-item label="注册地址">
+							<span>{{ props.row.registrationPlace }}</span>
+						</el-form-item>
+						<el-form-item label="企业类型">
+							<span>{{ props.row.enterpriseType }}</span>
+						</el-form-item>
+						<el-form-item label="企业背景">
+							<span>{{ props.row.enterpriseBackground }}</span>
+						</el-form-item>
+						<el-form-item label="备注">
+							<span>{{ props.row.note }}</span>
+						</el-form-item>
+						<el-form-item label="企业主营方向" >
+							<span>{{ props.row.businessDirection }}</span>
+						</el-form-item>
+					</el-form>
+				</template>
+    	</el-table-column>
+			<el-table-column 	type="index"	width="50">
+			</el-table-column>
 			<el-table-column prop="companyName" label="企业名称" width="180">
 			</el-table-column>
 			<el-table-column prop="unifiedSocialCreditCode" label="统一社会信用代码" width="180">
@@ -90,7 +92,7 @@
 			</el-table-column>
 			<el-table-column prop="phone" label="联系电话" width="120">
 			</el-table-column>
-			<el-table-column prop="businessDirection" label="企业主营方向" width="220">
+			<el-table-column prop="area" label="租赁/购买面积" width="180">
 			</el-table-column>
 			<el-table-column prop="registeredAddress" label="工商注册登记地" width="180">
 			</el-table-column>
@@ -202,5 +204,16 @@ export default {
     width: 33%;
   }
 
+  .table-expand .el-form-item:last-child {
+		width: 100%;
+	}
+
+	.table-expand .el-form-item:last-child >>> label{
+		position: absolute;
+	}
+
+	.table-expand .el-form-item:last-child >>> div{
+		margin-left: 140px;
+	}
  
 </style>

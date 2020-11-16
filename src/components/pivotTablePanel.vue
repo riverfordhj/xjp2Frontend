@@ -4,13 +4,18 @@
 
 <script>
 const $ = require('jquery');
+import 'jqueryui/jquery-ui'
+import 'pivottable/dist/pivot.css'
+import 'pivottable'
+import 'pivottable/dist/c3_renderers'
+import 'pivottable/dist/pivot.zh.js'
 
 export default {
 	name: 'pivotTablePanel',
-	props: ['statisticalData'],
+	props: ['statisticalData', 'defaultSettings'],
 	data(){
 		return {
-			renderers: null,
+			// renderers: null,
 			statistics: this.statisticalData
 		}
 	},
@@ -20,16 +25,22 @@ export default {
 		}
 	},
 	mounted(){
-		this.renderers = $.extend($.pivotUtilities.renderers,$.pivotUtilities.c3_renderers)
+		debugger;
+		// this.renderers = $.extend($.pivotUtilities.renderers,$.pivotUtilities.c3_renderers)
 	},
 	methods:{
 		setPivot() {
 			const self = this;
 			$('#output').pivotUI(
 				this.statisticalData,
-				{
-					renderers: self.renderers
-				}
+				this.defaultSettings,
+				// {
+				// 	// renderers: self.renderers,
+				// 	...this.defaultSettings
+				// },
+				false,
+				'zh'
+			
 			);
 		}
 	}
@@ -39,8 +50,8 @@ export default {
 
 <style>
  #output{
-	 /* margin: 20px;
-	 padding: 10px; */
-	 border: 1px solid black;
+	 /* margin: 20px; */
+	 padding: 5px;
+	 /* border: 1px solid black; */
  }
 </style>

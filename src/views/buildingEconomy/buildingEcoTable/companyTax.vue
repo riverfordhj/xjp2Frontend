@@ -1,66 +1,58 @@
 <template>
 	<div class="container">
 
-		<interval-selection :form-title="formTitle" @selectedInterval="useInterval" @resetStatistics="handleResetting"></interval-selection>
+		<interval-selection :form-title="formTitle" :default-interval="defaultInterval" @selectedInterval="useInterval" @resetStatistics="handleResetting"></interval-selection>
 
 		<el-table
 			:data="filteredCompanyTaxData" height="860" border 	style="width: 100%">
 			<el-table-column type="expand" style="width: 100%">
 				<template slot-scope="props">
-					<el-form label-position="left" inline class="table-expand">
-						<el-form-item label="营业税">
-							<span>{{ props.row.businessTax }}</span>
-						</el-form-item>
-						<el-form-item label="增值税">
-							<span>{{ props.row.valueAddedTax }}</span>
-						</el-form-item>
-						<el-form-item label="企所">
-							<span>{{ props.row.corporateIncomeTax }}</span>
-						</el-form-item>
-						<el-form-item label="个所">
-							<span>{{ props.row.individualIncomeTax }}</span>
-						</el-form-item>
+					<el-form label-position="left" inline class="table-expand">						
 						<el-form-item label="城建">
-							<span>{{ props.row.urbanConstructionTax }}</span>
+							<span>{{ props.row['城建'] }}</span>
 						</el-form-item>
 						<el-form-item label="房产">
-							<span>{{ props.row.realEstateTax }}</span>
+							<span>{{ props.row['房产'] }}</span>
 						</el-form-item>
 						<el-form-item label="印花">
-							<span>{{ props.row.stampDuty }}</span>
+							<span>{{ props.row['印花'] }}</span>
 						</el-form-item>
 						<el-form-item label="土使">
-							<span>{{ props.row.landUseTax }}</span>
+							<span>{{ props.row['土使'] }}</span>
 						</el-form-item>
 						<el-form-item label="土增">
-							<span>{{ props.row.landValueIncrementTax }}</span>
+							<span>{{ props.row['土增'] }}</span>
 						</el-form-item>
 						<el-form-item label="车船">
-							<span>{{ props.row.vehicleAndVesselTax }}</span>
+							<span>{{ props.row['车船'] }}</span>
 						</el-form-item>
 						<el-form-item label="契税">
-							<span>{{ props.row.deedTax }}</span>
+							<span>{{ props.row['契税'] }}</span>
 						</el-form-item>
 						<el-form-item label="教附">
-							<span>{{ props.row.additionalTaxOfEducation }}</span>
+							<span>{{ props.row['教附'] }}</span>
 						</el-form-item>
 					</el-form>
 				</template>
 			</el-table-column>
 
-			<el-table-column prop="id" label="序号" width="80">
+			<el-table-column 	type="index"	width="50">
 			</el-table-column>
-			<el-table-column prop="unifiedSocialCreditCode" label="统一社会信用代码" width="180">
+			<el-table-column prop="纳税人" label="纳税人名称" width="180">
 			</el-table-column>
-			<el-table-column prop="taxPayer" label="纳税人名称" width="180">
+			<el-table-column prop="纳税年份" label="纳税年份" width="180">
 			</el-table-column>
-			<el-table-column prop="taxYear" label="纳税年份" width="180">
+			<el-table-column prop="纳税额合计" label="合计(万元)" width="180">
 			</el-table-column>
-			<el-table-column prop="totalTax" label="合计(万元)" width="180">
+			<el-table-column prop="营业税" label="营业税" width="180">
 			</el-table-column>
-			<el-table-column prop="delayedTaxPayment" label="滞纳(万元)" width="180">
+			<el-table-column prop="增值税" label="增值税" width="180">
 			</el-table-column>
-			<el-table-column prop="registeredAddress" label="注册地址" width="180">
+			<el-table-column prop="企所" label="企所" width="180">
+			</el-table-column>
+			<el-table-column prop="个所" label="个所" width="180">
+			</el-table-column>
+			<el-table-column prop="滞纳" label="滞纳(万元)" width="180">
 			</el-table-column>
 		</el-table>
 	</div>
@@ -80,7 +72,11 @@ export default {
 		return {
 			companyTaxData:[],
 			filteredCompanyTaxData:[],
-			formTitle: '合计查询区间:',
+			formTitle: '合计查询区间(万元):',
+			defaultInterval: {
+				min: 400,
+				max: 10000
+			}
 		}
 	},
 	mounted(){
@@ -90,18 +86,20 @@ export default {
 		getCompanyTaxData(){
 			getCompanyTaxInfo().then(res => {
 				this.companyTaxData = res;
-				this.filteredCompanyTaxData = res.slice(0, 20);
+	
+				this.useInterval(this.defaultInterval);
 			}).catch(
 				err => console.log(err)
 			)
 		},
+		//根据指定区间，筛选数据
 		useInterval(intervalObj){
 			this.filteredCompanyTaxData = this.companyTaxData.filter(item => {
-					return item.totalTax >= intervalObj.min && item.totalTax <= intervalObj.max; 
+				return item['纳税额合计'] >= intervalObj.min && item['纳税额合计'] <= intervalObj.max; 
 			})
 		},
 		handleResetting(){
-			this.filteredCompanyTaxData = this.companyTaxData.slice(0, 20);
+			this.useInterval(this.defaultInterval);
 		}
 	}
 }

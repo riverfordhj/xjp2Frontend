@@ -44,6 +44,13 @@ export function deleteCompany(arr){
 	})
 }
 
+export function getCompanysByBuildingWithCH(id){
+	return request({
+		url: `/Companies/GetCompanysByBuildingWithCH/${id}`,
+		method: 'get'
+	})
+}
+
 export function getInfoByFloor(arrData){
 	return request({
 		url: '/Companies/GetInfoByFloor',
