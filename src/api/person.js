@@ -28,9 +28,9 @@ export function getPersonsByBuilding(buildingId) {
   })
 }
 
-export function getPersonsBySubdivision(SubdivisionId) {
+export function getPersonsBySubdivision(subdivisionId) {
   return request({
-    url: `/person/GetPersonsBySubdivision/${SubdivisionId}`,
+    url: `/person/GetPersonsBySubdivision/${subdivisionId}`,
     method: 'get'
   })
 }

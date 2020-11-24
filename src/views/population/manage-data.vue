@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input v-model="listQuery.filter" placeholder="过滤(小区，楼栋，房号)" style="width: 180px;" class="filter-item" @keyup.enter.native="handleLocalFilter" />
+      <el-input v-model="listQuery.filter" placeholder="过滤(小区，楼栋)" clearable style="width: 180px;" class="filter-item" @keyup.enter.native="handleLocalFilter" />
       <el-select v-model="listQuery.subdivsion" placeholder="小区" clearable style="width: 150px" class="filter-item" @change="getBuildingsData">
         <el-option v-for="item in filteredSubdivsions" :key="item.id" :label="item.name" :value="item.id" />
       </el-select>
@@ -15,8 +15,8 @@
         查询
       </el-button>
 
-      <el-input v-model="listQuery.str" placeholder="请输入姓名、身份证号、电话查询" style="width: 280px;" class="filter-item" @keyup.enter.native="searchPerson" />
-      <el-button class="filter-item" type="primary" icon="el-icon-search" @click="searchPerson">
+      <el-input v-model="listQuery.str" placeholder="请输入姓名、身份证号、电话查询" style="width: 280px;" class="filter-item" @keyup.enter.native="localSearch" />
+      <el-button class="filter-item" type="primary" icon="el-icon-search" @click="localSearch">
         查询
       </el-button>
     </div>
@@ -161,6 +161,22 @@ export default {
   mounted() {
   },
   methods: {
+    localSearch(){
+      // debugger;
+      if(this.filterdPersonHouseInfo.length > 0) {
+      // if(Array.prototype.toString.call(this.filterdPersonHouseInfo) != '') {
+        this.handleLocalFilter()
+      }else{
+        this.searchPerson()
+        }
+    },
+
+    //   if(this.filterdPersonHouseInfo.length == 0 ||(this.listQuery.subdivsion ==  this.listQuery.building  )) {
+    //         this.searchPerson()
+    //   }else{
+    //     this.handleLocalFilter()
+    //   }
+    // },
 
     getSubdivsionsData() {
       getSubdivsions().then(response => {
@@ -194,8 +210,21 @@ export default {
         console.log(error)
       })
     },
-    getPersonsByBuildingData() {
+    getPersonsBySubdivisionData() {
       // debugger
+      getPersonsBySubdivision(this.listQuery.subdivsion).then(response => {
+        //debugger
+        // this.personHouseInfo = response
+        // this.filterdPersonHouseInfo = this.personHouseInfo
+        this.personHouseInfo = response;
+        this.filterdPersonHouseInfo  = response;
+      }).catch(error => {
+        debugger
+        console.log(error)
+      })
+    },
+    getPersonsByBuildingData() {
+       //debugger
       getPersonsByBuilding(this.listQuery.building).then(response => {
         // debugger
         this.filterdPersonHouseInfo = this.personHouseInfo = response
@@ -205,19 +234,19 @@ export default {
       })
     },
     handleFilter() {
-      // debugger
+       // debugger
       if (this.listQuery.subdivsion) { // 如果选择小区
         if (this.listQuery.building) { // 如果选取建筑物
           this.getPersonsByBuildingData()
         } else {
-          this.getPersonsData()
+          this.getPersonsBySubdivisionData()
         }
       }
     },
     handleLocalFilter() {
       // debugger
-      var value = this.listQuery.name
-      if (this.listQuery.name) {
+      var value = this.listQuery.str
+      if (this.listQuery.str) {
         this.filterdPersonHouseInfo = this.personHouseInfo.filter(item => item.person.name.indexOf(value) !== -1)
       } else {
         this.filterdPersonHouseInfo = this.personHouseInfo
