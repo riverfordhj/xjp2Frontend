@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import { getFloorInfoByBuilding, getCompanyBuildings, GetCompanysByFloor_ZH, GetCompanysByBuilding_ZH, GetWholeCompanys_ZH } from '@/api/company.js';
+import { getFloorInfoByBuilding, getBuindingInfoByStatus, GetCompanysByFloor_ZH, GetCompanysByBuilding_ZH, GetWholeCompanys_ZH } from '@/api/company.js';
 import { flatCompanyInfo } from '@/utils/tools.js'
 
 import pivotTablePanel from '@/components/pivotTablePanel.vue'
@@ -96,7 +96,7 @@ export default {
 	methods: {
 		getBuildings() {
 			//请求后端楼栋数据，并统计显示
-			getCompanyBuildings().then(res => {
+			getBuindingInfoByStatus().then(res => {
 				this.buildingsData.buildings = res;
 
 				//初始化透视表

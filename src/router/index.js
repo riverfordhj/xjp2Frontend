@@ -236,6 +236,15 @@ export const constantRoutes = [
 	  },
     children: [
 			{
+				path: 'buildingInfoTable',
+				name: 'buildingInfoTable',
+				component: () => import('@/views/buildingEconomy/buildingInfoTable'),
+				meta: {
+					title: '商业体信息表',
+					icon: 'table' 
+				}
+			},
+			{
 				path: 'company',
 				name: 'CompanyInfo',
 				component: () => import('@/views/buildingEconomy/buildingEcoTable/company'),

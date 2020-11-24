@@ -44,7 +44,7 @@
 
 <script>
 import DialogDrag from 'vue-dialog-drag';
-import { getFloorInfoByBuilding, getCompanyBuildings } from '@/api/company.js';
+import { getFloorInfoByBuilding} from '@/api/company.js';
 
 import filterPanel from './filterComponents/filterPanel.vue'
 

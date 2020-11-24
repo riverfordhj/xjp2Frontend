@@ -13,6 +13,16 @@ export function getCompanyBuildings(){
 		method: 'get'
 	})
 }
+export function getBuindingInfoByStatus(statusParam){
+	let status = statusParam || '已建';
+	return request({
+		url: '/CompanyBuildings/GetBuildingInfoByStatus',
+		method:'get',
+		params: {
+			status
+		}
+	})
+}
 
 export function getCompanysByBuilding(id){
 	return request({
@@ -51,6 +61,14 @@ export function GetCompanysByBuilding_ZH(id){
 	})
 }
 
+export function getInfoByFloor(arrData){
+	return request({
+		url: '/Companies/GetInfoByFloor',
+		method: 'post',
+		data: arrData
+	})
+}
+
 export function GetCompanysByFloor_ZH(arrData){
 	return request({
 		url: '/Companies/GetCompanysByFloor_ZH',
@@ -77,5 +95,19 @@ export function getCompanyTaxInfo(){
 	return request({
 		url: '/Companies/GetCompanyTaxInfo',
 		method: 'get'
+	})
+}
+
+//参数：buildingName(楼栋名)、status(状态)
+export function updateBuildingStatus(buildingName, status){
+	let JsonData = {
+		"BuildingName": buildingName,
+		"status" : status
+	};
+
+	return request({
+		url: '/CompanyBuildings/UpdateBuildingStatus',
+		method: 'post',
+		data: JsonData
 	})
 }

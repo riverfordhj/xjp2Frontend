@@ -104,7 +104,7 @@
 </template>
 
 <script>
-import { getCompanyInfo, getCompanyBuildings, getCompanysByBuilding } from '@/api/company.js';
+import { getCompanyInfo, getBuindingInfoByStatus, getCompanysByBuilding } from '@/api/company.js';
 import { flatCompanyInfo } from '@/utils/tools.js'
 
 export default {
@@ -153,7 +153,7 @@ export default {
 		},
 		getBuildingInfo() {
 			//get请求buildings数据
-			getCompanyBuildings().then(res => {
+			getBuindingInfoByStatus().then(res => {
 				this.buildingsData = res;
 			})
 		},

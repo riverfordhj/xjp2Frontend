@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import { getFloorInfoByBuilding, getCompanyBuildings } from '@/api/company.js';
+import { getFloorInfoByBuilding, getBuindingInfoByStatus } from '@/api/company.js';
 
 export default {
 	name: 'filterPanel',
@@ -63,7 +63,7 @@ export default {
 	methods: {
 		//请求后端楼栋数据
 		getBuildings() {
-			getCompanyBuildings().then(res => {
+			getBuindingInfoByStatus().then(res => {
 				this.buildingsData.buildings = res;
 			}).catch(err =>{
 				console.log(err);

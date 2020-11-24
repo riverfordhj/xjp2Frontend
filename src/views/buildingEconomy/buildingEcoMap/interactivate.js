@@ -333,6 +333,7 @@ var interactOperate = {
 	//后端获取数据
 	getCompanyFullInfo(companyInfo){
 		getInfoByFloor(companyInfo).then(res => {
+			// debugger;
 			if(this.companyDatas.show !== true){
 				this.companyDatas.show = true;
 			}
@@ -350,7 +351,7 @@ var interactOperate = {
       'Loading <div class="cesium-infoBox-loading"></div>'
     this.viewer.selectedEntity = selectedEntity
 
-		debugger;
+		// debugger;
     var names = pickedFeature._content.batchTable.getPropertyNames(
       pickedFeature._batchId
     )

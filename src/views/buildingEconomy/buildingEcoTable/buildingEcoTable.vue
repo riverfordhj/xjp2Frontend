@@ -119,7 +119,7 @@
 </template>
 
 <script>
-import {getCompanySomeFileds, updateCompanyFields, getCompanyBuildings, deleteCompany} from '@/api/company.js'
+import {getCompanySomeFileds, updateCompanyFields, getBuindingInfoByStatus, deleteCompany} from '@/api/company.js'
 
 export default {
 	name: 'buildingEcoTable',
@@ -147,7 +147,7 @@ export default {
 	methods: {
 		//请求楼栋数据
 		getBuildingInfo() {
-			getCompanyBuildings().then(res => {
+			getBuindingInfoByStatus().then(res => {
 				this.buildingsData = res;
 			})
 		},
