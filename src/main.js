@@ -19,6 +19,8 @@ import '@/permission' // permission control
 // import * as VueWindow from '@hscmap/vue-window'
 import * as VueMenu from '@hscmap/vue-menu'
 
+//总线机制：实现非父子组件传值
+Vue.prototype.bus = new Vue();
 
 // Vue.use(VueWindow)
 Vue.use(VueMenu)

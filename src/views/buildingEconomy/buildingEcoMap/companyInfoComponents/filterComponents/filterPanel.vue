@@ -1,14 +1,14 @@
 <template>
 	 <div class="selectForm">
 				<el-input v-model="filter" placeholder="过滤条件(楼栋，楼层)" style="width: 200px;"  />
-				<el-select v-model="buildingsData.buildingValue" placeholder="请选择楼栋"  @change="handleFirstSelect">
+				<el-select v-model="buildingsData.buildingValue"  placeholder="请选择楼栋"  @change="handleFirstSelect">
 					<el-option
 						v-for="item in filteredBuildingsData"
 						:key="item.id"
 						:value="item.buildingName">
 					</el-option>
 				</el-select>
-				<el-select v-model="buildingFloorData.FloorValue" placeholder="请选择楼层"  @change="handleSecondSelect" >
+				<el-select v-model="buildingFloorData.FloorValue" clearable  placeholder="请选择楼层"  @change="handleSecondSelect" >
 					<el-option
 						v-for="item in filteredFloorsInfo"
 						:key="item.id"
@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import { getFloorInfoByBuilding, getBuindingInfoByStatus } from '@/api/company.js';
+import { getBuindingInfoByStatus } from '@/api/company.js';
 
 export default {
 	name: 'filterPanel',
@@ -27,13 +27,15 @@ export default {
 		return {
 			buildingsData: {
 				buildingValue: '',
-				buildings: []
+				buildings: [],
+				originBuilidingValue: ''
 			},
 			buildingFloorData: {
 				FloorValue: '',
 				FloorInfos: []
 			},
 			filter:'',
+			
 		}
 	},
 	created(){
@@ -57,7 +59,6 @@ export default {
 			}else{
 				return this.buildingFloorData.FloorInfos;
 			}
-			
 		}
 	},
 	methods: {
@@ -70,10 +71,17 @@ export default {
 			})
 		},
 		handleFirstSelect (curValue){
-			this.$emit('firstSelectChange', curValue, this.buildingsData.buildings, this.buildingFloorData)
+			this.buildingFloorData.FloorValue = '';
+			this.$emit('firstSelectChange', curValue, this.buildingsData.buildings, this.buildingFloorData);
+			
 		},
 		handleSecondSelect (curValue){
 			this.$emit('secondSelectChange', curValue, this.buildingFloorData.FloorInfos);
+		},
+		clearFilterPanel (){
+			console.log('this is clearFilterPanel')
+			this.buildingFloorData.FloorValue = '';
+			this.buildingsData.buildingValue = '';
 		}
 	}
 }

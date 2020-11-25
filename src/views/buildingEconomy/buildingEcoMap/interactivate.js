@@ -337,7 +337,7 @@ var interactOperate = {
 			if(this.companyDatas.show !== true){
 				this.companyDatas.show = true;
 			}
-			this.companyDatas.compaiesFullInfo = flatCompanyInfo(res);
+			this.companyDatas.companiesFullInfo = flatCompanyInfo(res);
 		}).catch(err => {
 			console.log(err);
 		});

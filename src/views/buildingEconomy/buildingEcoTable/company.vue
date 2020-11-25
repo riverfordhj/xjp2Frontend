@@ -18,7 +18,9 @@
 			<el-button class="bt-request" :loading="loading" type="primary" icon="el-icon-search" @click="handleCompanyInfo">查询全部</el-button>
 		</div>
 		<el-table
-			:data="filterData" height="920" border	style="width: 100%">
+			:data="filterData" height="920" border 	style="width: 100%"
+			@row-dblclick="handleDoubleClick"
+			>
 			<el-table-column type="expand" style="width: 100%">
 				<template slot-scope="props">
 					<el-form label-position="left" inline class="table-expand">
@@ -104,7 +106,7 @@
 </template>
 
 <script>
-import { getCompanyInfo, getBuindingInfoByStatus, getCompanysByBuilding } from '@/api/company.js';
+import { getCompanyInfo, getBuindingInfoByStatus, getCompanysByBuilding, getInfoByBuildingNameAndFloor } from '@/api/company.js';
 import { flatCompanyInfo } from '@/utils/tools.js'
 
 export default {
@@ -116,7 +118,9 @@ export default {
 			filterData: [],
 			buildingsData: [],
 			loading: false,
-			value: ''
+			value: '',
+
+			selectedBuildingId: -1
 		}
 	},
 	mounted (){
@@ -152,7 +156,7 @@ export default {
 			});
 		},
 		getBuildingInfo() {
-			//get请求buildings数据
+			//get请求已建的buildings数据
 			getBuindingInfoByStatus().then(res => {
 				this.buildingsData = res;
 			})
@@ -162,8 +166,9 @@ export default {
 			let singleBuildingData = this.buildingsData.find(item =>{
 				return item.buildingName === curValue;
 			});
-			// debugger;
-			getCompanysByBuilding(singleBuildingData.id).then(res => {
+			this.selectedBuildingId = singleBuildingData.id;
+
+			getCompanysByBuilding(this.selectedBuildingId ).then(res => {
 				this.buildingEconomyData = flatCompanyInfo(res);
 				this.filterData = this.buildingEconomyData;
 			}).catch(err => {
@@ -173,7 +178,16 @@ export default {
 				});
 			});
 		},
-
+		handleDoubleClick(row, column, event){
+			this.$router.push({name: 'buildingEcoMap'});
+      setTimeout(this.handleDelivery.bind(this, row), 6000);
+			
+		},
+		handleDelivery(row){
+			getInfoByBuildingNameAndFloor(row.buildingName, row.floor).then( (res) => {
+				this.bus.$emit('deliveryPositionInfo', res[0], row.floor)
+			})
+		}
 	}
 }
 </script>

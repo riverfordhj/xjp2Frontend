@@ -111,3 +111,16 @@ export function updateBuildingStatus(buildingName, status){
 		data: JsonData
 	})
 }
+
+export function getInfoByBuildingNameAndFloor(buildingNameParam, floorParam){
+	let BuildingName = buildingNameParam;
+	let Floor = floorParam;
+	return request({
+		url: '/CompanyBuildings/getInfoByBuildingNameAndFloor',
+		method:'get',
+		params: {
+			BuildingName,
+			Floor
+		}
+	})
+}

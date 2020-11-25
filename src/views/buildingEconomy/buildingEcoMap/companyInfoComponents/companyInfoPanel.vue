@@ -8,9 +8,9 @@
       :options="option"
       @close="close"
     >
-			<filter-panel @firstSelectChange="getFloorInfos" @secondSelectChange="flyToTarget"></filter-panel>
+			<filter-panel ref="filterPanel" @firstSelectChange="getFloorInfos" @secondSelectChange="flyToTarget"></filter-panel>
 
-      <el-table :data="companyDataForms.compaiesFullInfo" height="550" border style="width: 100%">
+      <el-table :data="companyDataForms.companiesFullInfo" height="550" border style="width: 100%">
 				<el-table-column prop="buildingName" label="楼宇名称" width="120">
 				</el-table-column>
 				<el-table-column prop="companyName" label="企业名称" width="180">
@@ -71,11 +71,19 @@ export default {
 	computed:{
 		companyInFloorTitle(){
 			return '楼层入驻公司信息： ' + this.companyDataForms.title;
-		},
+		}
+	},
+	watch:{
+		"companyDatas.companiesFullInfo": function(){
+			//清空子组件的状态
+			this.$refs.filterPanel.clearFilterPanel();
+		}
 	},
 	methods: {
 		close (){
-      this.companyDatas.show = false
+			this.companyDatas.show = false;
+			//清空子组件的状态
+			this.$refs.filterPanel.clearFilterPanel();
 		},
 		//获取指定楼栋的楼层信息
 		getFloorInfos (curValue, buildingParam, FloorDataParam){
@@ -90,6 +98,7 @@ export default {
 		//定位到选定楼层
 		flyToTarget (curFloorNum, arr){
 			const curFloorInfo = arr.find(item => item.floorNum === curFloorNum);
+			debugger
 			if(curFloorInfo){
 				const position = {
 					long: curFloorInfo.long,
