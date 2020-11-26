@@ -14,10 +14,13 @@
       <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         查询
       </el-button>
-
+     
       <el-input v-model="listQuery.str" placeholder="请输入姓名、身份证号、电话查询" style="width: 280px;" class="filter-item" @keyup.enter.native="localSearch" />
       <el-button class="filter-item" type="primary" icon="el-icon-search" @click="localSearch">
         查询
+      </el-button>
+      <el-button class="filter-item" type="primary" icon="el-icon-search" @click="getSpecialGroupsData">
+        特殊人群
       </el-button>
     </div>
 
@@ -27,7 +30,7 @@
         <template slot-scope="scope">
           <el-popover trigger="hover" placement="top">
             <ul>
-              <li v-for="item in scope.row.specialGroup" :key="item.Id">特殊人群：{{ item.type }}</li>
+              <li v-for="item in scope.row.specialGroup" :key="item.Id">特殊人群：{{ item.type }}</li> 
             </ul>
             <div slot="reference" class="name-wrapper">
               <el-tag size="medium">{{ scope.row.person.name }}</el-tag>
@@ -52,6 +55,7 @@
       <el-table-column prop="communityName" label="社区" />
       <el-table-column prop="subdivsionName" label="小区" />
       <el-table-column prop="bulidingName" label="楼栋" />
+      <el-table-column prop="type" label="类型" />
     </el-table>
 
     <!-- pivot 窗口 ss-->
@@ -64,7 +68,7 @@
 </template>
 
 <script>
-import { getSubdivsions, getBuildingsBySub, getPersons, getPersonsByBuilding, getPersonsBySubdivision, getPersonsBySearch } from '@/api/person.js'
+import { getSubdivsions, getBuildingsBySub, getPersons, getPersonsByBuilding, getPersonsBySubdivision, getPersonsBySearch, getSpecialGroups } from '@/api/person.js'
 
 // const { JSDOM } = require('jsdom')
 // const { window } = new JSDOM('')
@@ -81,6 +85,7 @@ export default {
       personHouseInfo: [],
       filterdPersonHouseInfo: [],
       buildings: [],
+      //specialGroups: [],
 
       tableKey: 0,
       list: null,
@@ -162,7 +167,7 @@ export default {
   },
   methods: {
     localSearch(){
-      // debugger;
+      //  debugger;
       if(this.filterdPersonHouseInfo.length > 0) {
       // if(Array.prototype.toString.call(this.filterdPersonHouseInfo) != '') {
         this.handleLocalFilter()
@@ -170,13 +175,15 @@ export default {
         this.searchPerson()
         }
     },
-
-    //   if(this.filterdPersonHouseInfo.length == 0 ||(this.listQuery.subdivsion ==  this.listQuery.building  )) {
-    //         this.searchPerson()
-    //   }else{
-    //     this.handleLocalFilter()
-    //   }
-    // },
+    getSpecialGroupsData() {  
+      getSpecialGroups().then(response => {
+         // debugger
+        this.filterdPersonHouseInfo = this.personHouseInfo = response
+      }).catch(error => {
+        debugger
+        console.log(error)
+      })
+    },
 
     getSubdivsionsData() {
       getSubdivsions().then(response => {
@@ -264,11 +271,12 @@ export default {
       })
     },
     tableRowClassName({ row, rowIndex }) {
-      // debugger
-      if (row.specialGroup.length > 0) {
-        return 'warning-row'
-      }
-      return ''
+      // debugger     
+       //if (row.specialGroup.length) {
+      //if (scope.row.type) {
+      //   return 'warning-row'
+      // }
+      // return ''
     },
     formatter(row, column) {
       // debugger

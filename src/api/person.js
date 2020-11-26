@@ -42,6 +42,13 @@ export function getPersonsBySearch(str) {
   })
 }
 
+export function getSpecialGroups() {
+  return request({
+    url:  '/person/GetSpecialGroups',
+    method: 'get'
+  })
+}
+
 export function getPersonByRoom(roomInfo) {
   return request({
     url: '/person/GetPersonsInRoom',
