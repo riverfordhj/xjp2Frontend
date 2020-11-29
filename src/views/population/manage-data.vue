@@ -160,7 +160,7 @@ export default {
   //     }
   //     return this.rooms
   //   }
-  // },
+  },
   created() {
     this.getSubdivsionsData()
   },
@@ -324,4 +324,3 @@ export default {
     background: #f0f9eb;
   }
 </style>
-
