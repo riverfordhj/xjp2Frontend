@@ -35,10 +35,20 @@ export function getPersonsBySubdivision(subdivisionId) {
   })
 }
 
-export function getPersonsBySearch(str) {
+// export function getPersonsBySearch(str) {
+//   return request({
+//     url: `/person/GetPersonsBySearch/${str}`,
+//     method: 'get'
+//   })
+// }
+export function getPersonsBySearch(subdivsion ,sname) {
   return request({
-    url: `/person/GetPersonsBySearch/${str}`,
-    method: 'get'
+    url: '/person/getPersonsBySearch',
+    method: 'post',
+    data: {
+      SubdivisionId: subdivsion,
+      Name: sname
+    }
   })
 }
 

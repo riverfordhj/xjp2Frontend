@@ -12,12 +12,12 @@
         <el-option v-for="item in sortOptions" :key="item.key" :label="item.label" :value="item.key" />
       </el-select>
       <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
-        查询
+        小区查询
       </el-button>
      
-      <el-input v-model="listQuery.str" placeholder="请输入姓名、身份证号、电话查询" style="width: 280px;" class="filter-item" @keyup.enter.native="localSearch" />
-      <el-button class="filter-item" type="primary" icon="el-icon-search" @click="localSearch">
-        查询
+      <el-input v-model="listQuery.sname" placeholder="请输入姓名、身份证号、电话查询" style="width: 280px;" class="filter-item" @keyup.enter.native="searchPerson" />
+      <el-button class="filter-item" type="primary" icon="el-icon-search" @click="searchPerson">
+        人员查询
       </el-button>
       <el-button class="filter-item" type="primary" icon="el-icon-search" @click="getSpecialGroupsData">
         特殊人群
@@ -95,11 +95,12 @@ export default {
         page: 1,
         limit: 20,
         name: '',
-        subdivsion: undefined,
+        subdivsion: '',
         building: undefined,
         // room: undefined,
         filter: '',
-        sort: '+id'
+        sort: '+id',
+        sname: ''
       },
 
       sortOptions: [{ label: 'ID Ascending', key: '+id' }, { label: 'ID Descending', key: '-id' }],
@@ -151,30 +152,30 @@ export default {
       }
       return this.buildings
     },
-    filteredRooms() {
-      if (this.Address.filter) {
-        const value = this.Address.filter.split(/[，,]/g)
-        if (value[2])
-          return this.rooms.filter(item => item.name.indexOf(value[2]) !== -1)
-      }
-      return this.rooms
-    }
-  },
+  //   filteredRooms() {
+  //     if (this.Address.filter) {
+  //       const value = this.Address.filter.split(/[，,]/g)
+  //       if (value[2])
+  //         return this.rooms.filter(item => item.name.indexOf(value[2]) !== -1)
+  //     }
+  //     return this.rooms
+  //   }
+  // },
   created() {
     this.getSubdivsionsData()
   },
   mounted() {
   },
   methods: {
-    localSearch(){
-      //  debugger;
-      if(this.filterdPersonHouseInfo.length > 0) {
-      // if(Array.prototype.toString.call(this.filterdPersonHouseInfo) != '') {
-        this.handleLocalFilter()
-      }else{
-        this.searchPerson()
-        }
-    },
+    // localSearch(){
+    //   //  debugger;
+    //   if(this.filterdPersonHouseInfo.length > 0) {
+    //   // if(Array.prototype.toString.call(this.filterdPersonHouseInfo) != '') {
+    //     this.handleLocalFilter()
+    //   }else{
+    //     this.searchPerson()
+    //     }
+    // },
     getSpecialGroupsData() {  
       getSpecialGroups().then(response => {
          // debugger
@@ -252,18 +253,18 @@ export default {
     },
     handleLocalFilter() {
       // debugger
-      var value = this.listQuery.str
-      if (this.listQuery.str) {
+      var value = this.listQuery.sname
+      if (this.listQuery.sname) {
         this.filterdPersonHouseInfo = this.personHouseInfo.filter(item => item.person.name.indexOf(value) !== -1)
       } else {
         this.filterdPersonHouseInfo = this.personHouseInfo
       }
     },
     searchPerson() {
-      // var value = this.listQuery.str
-      // getPersonsBySearch(value)
-      getPersonsBySearch(this.listQuery.str).then(response => {
-        // debugger
+      debugger
+      var subdivsionsid= this.listQuery.subdivsion.toString()
+      getPersonsBySearch(subdivsionsid,this.listQuery.sname).then(response => {
+         //debugger
         this.filterdPersonHouseInfo = response
       }).catch(error => {
         debugger
