@@ -11,14 +11,14 @@
       </el-select>
     </div>
     <!-- 引入统计组件 -->
-		<pivot-table-panel :statistical-data="persons"></pivot-table-panel>
+		<pivot-table-panel :statistical-data="persons" :default-settings = "defaultSettingsForPivot"></pivot-table-panel>
   </div>
 
 </template>
 
 <script>
 import pivotTablePanel from '@/components/pivotTablePanel.vue'
-import { getSubdivsions, getBuildingsBySub, getRoomByBuilding, getPersons, getPersonsByBuilding } from '@/api/person.js'
+import { getSubdivsions, getBuildingsBySub, getRoomByBuilding, getPersons, GetPersonsByBuilding_ZH } from '@/api/person.js'
 
 export default {
 	name: 'PersonStatistics',
@@ -31,11 +31,18 @@ export default {
       buildings: [],
       persons: [],
       Address: {
-        subdivsion: undefined,
-        building: undefined,
+        subdivsion: '水岸星城',
+        building: 'G1',
         room: undefined,
         filter: ''
-      },
+			},
+
+			defaultSettingsForPivot: {
+				rows: ['楼栋名'],
+				cols: ['人口性质'],
+				aggregatorName: '频数',
+				rendererName: '柱形图'
+			}
     }
   },
   computed: {
@@ -58,14 +65,19 @@ export default {
     },
   },
   created() {
-    this.getSubdivsionsData()
+		//初始化请求小区信息
+		this.getSubdivsionsData()
+
+		//初始化请求水岸星城G1栋信息
+		this.getBuildingsData(1);
+		this.changeSelectedBuilding(1);
   },
   mounted() {
   },
   methods: {
     getSubdivsionsData() {
       getSubdivsions().then(response => {
-        // debugger
+        debugger
         this.subdivsions = response
       }).catch(error => {
         console.log(error)
@@ -74,16 +86,14 @@ export default {
     getBuildingsData(subdivsionId) {
       // debugger
       getBuildingsBySub(subdivsionId).then(response => {
-        // debugger
         this.buildings = response
       }).catch(error => {
         console.log(error)
       })
     },
     changeSelectedBuilding(buildingId) {
-      // debugger
-      getPersonsByBuilding(buildingId).then(response => {
-        // debugger
+      GetPersonsByBuilding_ZH(buildingId).then(response => {
+        debugger
         this.persons = response
       }).catch(error => {
         console.log(error)

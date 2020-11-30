@@ -260,7 +260,7 @@ var interactOperate = {
     var offset = this.offsetFromHeadingPitchRange(
       heading,
       pitch,
-      30
+      120
     )
     debugger;
     var transform = Cesium.Transforms.eastNorthUpToFixedFrame(pos)

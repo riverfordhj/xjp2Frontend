@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import axios from 'axios'
+import axios from 'axios';
 import { interactOperate } from './interactivate.js';
 import companyInfoPanel from './companyInfoComponents/companyInfoPanel.vue';
 

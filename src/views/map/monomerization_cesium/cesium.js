@@ -1,18 +1,10 @@
-/*
- * @Descripttion:
- * @version:
- * @Author: KanMing
- * @Date: 2019-07-16 10:36:59
- * @LastEditors: KanMing
- * @LastEditTime: 2019-09-19 14:50:04
- */
 // import Cesium from 'cesium/Cesium'
 var Cesium = require('cesium/Cesium')
 
 // 初始化一个viewer
 const Init = function () {
   Cesium.Ion.defaultAccessToken =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIxYzVmODUzMy03ZjZjLTQzMmQtYjlmZC1lZjBkYzgzYjc3NTciLCJpZCI6NDUzMiwic2NvcGVzIjpbImFzciIsImdjIl0sImlhdCI6MTU0MTA1NzA3MX0.LtxiUHHxAsLj-PR9VCn-sCRaej5Lt2XN2pWPJcWTW5U'
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI5MjMyYjZiMC1lZmY1LTQzNmEtODg1NS01NmQzMmE2NWY2ZjMiLCJpZCI6NDQ1MSwic2NvcGVzIjpbImFzciIsImdjIl0sImlhdCI6MTU0MDg4NTM2Mn0.7OzWWlmUmJv_EJo0RFpuiL2G_KLgZBENAAXOgU1O1qM'
   var viewer = new Cesium.Viewer('cesiumContainer', {
     // load Cesium World Terrain
     terrainProvider: Cesium.createWorldTerrain({

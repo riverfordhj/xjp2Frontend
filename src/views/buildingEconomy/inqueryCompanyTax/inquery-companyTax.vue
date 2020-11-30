@@ -58,6 +58,7 @@ export default {
 				return item['纳税额合计'] >= intervalObj.min && item['纳税额合计'] <= intervalObj.max;
 			});
 		},
+		//恢复默认统计区间
 		handleResetting(){
 			this.useInterval(this.defaultInterval);
 		}

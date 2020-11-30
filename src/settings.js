@@ -1,6 +1,6 @@
 module.exports = {
 
-  title: '徐家棚街道智慧一张图',
+  title: '徐家棚智慧街道3D一张图',
 
   /**
    * @type {boolean} true | false

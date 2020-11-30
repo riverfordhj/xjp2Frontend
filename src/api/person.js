@@ -27,6 +27,13 @@ export function getPersonsByBuilding(buildingId) {
     method: 'get'
   })
 }
+//通过楼栋查找人员信息（返回中文数据）
+export function GetPersonsByBuilding_ZH(buildingId) {
+  return request({
+    url: `/person/GetPersonsByBuilding_ZH/${buildingId}`,
+    method: 'get'
+  })
+}
 
 export function getPersonsBySubdivision(SubdivisionId) {
   return request({

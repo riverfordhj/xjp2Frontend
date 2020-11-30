@@ -97,6 +97,9 @@ export default {
 		},
 		//定位到选定楼层
 		flyToTarget (curFloorNum, arr){
+			//定位飞行过程中，信息面板设为不可见
+			this.companyDataForms.show = false;
+
 			const curFloorInfo = arr.find(item => item.floorNum === curFloorNum);
 			debugger
 			if(curFloorInfo){
