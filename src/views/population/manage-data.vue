@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input v-model="listQuery.filter" placeholder="过滤(小区，楼栋，房号)" style="width: 180px;" class="filter-item" @keyup.enter.native="handleLocalFilter" />
+      <el-input v-model="listQuery.filter" placeholder="过滤(小区，楼栋)" clearable style="width: 180px;" class="filter-item" @keyup.enter.native="handleLocalFilter" />
       <el-select v-model="listQuery.subdivsion" placeholder="小区" clearable style="width: 150px" class="filter-item" @change="getBuildingsData">
         <el-option v-for="item in filteredSubdivsions" :key="item.id" :label="item.name" :value="item.id" />
       </el-select>
@@ -12,12 +12,15 @@
         <el-option v-for="item in sortOptions" :key="item.key" :label="item.label" :value="item.key" />
       </el-select>
       <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
-        查询
+        小区查询
       </el-button>
-
-      <el-input v-model="listQuery.str" placeholder="请输入姓名、身份证号、电话查询" style="width: 280px;" class="filter-item" @keyup.enter.native="searchPerson" />
+     
+      <el-input v-model="listQuery.sname" placeholder="请输入姓名、身份证号、电话查询" style="width: 280px;" class="filter-item" @keyup.enter.native="searchPerson" />
       <el-button class="filter-item" type="primary" icon="el-icon-search" @click="searchPerson">
-        查询
+        人员查询
+      </el-button>
+      <el-button class="filter-item" type="primary" icon="el-icon-search" @click="getSpecialGroupsData">
+        特殊人群
       </el-button>
     </div>
 
@@ -27,7 +30,7 @@
         <template slot-scope="scope">
           <el-popover trigger="hover" placement="top">
             <ul>
-              <li v-for="item in scope.row.specialGroup" :key="item.Id">特殊人群：{{ item.type }}</li>
+              <li v-for="item in scope.row.specialGroup" :key="item.Id">特殊人群：{{ item.type }}</li> 
             </ul>
             <div slot="reference" class="name-wrapper">
               <el-tag size="medium">{{ scope.row.person.name }}</el-tag>
@@ -52,6 +55,7 @@
       <el-table-column prop="communityName" label="社区" />
       <el-table-column prop="subdivsionName" label="小区" />
       <el-table-column prop="bulidingName" label="楼栋" />
+      <el-table-column prop="type" label="类型" />
     </el-table>
 
     <!-- pivot 窗口 ss-->
@@ -64,7 +68,7 @@
 </template>
 
 <script>
-import { getSubdivsions, getBuildingsBySub, getPersons, getPersonsByBuilding, getPersonsBySubdivision, getPersonsBySearch } from '@/api/person.js'
+import { getSubdivsions, getBuildingsBySub, getPersons, getPersonsByBuilding, getPersonsBySubdivision, getPersonsBySearch, getSpecialGroups } from '@/api/person.js'
 
 // const { JSDOM } = require('jsdom')
 // const { window } = new JSDOM('')
@@ -81,6 +85,7 @@ export default {
       personHouseInfo: [],
       filterdPersonHouseInfo: [],
       buildings: [],
+      //specialGroups: [],
 
       tableKey: 0,
       list: null,
@@ -90,11 +95,12 @@ export default {
         page: 1,
         limit: 20,
         name: '',
-        subdivsion: undefined,
+        subdivsion: '',
         building: undefined,
         // room: undefined,
         filter: '',
-        sort: '+id'
+        sort: '+id',
+        sname: ''
       },
 
       sortOptions: [{ label: 'ID Ascending', key: '+id' }, { label: 'ID Descending', key: '-id' }],
@@ -146,14 +152,14 @@ export default {
       }
       return this.buildings
     },
-    filteredRooms() {
-      if (this.Address.filter) {
-        const value = this.Address.filter.split(/[，,]/g)
-        if (value[2])
-          return this.rooms.filter(item => item.name.indexOf(value[2]) !== -1)
-      }
-      return this.rooms
-    }
+  //   filteredRooms() {
+  //     if (this.Address.filter) {
+  //       const value = this.Address.filter.split(/[，,]/g)
+  //       if (value[2])
+  //         return this.rooms.filter(item => item.name.indexOf(value[2]) !== -1)
+  //     }
+  //     return this.rooms
+  //   }
   },
   created() {
     this.getSubdivsionsData()
@@ -161,6 +167,24 @@ export default {
   mounted() {
   },
   methods: {
+    // localSearch(){
+    //   //  debugger;
+    //   if(this.filterdPersonHouseInfo.length > 0) {
+    //   // if(Array.prototype.toString.call(this.filterdPersonHouseInfo) != '') {
+    //     this.handleLocalFilter()
+    //   }else{
+    //     this.searchPerson()
+    //     }
+    // },
+    getSpecialGroupsData() {  
+      getSpecialGroups().then(response => {
+         // debugger
+        this.filterdPersonHouseInfo = this.personHouseInfo = response
+      }).catch(error => {
+        debugger
+        console.log(error)
+      })
+    },
 
     getSubdivsionsData() {
       getSubdivsions().then(response => {
@@ -194,8 +218,21 @@ export default {
         console.log(error)
       })
     },
-    getPersonsByBuildingData() {
+    getPersonsBySubdivisionData() {
       // debugger
+      getPersonsBySubdivision(this.listQuery.subdivsion).then(response => {
+        //debugger
+        // this.personHouseInfo = response
+        // this.filterdPersonHouseInfo = this.personHouseInfo
+        this.personHouseInfo = response;
+        this.filterdPersonHouseInfo  = response;
+      }).catch(error => {
+        debugger
+        console.log(error)
+      })
+    },
+    getPersonsByBuildingData() {
+       //debugger
       getPersonsByBuilding(this.listQuery.building).then(response => {
         // debugger
         this.filterdPersonHouseInfo = this.personHouseInfo = response
@@ -205,29 +242,29 @@ export default {
       })
     },
     handleFilter() {
-      // debugger
+       // debugger
       if (this.listQuery.subdivsion) { // 如果选择小区
         if (this.listQuery.building) { // 如果选取建筑物
           this.getPersonsByBuildingData()
         } else {
-          this.getPersonsData()
+          this.getPersonsBySubdivisionData()
         }
       }
     },
     handleLocalFilter() {
       // debugger
-      var value = this.listQuery.name
-      if (this.listQuery.name) {
+      var value = this.listQuery.sname
+      if (this.listQuery.sname) {
         this.filterdPersonHouseInfo = this.personHouseInfo.filter(item => item.person.name.indexOf(value) !== -1)
       } else {
         this.filterdPersonHouseInfo = this.personHouseInfo
       }
     },
     searchPerson() {
-      // var value = this.listQuery.str
-      // getPersonsBySearch(value)
-      getPersonsBySearch(this.listQuery.str).then(response => {
-        // debugger
+      debugger
+      var subdivsionsid= this.listQuery.subdivsion.toString()
+      getPersonsBySearch(subdivsionsid,this.listQuery.sname).then(response => {
+         //debugger
         this.filterdPersonHouseInfo = response
       }).catch(error => {
         debugger
@@ -235,11 +272,12 @@ export default {
       })
     },
     tableRowClassName({ row, rowIndex }) {
-      // debugger
-      if (row.specialGroup.length > 0) {
-        return 'warning-row'
-      }
-      return ''
+      // debugger     
+       //if (row.specialGroup.length) {
+      //if (scope.row.type) {
+      //   return 'warning-row'
+      // }
+      // return ''
     },
     formatter(row, column) {
       // debugger
@@ -286,4 +324,3 @@ export default {
     background: #f0f9eb;
   }
 </style>
-

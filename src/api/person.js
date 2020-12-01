@@ -35,16 +35,33 @@ export function GetPersonsByBuilding_ZH(buildingId) {
   })
 }
 
-export function getPersonsBySubdivision(SubdivisionId) {
+export function getPersonsBySubdivision(subdivisionId) {
   return request({
-    url: `/person/GetPersonsBySubdivision/${SubdivisionId}`,
+    url: `/person/GetPersonsBySubdivision/${subdivisionId}`,
     method: 'get'
   })
 }
 
-export function getPersonsBySearch(str) {
+// export function getPersonsBySearch(str) {
+//   return request({
+//     url: `/person/GetPersonsBySearch/${str}`,
+//     method: 'get'
+//   })
+// }
+export function getPersonsBySearch(subdivsion ,sname) {
   return request({
-    url: `/person/GetPersonsBySearch/${str}`,
+    url: '/person/getPersonsBySearch',
+    method: 'post',
+    data: {
+      SubdivisionId: subdivsion,
+      Name: sname
+    }
+  })
+}
+
+export function getSpecialGroups() {
+  return request({
+    url:  '/person/GetSpecialGroups',
     method: 'get'
   })
 }
