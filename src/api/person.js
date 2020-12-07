@@ -21,6 +21,7 @@ export function getPersons() {
   })
 }
 
+
 export function getPersonsByBuilding(buildingId) {
   return request({
     url: `/person/GetPersonsByBuilding/${buildingId}`,
@@ -56,6 +57,24 @@ export function getSpecialGroups() {
   return request({
     url:  '/person/GetSpecialGroups',
     method: 'get'
+  })
+}
+export function getFields() {
+  return request({
+    url: '/person/GetFields',
+    method: 'get'
+  })
+}
+
+export function getDataByQuery(field, operator ,sname) {
+  return request({
+    url: '/person/GetDataByQuery',
+    method: 'post',
+    data: {
+      Field: field,
+      Oper: operator,
+      Value: sname
+    }
   })
 }
 

@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input v-model="listQuery.filter" placeholder="过滤(小区，楼栋)" clearable style="width: 180px;" class="filter-item" @keyup.enter.native="handleLocalFilter" />
+      <el-input v-model="listQuery.filter" placeholder="过滤(小区，楼栋)" clearable style="width: 180px;" class="filter-item" />
       <el-select v-model="listQuery.subdivsion" placeholder="小区" clearable style="width: 150px" class="filter-item" @change="getBuildingsData">
         <el-option v-for="item in filteredSubdivsions" :key="item.id" :label="item.name" :value="item.id" />
       </el-select>
@@ -21,7 +21,8 @@
       </el-button>
       <el-button class="filter-item" type="primary" icon="el-icon-search" @click="getSpecialGroupsData">
         特殊人群
-      </el-button>
+      </el-button> 
+      <el-button class="filter-item" type="primary" icon="el-icon-search" @click="dialogVisible = true">高级检索</el-button> 
     </div>
 
     <el-table :data="filterdPersonHouseInfo" height="800" border style="width: 100%" :row-class-name="tableRowClassName">
@@ -57,6 +58,32 @@
       <el-table-column prop="bulidingName" label="楼栋" />
       <el-table-column prop="type" label="类型" />
     </el-table>
+    
+  <el-dialog title="高级检索" :visible.sync="dialogVisible"	width="40%" center>                                        
+		<el-form  class="advanced-search" label-width="100px">
+			<el-form-item label="小区:" >
+				<el-input v-model="listQuery.subdivsion" placeholder="请输入小区名称" clearable style="width: 180px;"></el-input>
+			</el-form-item>	
+      <el-form-item  v-for="form in dateForm.forms" :key="form.key">
+          <el-select v-model="formsearch.field" placeholder="字段" clearable style="width: 100px;">
+            <el-option v-for="(item, index) in fields" :key="index" :label="item" :value="item"/>
+          </el-select>
+          <el-select v-model="formsearch.operator" placeholder="运算符" clearable style="width: 100px;">
+            <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.label"> </el-option>
+          </el-select>
+          <el-input v-model="formsearch.sname" placeholder="请输入" clearable style="width: 180px;"></el-input>  
+          <el-button @click.prevent="removeform(form)">删除</el-button>
+			</el-form-item>	
+  
+
+     
+    </el-form>	
+    <span slot="footer" class="dialog-footer">
+			<el-button type="warning" icon="el-icon-refresh" @click="dialogVisible = false" >取 消</el-button>
+      <el-button type="primary" @click="addform">新增</el-button>
+			<el-button type="primary" icon="el-icon-check" @click="superQuery">查 询</el-button>
+		</span>
+	</el-dialog>
 
     <!-- pivot 窗口 ss-->
     <el-dialog title="提示" :visible.sync="pivotdialogVisible" width="80%">
@@ -68,7 +95,7 @@
 </template>
 
 <script>
-import { getSubdivsions, getBuildingsBySub, getPersons, getPersonsByBuilding, getPersonsBySubdivision, getPersonsBySearch, getSpecialGroups } from '@/api/person.js'
+import { getSubdivsions, getBuildingsBySub, getPersons, getPersonsByBuilding, getPersonsBySubdivision, getPersonsBySearch, getSpecialGroups,getFields,getDataByQuery } from '@/api/person.js'
 
 // const { JSDOM } = require('jsdom')
 // const { window } = new JSDOM('')
@@ -86,6 +113,29 @@ export default {
       filterdPersonHouseInfo: [],
       buildings: [],
       //specialGroups: [],
+      dialogVisible: false,
+      fields:[],
+      dateForm:{
+       forms: [{
+          value: ''
+        }]
+      },
+      options: [{
+          value: '选项1',
+          label: '<'
+        }, {
+          value: '选项2',
+          label: '>'
+        }, {
+          value: '选项3',
+          label: '='
+        }, {
+          value: '选项4',
+          label: '>='
+        }, {
+          value: '选项5',
+          label: '<='
+        }],
 
       tableKey: 0,
       list: null,
@@ -102,6 +152,11 @@ export default {
         sort: '+id',
         sname: ''
       },
+      formsearch: {
+          field:'',
+          sname:'',
+          operator:'',
+        },
 
       sortOptions: [{ label: 'ID Ascending', key: '+id' }, { label: 'ID Descending', key: '-id' }],
       statusOptions: ['published', 'draft', 'deleted'],
@@ -130,7 +185,10 @@ export default {
       },
       downloadLoading: false,
 
-      pivotdialogVisible: false // pivot 控制窗口显示
+      pivotdialogVisible: false, // pivot 控制窗口显示
+      myStyle: {
+        display: "none"
+      }
     }
   },
   // 数据管理，小区楼栋筛选
@@ -152,30 +210,26 @@ export default {
       }
       return this.buildings
     },
-  //   filteredRooms() {
-  //     if (this.Address.filter) {
-  //       const value = this.Address.filter.split(/[，,]/g)
-  //       if (value[2])
-  //         return this.rooms.filter(item => item.name.indexOf(value[2]) !== -1)
-  //     }
-  //     return this.rooms
-  //   }
   },
   created() {
     this.getSubdivsionsData()
+    this.getFieldsData()
   },
   mounted() {
   },
   methods: {
-    // localSearch(){
-    //   //  debugger;
-    //   if(this.filterdPersonHouseInfo.length > 0) {
-    //   // if(Array.prototype.toString.call(this.filterdPersonHouseInfo) != '') {
-    //     this.handleLocalFilter()
-    //   }else{
-    //     this.searchPerson()
-    //     }
-    // },
+      removeform(item) {
+        var index = this.dateForm.forms.indexOf(item)
+        if (index !== -1) {
+          this.dateForm.forms.splice(index, 1)
+        }
+      },
+      addform() {
+        this.dateForm.forms.push({
+          value: '',
+          key: Date.now()
+        });
+      },
     getSpecialGroupsData() {  
       getSpecialGroups().then(response => {
          // debugger
@@ -185,7 +239,26 @@ export default {
         console.log(error)
       })
     },
-
+    getFieldsData() {
+      //debugger
+      getFields().then(response => {
+        debugger
+        this.fields = response
+      }).catch(error => {
+        debugger
+        console.log(error)
+      })
+    },
+     superQuery() {
+      debugger
+      getDataByQuery(this.formsearch.field,this.formsearch.operator,this.formsearch.sname).then(response => {
+        debugger
+        this.filterdPersonHouseInfo = response
+      }).catch(error => {
+        debugger
+        console.log(error)
+      })
+    },
     getSubdivsionsData() {
       getSubdivsions().then(response => {
         // debugger
@@ -222,8 +295,6 @@ export default {
       // debugger
       getPersonsBySubdivision(this.listQuery.subdivsion).then(response => {
         //debugger
-        // this.personHouseInfo = response
-        // this.filterdPersonHouseInfo = this.personHouseInfo
         this.personHouseInfo = response;
         this.filterdPersonHouseInfo  = response;
       }).catch(error => {
@@ -251,20 +322,21 @@ export default {
         }
       }
     },
-    handleLocalFilter() {
-      // debugger
-      var value = this.listQuery.sname
-      if (this.listQuery.sname) {
-        this.filterdPersonHouseInfo = this.personHouseInfo.filter(item => item.person.name.indexOf(value) !== -1)
-      } else {
-        this.filterdPersonHouseInfo = this.personHouseInfo
-      }
-    },
+    // handleLocalFilter() {
+    //   // debugger
+    //   var value = this.listQuery.sname
+    //   if (this.listQuery.sname) {
+    //     this.filterdPersonHouseInfo = this.personHouseInfo.filter(item => item.person.name.indexOf(value) !== -1)
+    //   } else {
+    //     this.filterdPersonHouseInfo = this.personHouseInfo
+    //   }
+    // },
     searchPerson() {
       debugger
       var subdivsionsid= this.listQuery.subdivsion.toString()
-      getPersonsBySearch(subdivsionsid,this.listQuery.sname).then(response => {
-         //debugger
+      var advancedname = (this.listQuery.sname || this.formsearch.sname)
+      getPersonsBySearch(subdivsionsid,advancedname).then(response => {
+         debugger
         this.filterdPersonHouseInfo = response
       }).catch(error => {
         debugger
@@ -310,6 +382,9 @@ export default {
         }
       )
       // click(e => console.log('jqery is ok!'))
+    },
+    handleSuperFilter(){
+
     }
   }
 }
