@@ -69,14 +69,14 @@
 			<el-form-item label="小区:" >
 				<el-input v-model="listQuery.subdivsion" placeholder="请输入小区名称" clearable style="width: 180px;"></el-input>
 			</el-form-item>	
-      <el-form-item  v-for="form in dataForms" :key="form.key">
-          <el-select v-model="dataForms.field" placeholder="字段" clearable style="width: 100px;">
+      <el-form-item  v-for="queryitem in dataForms" :key="queryitem.key">
+          <el-select v-model="queryitem.field" placeholder="字段" clearable style="width: 100px;">
             <el-option v-for="(item, index) in fields" :key="index" :label="item" :value="item"/>
           </el-select>
-          <el-select v-model="dataForms.operator" placeholder="运算符" clearable style="width: 100px;">
+          <el-select v-model="queryitem.operator" placeholder="运算符" clearable style="width: 100px;">
             <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.label"> </el-option>
           </el-select>
-          <el-input v-model="dataForms.sname" placeholder="请输入" clearable style="width: 180px;"></el-input>  
+          <el-input v-model="queryitem.sname" placeholder="请输入" clearable style="width: 180px;"></el-input>  
           <el-button @click.prevent="removeform(form)">删除</el-button>
 			</el-form-item>	
       
@@ -120,8 +120,8 @@ export default {
       fields:[],
       dataForms:[
         {
-          field:[],
-          operator:[],
+          field:'',
+          operator:'',
           sname:'',          
         }
       ],
