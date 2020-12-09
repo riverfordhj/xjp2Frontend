@@ -26,6 +26,7 @@
     </div>
 
     <el-table :data="filterdPersonHouseInfo" height="800" border style="width: 100%" :row-class-name="tableRowClassName">
+      
       <el-table-column prop="roomNO" label="房号" sortable width="80" :sort-method="sortRoomNO" />
       <el-table-column prop="person.name" label="姓名" width="80">
         <template slot-scope="scope">
@@ -33,7 +34,7 @@
             <ul>
               <li v-for="item in scope.row.specialGroup" :key="item.Id">特殊人群：{{ item.type }}</li> 
             </ul>
-            <div slot="reference" class="name-wrapper">
+            <div slot="reference" class="name-wrapper" v-if="scope.row.person">
               <el-tag size="medium">{{ scope.row.person.name }}</el-tag>
             </div>
           </el-popover>
@@ -57,6 +58,10 @@
       <el-table-column prop="subdivsionName" label="小区" />
       <el-table-column prop="bulidingName" label="楼栋" />
       <el-table-column prop="type" label="类型" />
+      <el-table-column prop="name" label="小区测试" />
+      
+      
+
     </el-table>
     
   <el-dialog title="高级检索" :visible.sync="dialogVisible"	width="40%" center>                                        
@@ -64,19 +69,17 @@
 			<el-form-item label="小区:" >
 				<el-input v-model="listQuery.subdivsion" placeholder="请输入小区名称" clearable style="width: 180px;"></el-input>
 			</el-form-item>	
-      <el-form-item  v-for="form in dateForm.forms" :key="form.key">
-          <el-select v-model="formsearch.field" placeholder="字段" clearable style="width: 100px;">
+      <el-form-item  v-for="form in dataForms" :key="form.key">
+          <el-select v-model="dataForms.field" placeholder="字段" clearable style="width: 100px;">
             <el-option v-for="(item, index) in fields" :key="index" :label="item" :value="item"/>
           </el-select>
-          <el-select v-model="formsearch.operator" placeholder="运算符" clearable style="width: 100px;">
+          <el-select v-model="dataForms.operator" placeholder="运算符" clearable style="width: 100px;">
             <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.label"> </el-option>
           </el-select>
-          <el-input v-model="formsearch.sname" placeholder="请输入" clearable style="width: 180px;"></el-input>  
+          <el-input v-model="dataForms.sname" placeholder="请输入" clearable style="width: 180px;"></el-input>  
           <el-button @click.prevent="removeform(form)">删除</el-button>
 			</el-form-item>	
-  
-
-     
+      
     </el-form>	
     <span slot="footer" class="dialog-footer">
 			<el-button type="warning" icon="el-icon-refresh" @click="dialogVisible = false" >取 消</el-button>
@@ -115,11 +118,13 @@ export default {
       //specialGroups: [],
       dialogVisible: false,
       fields:[],
-      dateForm:{
-       forms: [{
-          value: ''
-        }]
-      },
+      dataForms:[
+        {
+          field:[],
+          operator:[],
+          sname:'',          
+        }
+      ],
       options: [{
           value: '选项1',
           label: '<'
@@ -152,11 +157,6 @@ export default {
         sort: '+id',
         sname: ''
       },
-      formsearch: {
-          field:'',
-          sname:'',
-          operator:'',
-        },
 
       sortOptions: [{ label: 'ID Ascending', key: '+id' }, { label: 'ID Descending', key: '-id' }],
       statusOptions: ['published', 'draft', 'deleted'],
@@ -219,14 +219,16 @@ export default {
   },
   methods: {
       removeform(item) {
-        var index = this.dateForm.forms.indexOf(item)
+        var index = this.dataForms.indexOf(item)
         if (index !== -1) {
-          this.dateForm.forms.splice(index, 1)
+          this.dataForms.splice(index, 1)
         }
       },
       addform() {
-        this.dateForm.forms.push({
-          value: '',
+        this.dataForms.push({
+          field:'',
+          operator: '',
+          sname:'',
           key: Date.now()
         });
       },
@@ -251,7 +253,7 @@ export default {
     },
      superQuery() {
       debugger
-      getDataByQuery(this.formsearch.field,this.formsearch.operator,this.formsearch.sname).then(response => {
+      getDataByQuery(this.dataForms.field,this.dataForms.operator,this.dataForms.sname).then(response => {
         debugger
         this.filterdPersonHouseInfo = response
       }).catch(error => {
@@ -334,7 +336,7 @@ export default {
     searchPerson() {
       debugger
       var subdivsionsid= this.listQuery.subdivsion.toString()
-      var advancedname = (this.listQuery.sname || this.formsearch.sname)
+      var advancedname = this.listQuery.sname 
       getPersonsBySearch(subdivsionsid,advancedname).then(response => {
          debugger
         this.filterdPersonHouseInfo = response
