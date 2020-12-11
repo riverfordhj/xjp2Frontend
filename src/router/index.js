@@ -108,11 +108,11 @@ export const constantRoutes = [
         }
       },
       {
-        path: 'oldMen',
-        name: '老年证办理',
+        path: 'personnelDistribution',
+        name: 'personnelDistribution',
         component: () => import('@/views/map/monomerization_cesium/index_old'),
         meta: {
-          title: '老年证办理',
+          title: '人员位置分布',
           icon: 'map'
         }
       },
@@ -213,7 +213,16 @@ export const constantRoutes = [
           title: '统计分析',
           icon: 'search'
         }
-			}
+			},
+			{
+        path: 'nanage-personHouse',
+        name: 'nanage-personHouse',
+        component: () => import('@/views/population/manage-personHouse'),
+        meta: {
+          title: '人房数据管理',
+          icon: 'dataManager'
+        }
+      }
     ]
 	},
 	

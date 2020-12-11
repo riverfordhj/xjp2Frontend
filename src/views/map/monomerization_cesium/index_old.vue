@@ -99,7 +99,7 @@ var tiles = null;
 var viewer = null;
 
 export default {
-  name: "",
+  name: "personnelDistribution",
   components: {
     OldMenDialog,
     FireDialog,

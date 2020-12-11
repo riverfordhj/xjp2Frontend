@@ -4,9 +4,12 @@ import store from '@/store'
 import { getToken } from '@/utils/auth'
 
 // let webapiBaseURL = undefined;
-// axios.get('/appsetting.json').then((res) => {
-// 	webapiBaseURL = res.data[0].webapiBaseURL;
-// });
+// async function getAppSetting(){
+// 	await axios.get('/appsetting.json').then((res) => {
+// 		webapiBaseURL = res.data[0].webapiBaseURL;
+// 	});
+// }
+// getAppSetting();
 
 // create an axios instance
 const service = axios.create({

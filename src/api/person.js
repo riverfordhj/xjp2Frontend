@@ -14,6 +14,7 @@ export function getSubdivsions() {
   })
 }
 
+
 export function getPersons() {
   return request({
     url: '/person/GetPersons',
@@ -101,3 +102,62 @@ export function getRoomByBuilding(buildingId) {
     method: 'get'
   })
 }
+
+/* ***认证、授权*** */
+//根据用户，返回小区数据
+export function GetSubdivsionsByUser() {
+  return request({
+    url: '/person/GetSubdivsionsByUser',
+    method: 'get'
+  })
+}
+
+//根据用户，返回房间数据
+export function GetRoomsByUser() {
+  return request({
+    url: `/person/GetRoomsByUser`,
+    method: 'get'
+  })
+}
+
+//根据用户，返回人房数据
+export function GetPersonHouseInfoByUser() {
+	return request({
+		url: '/person/GetPersonsByUser',
+		method: 'get'
+	})
+}
+
+//根据用户，返回人房数据
+export function updatePersonHouseByNetGrid(editParams) {
+	return request({
+		url: '/person/UpdatePersonHouseByNetGrid',
+		method: 'post',
+		data: editParams
+	})
+}
+
+export function ReviewByCommunity(personId, status) {
+	debugger;
+  return request({
+    url: '/person/ReviewByCommunity',
+		method: 'post',
+    data:	{
+			personId,
+			status
+		}
+  })
+}
+
+export function ConfirmByAdmin(personId) {
+  return request({
+    url: '/person/ConfirmByAdmin',
+    method: 'get',
+    params: {
+      personId
+    }
+  })
+}
+
+
+/* ****** */

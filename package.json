@@ -12,7 +12,8 @@
     "lint": "eslint --ext .js,.vue src",
     "test:unit": "jest --clearCache && vue-cli-service test:unit",
     "test:ci": "npm run lint && npm run test:unit",
-    "svgo": "svgo -f src/icons/svg --config=src/icons/svgo.yml"
+		"svgo": "svgo -f src/icons/svg --config=src/icons/svgo.yml",
+		"build:modern": "vue-cli-service build --modern"
   },
   "dependencies": {
     "@hscmap/vue-menu": "^2.10.0",

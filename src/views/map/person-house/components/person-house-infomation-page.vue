@@ -138,10 +138,10 @@ export default {
       this.cureentBuildingName = building.name // 保持当前选择building’s name
 
       getRoomByBuilding(id).then(response => {
-        debugger
+        // debugger
         this.rooms = response
       }).catch(error => {
-        debugger
+        // debugger
         console.log(error)
       })
     },
