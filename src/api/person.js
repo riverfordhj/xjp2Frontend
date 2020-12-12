@@ -36,12 +36,7 @@ export function getPersonsBySubdivision(subdivisionId) {
   })
 }
 
-// export function getPersonsBySearch(str) {
-//   return request({
-//     url: `/person/GetPersonsBySearch/${str}`,
-//     method: 'get'
-//   })
-// }
+
 export function getPersonsBySearch(subdivsion ,sname) {
   return request({
     url: '/person/getPersonsBySearch',
@@ -66,15 +61,14 @@ export function getFields() {
   })
 }
 
-export function getDataByQuery(field, operator ,sname) {
+export function getDataByQuery(dataForms) {
   return request({
     url: '/person/GetDataByQuery',
     method: 'post',
     data: {
-      Field: field,
-      Oper: operator,
-      Value: sname
-    }
+      Items: dataForms
+    },
+    //dataForms, JSON.stringify(arrdataForms),
   })
 }
 

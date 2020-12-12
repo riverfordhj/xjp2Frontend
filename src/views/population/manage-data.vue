@@ -73,7 +73,7 @@
           <el-select v-model="queryitem.field" placeholder="字段" clearable style="width: 100px;">
             <el-option v-for="(item, index) in fields" :key="index" :label="item" :value="item"/>
           </el-select>
-          <el-select v-model="queryitem.operator" placeholder="运算符" clearable style="width: 100px;">
+          <el-select v-model="queryitem.operato" placeholder="运算符" clearable style="width: 100px;">
             <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.label"> </el-option>
           </el-select>
           <el-input v-model="queryitem.sname" placeholder="请输入" clearable style="width: 180px;"></el-input>  
@@ -121,7 +121,7 @@ export default {
       dataForms:[
         {
           field:'',
-          operator:'',
+          operato:'',
           sname:'',          
         }
       ],
@@ -227,7 +227,7 @@ export default {
       addform() {
         this.dataForms.push({
           field:'',
-          operator: '',
+          operato: '',
           sname:'',
           key: Date.now()
         });
@@ -253,7 +253,7 @@ export default {
     },
      superQuery() {
       debugger
-      getDataByQuery(this.dataForms.field,this.dataForms.operator,this.dataForms.sname).then(response => {
+      getDataByQuery(this.dataForms).then(response => {
         debugger
         this.filterdPersonHouseInfo = response
       }).catch(error => {
