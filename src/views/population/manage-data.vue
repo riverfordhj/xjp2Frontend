@@ -66,9 +66,6 @@
     
   <el-dialog title="高级检索" :visible.sync="dialogVisible"	width="40%" center>                                        
 		<el-form  class="advanced-search" label-width="100px">
-			<el-form-item label="小区:" >
-				<el-input v-model="listQuery.subdivsion" placeholder="请输入小区名称" clearable style="width: 180px;"></el-input>
-			</el-form-item>	
       <el-form-item  v-for="queryitem in dataForms" :key="queryitem.key">
           <el-select v-model="queryitem.field" placeholder="字段" clearable style="width: 100px;">
             <el-option v-for="(item, index) in fields" :key="index" :label="item" :value="item"/>
@@ -77,7 +74,7 @@
             <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.label"> </el-option>
           </el-select>
           <el-input v-model="queryitem.sname" placeholder="请输入" clearable style="width: 180px;"></el-input>  
-          <el-button @click.prevent="removeform(form)">删除</el-button>
+          <el-button @click.prevent="removeform(queryitem)">删除</el-button>
 			</el-form-item>	
       
     </el-form>	
