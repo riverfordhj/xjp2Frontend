@@ -9,6 +9,8 @@
 		border	
 		style="width: 100%"
 	>
+		<el-table-column 	align="center" type="index"	width="80" label="ID">
+		</el-table-column>
 	  <el-table-column align="center" label="企业名称" width="180">
         <template slot-scope="{row}">
           <span>{{ row.companyName }}</span>

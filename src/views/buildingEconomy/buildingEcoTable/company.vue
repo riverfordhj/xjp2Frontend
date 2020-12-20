@@ -76,7 +76,7 @@
 					</el-form>
 				</template>
     	</el-table-column>
-			<el-table-column 	type="index"	width="50">
+				<el-table-column 	type="index"	width="80" label="ID">
 			</el-table-column>
 			<el-table-column prop="companyName" label="企业名称" width="180">
 			</el-table-column>
@@ -181,7 +181,6 @@ export default {
 		handleDoubleClick(row, column, event){
 			this.$router.push({name: 'buildingEcoMap'});
       setTimeout(this.handleDelivery.bind(this, row), 6000);
-			
 		},
 		handleDelivery(row){
 			getInfoByBuildingNameAndFloor(row.buildingName, row.floor).then( (res) => {

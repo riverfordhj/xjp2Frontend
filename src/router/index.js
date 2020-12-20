@@ -222,7 +222,7 @@ export const constantRoutes = [
           title: '人房数据管理',
           icon: 'dataManager'
         }
-      }
+			}
     ]
 	},
 	
