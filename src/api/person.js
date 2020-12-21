@@ -22,6 +22,7 @@ export function getPersons() {
   })
 }
 
+
 export function getPersonsByBuilding(buildingId) {
   return request({
     url: `/person/GetPersonsByBuilding/${buildingId}`,
@@ -43,12 +44,7 @@ export function getPersonsBySubdivision(subdivisionId) {
   })
 }
 
-// export function getPersonsBySearch(str) {
-//   return request({
-//     url: `/person/GetPersonsBySearch/${str}`,
-//     method: 'get'
-//   })
-// }
+
 export function getPersonsBySearch(subdivsion ,sname) {
   return request({
     url: '/person/getPersonsBySearch',
@@ -64,6 +60,23 @@ export function getSpecialGroups() {
   return request({
     url:  '/person/GetSpecialGroups',
     method: 'get'
+  })
+}
+export function getFields() {
+  return request({
+    url: '/person/GetFields',
+    method: 'get'
+  })
+}
+
+export function getDataByQuery(dataForms) {
+  return request({
+    url: '/person/GetDataByQuery',
+    method: 'post',
+    data: {
+      Items: dataForms
+    },
+    //dataForms, JSON.stringify(arrdataForms),
   })
 }
 
