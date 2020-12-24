@@ -199,7 +199,7 @@ export default {
       })
     },
      superQuery() {
-      debugger
+      //debugger         
       getDataByQuery(this.dataForms).then(response => {
         debugger
         this.filterdPersonHouseInfo = response
@@ -207,6 +207,7 @@ export default {
         debugger
         console.log(error)
       })
+      this.dialogVisible =false 
     },
     getSubdivsionsData() {
       getSubdivsions().then(response => {
