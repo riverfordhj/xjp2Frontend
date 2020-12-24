@@ -11,7 +11,7 @@
 			</el-button>
 			<el-radio-group v-model="exchangeValue" @change="radioExchange">
 				<el-radio-button label="人房数据"></el-radio-button>
-				<el-radio-button label="在编辑数据"></el-radio-button>
+				<el-radio-button label="历史数据"></el-radio-button>
 			</el-radio-group>
 			<div class="filterBar" v-if="exchangeValue != '人房数据'">
 				<el-select v-model="operationValue" clearable placeholder="全部" @change="selectStatus">
@@ -104,12 +104,12 @@
 							type="primary"
 							size="small"
 							icon="el-icon-edit"
-							@click="row.edit=!row.edit"
+							@click="row.edit = true"
 						>
 							修改
 						</el-button>
 					</el-button-group>
-					<el-button-group v-else-if="row.edit">
+					<el-button-group v-else-if="row.edit === true">
 						<el-button
 							class="cancel-btn"
 							size="small"
@@ -202,7 +202,7 @@
 		<create-new-person-house 
 			:dialog-visible-for-creating="dialogVisibleForCreating" 
 			:person-house-info="personHouseInfo" 
-			@createPersonHouse="handleCreate" 
+			@createPersonHouse="handleCreatePersonHouse" 
 			@closeCreatePanel="dialogVisibleForCreating = $event"
 		>
 		</create-new-person-house>
@@ -273,14 +273,17 @@ export default {
 			if(value === "人房数据"){
 				this.getPersonHouseInfo();
 			}else{
-				//请求人房的历史编辑数据（网格员）
-				SearchPersonHouseByNetGrid().then(res => {
-					this.handlePersonHouseInfo(res);
-					this.tempPersonHouseEditInfo = deepClone(this.personHouseInfo, []);
-				}).catch(err => {
-					console.log(err);
-				})
+				this.getHistoryDataByNetGrid();
 			}
+		},
+		getHistoryDataByNetGrid(){
+			//请求人房的历史编辑数据（网格员）
+			SearchPersonHouseByNetGrid().then(res => {
+				this.handlePersonHouseInfo(res);
+				this.tempPersonHouseEditInfo = deepClone(this.personHouseInfo, []);//返回一个深度克隆副本
+			}).catch(err => {
+				console.log(err);
+			})
 		},
 		//根据编辑状态过滤历史编辑数据
 		selectStatus(operationVal){
@@ -302,7 +305,7 @@ export default {
 			})
 		},
 		
-		//(网格员)对人房数据的增、删、改
+		//(网格员)对人房数据的增、删、改(接收返回的原有人房数据+在编辑数据)
 		updatePersonHouseInfo(data){
 			updatePersonHouseByNetGrid(data).then(res => {
 				this.handlePersonHouseInfo(res);
@@ -310,32 +313,48 @@ export default {
 				console.log(err);
 			});
 		},
+		//(网格员)对人房数据的增、删、改(不接收返回的原有人房数据+在编辑数据)
+		updatePersonHouseInfo_void(newFormData){
+			updatePersonHouseByNetGrid(newFormData).catch(err => {console.log(err)});
+		},
 		//（网格员）提交“新建”
-		async handleCreate(newVal){
-			await this.updatePersonHouseInfo(newVal);
+		async handleCreatePersonHouse(newFormData){
+			//根据radio按钮状态，请求后端方法
+			if(this.exchangeValue === "人房数据"){
+				await this.updatePersonHouseInfo(newFormData);
+			}else{
+				await this.updatePersonHouseInfo_void(newFormData);
+				await this.getHistoryDataByNetGrid();
+			}
 			this.dialogVisibleForCreating = false;
 		},
 		//（网格员）提交“删除”
 		handleDelete(row){
 			row.status = 'committed';
 			row.operation = 'deleting';
-			this.updatePersonHouseInfo(row);
+			this.handleCreatePersonHouse(row);
 		},
 		//（网格员）提交“更新”
-		handleUpdate (row){
-			row.edit = !row.edit;
+		async handleUpdate (row){
 			row.status = 'committed';
 			row.operation = 'updating';
-			this.updatePersonHouseInfo(row);
+			await this.handleCreatePersonHouse(row);
+			// row.edit = false;
 		},
 		//取消更新
-		cancelUpdate (row) {
-			row.edit = false;
+		async cancelUpdate (row) {
 			//重新请求人房信息
-			this.getPersonHouseInfo();
+			if(this.exchangeValue === "人房数据"){
+				await this.getPersonHouseInfo();
+			}else{
+				await this.getHistoryDataByNetGrid();
+			}
+			// row.edit = false;
+			row.status = row.tempStatus;
 		},
-		//社区审核未通过时，使得状态重置为null
+		//社区审核未通过时，将状态暂设为null
 		clickForReseting(row){
+			row.tempStatus = row.status;//为再编辑前的status（值为failed）创建一个副本，
 			row.status = null;
 		},
 		

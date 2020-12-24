@@ -67,7 +67,7 @@ const actions = {
         }
 
         // const { name, avatar } = data
-
+      
         commit('SET_NAME', data)// name
         commit('SET_AVATAR', avatar)
         resolve(data)

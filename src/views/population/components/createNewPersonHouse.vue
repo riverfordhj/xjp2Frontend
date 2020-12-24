@@ -97,7 +97,7 @@ export default {
 			roomsData: [],
 		}
 	},
-	beforeUpdate(){
+	created(){
 		this.getUserName();
 
 		if(this.userName === 'saxc1'){
@@ -125,7 +125,7 @@ export default {
 			})
 		},
 		//构造新建personHouse的参数，传给父组件
-		async handleCreate(){
+		handleCreate(){
 			this.formData.status = 'committed';
 			this.formData.operation = 'creating'
 			this.formData.netGrid = this.personHouseInfo[0].netGrid;
