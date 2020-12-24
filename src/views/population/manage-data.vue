@@ -58,10 +58,6 @@
       <el-table-column prop="subdivsionName" label="小区" />
       <el-table-column prop="bulidingName" label="楼栋" />
       <el-table-column prop="type" label="类型" />
-      <el-table-column prop="name" label="小区测试" />
-      
-      
-
     </el-table>
     
   <el-dialog title="高级检索" :visible.sync="dialogVisible"	width="40%" center>                                        
@@ -84,25 +80,11 @@
 			<el-button type="primary" icon="el-icon-check" @click="superQuery">查 询</el-button>
 		</span>
 	</el-dialog>
-
-    <!-- pivot 窗口 ss-->
-    <el-dialog title="提示" :visible.sync="pivotdialogVisible" width="80%">
-      <div id="pivot">
-        <span>Pivot</span>
-      </div>
-    </el-dialog>
   </div>
 </template>
 
 <script>
 import { getSubdivsions, getBuildingsBySub, getPersons, getPersonsByBuilding, getPersonsBySubdivision, getPersonsBySearch, getSpecialGroups,getFields,getDataByQuery } from '@/api/person.js'
-
-// const { JSDOM } = require('jsdom')
-// const { window } = new JSDOM('')
-// const jquery = require('jquery')(window)
-const $ = require('jquery')
-// import jquery from 'jquery'
-const { pivot, pivotUI } = require('pivottable')
 
 export default {
   name: 'PersonHouseData',
@@ -139,50 +121,18 @@ export default {
           label: '<='
         }],
 
-      tableKey: 0,
-      list: null,
-      total: 0,
-      listLoading: true,
       listQuery: {
         page: 1,
         limit: 20,
         name: '',
         subdivsion: '',
         building: undefined,
-        // room: undefined,
         filter: '',
         sort: '+id',
         sname: ''
       },
 
       sortOptions: [{ label: 'ID Ascending', key: '+id' }, { label: 'ID Descending', key: '-id' }],
-      statusOptions: ['published', 'draft', 'deleted'],
-      showReviewer: false,
-      temp: {
-        id: undefined,
-        importance: 1,
-        remark: '',
-        timestamp: new Date(),
-        title: '',
-        type: '',
-        status: 'published'
-      },
-      dialogFormVisible: false,
-      dialogStatus: '',
-      textMap: {
-        update: 'Edit',
-        create: 'Create'
-      },
-      dialogPvVisible: false,
-      pvData: [],
-      rules: {
-        type: [{ required: true, message: 'type is required', trigger: 'change' }],
-        timestamp: [{ type: 'date', required: true, message: 'timestamp is required', trigger: 'change' }],
-        title: [{ required: true, message: 'title is required', trigger: 'blur' }]
-      },
-      downloadLoading: false,
-
-      pivotdialogVisible: false, // pivot 控制窗口显示
       myStyle: {
         display: "none"
       }
@@ -241,7 +191,7 @@ export default {
     getFieldsData() {
       //debugger
       getFields().then(response => {
-        debugger
+        // debugger
         this.fields = response
       }).catch(error => {
         debugger
@@ -249,7 +199,7 @@ export default {
       })
     },
      superQuery() {
-      debugger
+      //debugger         
       getDataByQuery(this.dataForms).then(response => {
         debugger
         this.filterdPersonHouseInfo = response
@@ -257,6 +207,7 @@ export default {
         debugger
         console.log(error)
       })
+      this.dialogVisible =false 
     },
     getSubdivsionsData() {
       getSubdivsions().then(response => {
@@ -321,15 +272,6 @@ export default {
         }
       }
     },
-    // handleLocalFilter() {
-    //   // debugger
-    //   var value = this.listQuery.sname
-    //   if (this.listQuery.sname) {
-    //     this.filterdPersonHouseInfo = this.personHouseInfo.filter(item => item.person.name.indexOf(value) !== -1)
-    //   } else {
-    //     this.filterdPersonHouseInfo = this.personHouseInfo
-    //   }
-    // },
     searchPerson() {
       debugger
       var subdivsionsid= this.listQuery.subdivsion.toString()
@@ -366,24 +308,6 @@ export default {
       // const value = Number(str)
       // // debugger
       // return value
-    },
-    showPivotdialog() {
-      this.pivotdialogVisible = true
-      debugger
-      $('#pivot').pivotUI(
-        [
-          { color: 'blue', shape: 'circle' },
-          { color: 'red', shape: 'triangle' }
-        ],
-        {
-          rows: ['color'],
-          cols: ['shape']
-        }
-      )
-      // click(e => console.log('jqery is ok!'))
-    },
-    handleSuperFilter(){
-
     }
   }
 }
