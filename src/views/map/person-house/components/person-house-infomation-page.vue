@@ -161,7 +161,10 @@ export default {
     },
     close() {
       this.personHouseInfo.show = false
-    }
+		},
+		handleFilter(){
+			
+		}
   }
 }
 </script>

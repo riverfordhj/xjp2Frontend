@@ -60,10 +60,9 @@ import { GetBuildingsByNetGrid, GetRoomsByBuildingAndNetgrid } from '@/api/perso
 export default {
 	name: 'createNewPersonHouse',
 	props: {
-		personHouseInfo: {
-			type: Array,
-			required: true,
-			defualt: []
+		recordsObj: {
+			type: Object,
+			required: true
 		},
 		dialogVisibleForCreating: {
 			type: Boolean,
@@ -128,8 +127,8 @@ export default {
 		handleCreate(){
 			this.formData.status = 'committed';
 			this.formData.operation = 'creating'
-			this.formData.netGrid = this.personHouseInfo[0].netGrid;
-			this.formData.communityName = this.personHouseInfo[0].communityName;
+			this.formData.netGrid = this.recordsObj.netGridName;
+			this.formData.communityName = this.recordsObj.communityName;
 
 			this.$emit('createPersonHouse', this.formData);
 		},

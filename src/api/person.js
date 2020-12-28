@@ -150,6 +150,15 @@ export function updatePersonHouseByNetGrid(editParams) {
 	})
 }
 
+//（网格员）修改人房数据（不返回数据）
+export function updatePersonHouseByNetGrid_void(editParams) {
+	return request({
+		url: '/person/UpdatePersonHouseByNetGrid_void',
+		method: 'post',
+		data: editParams
+	})
+}
+
 //社区审核网格员修改后的人房数据
 export function VerifyByCommunity(VerifyData) {
   return request({

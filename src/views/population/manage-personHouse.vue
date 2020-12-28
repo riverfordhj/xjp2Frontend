@@ -13,16 +13,9 @@
 				<el-radio-button label="人房数据"></el-radio-button>
 				<el-radio-button label="历史数据"></el-radio-button>
 			</el-radio-group>
-			<div class="filterBar" v-if="exchangeValue != '人房数据'">
-				<el-select v-model="operationValue" clearable placeholder="全部" @change="selectStatus">
-					<el-option
-						v-for="item in statusOptions"
-						:key="item.value"
-						:label="item.label"
-						:value="item.value">
-					</el-option>
-				</el-select>
-			</div>
+
+			<!-- 历史数据的过滤栏 -->
+			<filter-panel v-if="exchangeValue != '人房数据'" @operationChange="selectOperation" @statusChange="selectStatus" @timePicked="selectTimeRange" @reset="resetFilterData"></filter-panel>
 		</div>
 	
 		<el-table
@@ -202,7 +195,8 @@
 		<create-new-person-house 
 			:dialog-visible-for-creating="dialogVisibleForCreating" 
 			:person-house-info="personHouseInfo" 
-			@createPersonHouse="handleCreatePersonHouse" 
+			:records-obj="recordsObj"
+			@createPersonHouse="getPersonHouseByExchangeValue" 
 			@closeCreatePanel="dialogVisibleForCreating = $event"
 		>
 		</create-new-person-house>
@@ -213,13 +207,15 @@
 <script>
 
 import { GetPersonHouseInfoByUser, 
-				 updatePersonHouseByNetGrid, 
+				 updatePersonHouseByNetGrid,
+				 updatePersonHouseByNetGrid_void, 
 				 VerifyByCommunity, 
 				 ConfirmByAdmin,
 				 SearchPersonHouseByNetGrid } from '@/api/person.js';
 
 import { deepClone } from '@/utils/tools.js'
 import createNewPersonHouse from './components/createNewPersonHouse.vue';
+import filterPanel from './components/filterPanel.vue';
 
 export default {
 	name: 'nanage-personHouse',
@@ -231,29 +227,22 @@ export default {
 			// rolesObj: ['网格员', '水岸星城', 'Administrator'],
 			
 			exchangeValue: '人房数据',
-			operationValue: '',
-			statusOptions: [
-				{
-          value: 'all',
-          label: '全部'
-				},{
-          value: 'creating',
-          label: '新建'
-				},{
-          value: 'updating',
-          label: '修改'
-        },{
-          value: 'deleting',
-          label: '删除'
-        }
-			],
+			
 			tempPersonHouseEditInfo: [],
 
 			dialogVisibleForCreating: false,
+
+			//记录登录的网格员所属的网格和社区
+			recordsObj: {
+				netGridName: '',
+				communityName: ''
+			}
+		
 		}
 	},
 	components: {
-		createNewPersonHouse
+		createNewPersonHouse,
+		filterPanel
 	},
 	created(){
 		this.getUserName();
@@ -264,10 +253,22 @@ export default {
 		getPersonHouseInfo (){
 			GetPersonHouseInfoByUser().then((res) => {
 				this.handlePersonHouseInfo(res);
+				this.recordsObj.netGridName = res[0].netGrid;
+				this.recordsObj.communityName = res[0].communityName;
 			}).catch(err => {
 				console.log(err);
 			})
 		},
+		//为每条信息（对象）添加新属性
+		handlePersonHouseInfo (data){
+			this.personHouseInfo = data.map(item => {
+				if(this.userName === 'saxc1'){
+					item.edit = false;//edit: 控制修改部件的显示
+				}
+				return item;
+			})
+		},
+
 		//切换“人房数据”和“人房在编辑数据”
 		radioExchange(value){
 			if(value === "人房数据"){
@@ -285,24 +286,30 @@ export default {
 				console.log(err);
 			})
 		},
-		//根据编辑状态过滤历史编辑数据
-		selectStatus(operationVal){
-			if(operationVal != "all"){
-				this.personHouseInfo = this.tempPersonHouseEditInfo.filter((item, index) => {
-					return item.operation === operationVal;
-				})
-			}else{
-				this.personHouseInfo = this.tempPersonHouseEditInfo;
-			}
-		},
-		//为每条信息（对象）添加新属性
-		handlePersonHouseInfo (data){
-			this.personHouseInfo = data.map(item => {
-				if(this.userName === 'saxc1'){
-					item.edit = false;//edit: 控制修改部件的显示
-				}
-				return item;
+		//历史数据的过滤工具函数
+		filterToolFun(key, value){
+			this.personHouseInfo = this.tempPersonHouseEditInfo.filter((item, index) => {
+				return item[key] === value;
 			})
+		},
+		//根据编辑类型过滤历史编辑数据（针对网格员）
+		selectOperation(operationVal){
+			this.filterToolFun('operation', operationVal);
+		},
+		//根据状态过滤历史编辑数据（针对网格员）
+		selectStatus(statusVal){
+			this.filterToolFun('status', statusVal);
+		},
+		//根据编辑时间过滤历史编辑数据（针对网格员）
+		selectTimeRange(startTime, endTime){
+			this.personHouseInfo = this.tempPersonHouseEditInfo.filter((item, index) => {
+				let editTime = new Date(item.editTime).getTime(); 
+				return editTime >= startTime && editTime <= endTime;
+			})
+		},
+		//重置：显示所有历史编辑数据
+		resetFilterData(){
+			this.personHouseInfo = this.tempPersonHouseEditInfo;
 		},
 		
 		//(网格员)对人房数据的增、删、改(接收返回的原有人房数据+在编辑数据)
@@ -313,17 +320,13 @@ export default {
 				console.log(err);
 			});
 		},
-		//(网格员)对人房数据的增、删、改(不接收返回的原有人房数据+在编辑数据)
-		updatePersonHouseInfo_void(newFormData){
-			updatePersonHouseByNetGrid(newFormData).catch(err => {console.log(err)});
-		},
 		//（网格员）提交“新建”
-		async handleCreatePersonHouse(newFormData){
+		async getPersonHouseByExchangeValue(newFormData){
 			//根据radio按钮状态，请求后端方法
 			if(this.exchangeValue === "人房数据"){
 				await this.updatePersonHouseInfo(newFormData);
 			}else{
-				await this.updatePersonHouseInfo_void(newFormData);
+				await updatePersonHouseByNetGrid_void(newFormData).catch(err => {console.log(err)});
 				await this.getHistoryDataByNetGrid();
 			}
 			this.dialogVisibleForCreating = false;
@@ -332,14 +335,13 @@ export default {
 		handleDelete(row){
 			row.status = 'committed';
 			row.operation = 'deleting';
-			this.handleCreatePersonHouse(row);
+			this.getPersonHouseByExchangeValue(row);
 		},
 		//（网格员）提交“更新”
 		async handleUpdate (row){
 			row.status = 'committed';
 			row.operation = 'updating';
-			await this.handleCreatePersonHouse(row);
-			// row.edit = false;
+			await this.getPersonHouseByExchangeValue(row);
 		},
 		//取消更新
 		async cancelUpdate (row) {
@@ -349,7 +351,6 @@ export default {
 			}else{
 				await this.getHistoryDataByNetGrid();
 			}
-			// row.edit = false;
 			row.status = row.tempStatus;
 		},
 		//社区审核未通过时，将状态暂设为null
@@ -372,7 +373,6 @@ export default {
 		},
 		//(社区)审核修改
 		verifyEdit (row, statusVal){
-			debugger;
 			let pramasObj = this.paramsFun(row, statusVal);
 			VerifyByCommunity(pramasObj).catch(err => {
 				console.log(err);
@@ -441,10 +441,6 @@ export default {
 <style scoped>
 	.toolbar{
 		margin: 5px;
-	}
-
-	.filterBar{
-		display: inline-block;
 	}
 
 	.personHouseTable >>> div.cell,
