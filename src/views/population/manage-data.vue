@@ -63,7 +63,7 @@
   <el-dialog title="高级检索" :visible.sync="dialogVisible"	width="40%" center>                                        
 		<el-form  class="advanced-search" label-width="100px">
       <el-form-item  v-for="queryitem in dataForms" :key="queryitem.key">
-          <el-select v-model="queryitem.field" placeholder="字段" clearable style="width: 100px;">
+          <el-select v-model="queryitem.field" placeholder="字段" clearable style="width: 100px;" @change="filteroperato">
             <el-option v-for="(item, index) in fields" :key="index" :label="item" :value="item"/>
           </el-select>
           <el-select v-model="queryitem.operato" placeholder="运算符" clearable style="width: 100px;">
@@ -104,23 +104,7 @@ export default {
           sname:'',          
         }
       ],
-      options: [{
-          value: '选项1',
-          label: '<'
-        }, {
-          value: '选项2',
-          label: '>'
-        }, {
-          value: '选项3',
-          label: '='
-        }, {
-          value: '选项4',
-          label: '>='
-        }, {
-          value: '选项5',
-          label: '<='
-        }],
-
+      options: [],
       listQuery: {
         page: 1,
         limit: 20,
@@ -273,7 +257,7 @@ export default {
       }
     },
     searchPerson() {
-      debugger
+      //debugger
       var subdivsionsid= this.listQuery.subdivsion.toString()
       var advancedname = this.listQuery.sname 
       getPersonsBySearch(subdivsionsid,advancedname).then(response => {
@@ -308,7 +292,27 @@ export default {
       // const value = Number(str)
       // // debugger
       // return value
-    }
+    },
+    filteroperato(val){
+      if (val == "小区" || val == "楼栋" || val == "房间" || val == "姓名" || val == "电话" || val == "身份证" || val == "姓名" ){
+         debugger
+        this.options =  [{
+          value: '选项1',
+          label: '='
+        }]
+       }else if(val == "年龄"){
+        this.options =  [{
+          value: '选项1',
+          label: '='
+        }, {
+          value: '选项2',
+          label: '介于'
+        }]
+       }else
+       {
+         return this.options
+       }
+    },
   }
 }
 </script>
