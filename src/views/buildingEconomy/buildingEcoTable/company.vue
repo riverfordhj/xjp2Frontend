@@ -180,7 +180,7 @@ export default {
 		},
 		handleDoubleClick(row, column, event){
 			this.$router.push({name: 'buildingEcoMap'});
-      setTimeout(this.handleDelivery.bind(this, row), 6000);
+      this.handleDelivery(row);
 		},
 		handleDelivery(row){
 			getInfoByBuildingNameAndFloor(row.buildingName, row.floor).then( (res) => {

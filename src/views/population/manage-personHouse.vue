@@ -15,7 +15,7 @@
 			</el-radio-group>
 
 			<!-- 历史数据的过滤栏 -->
-			<filter-panel v-if="exchangeValue != '人房数据'" @operationChange="selectOperation" @statusChange="selectStatus" @timePicked="selectTimeRange" @reset="resetFilterData"></filter-panel>
+			<filter-panel v-if="exchangeValue != '人房数据' && userName ==='saxc1'" @operationChange="selectOperation" @statusChange="selectStatus" @timePicked="selectTimeRange" @reset="resetFilterData"></filter-panel>
 		</div>
 	
 		<el-table
