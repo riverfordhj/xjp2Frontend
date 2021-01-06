@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@hscmap/vue-menu": "^2.10.0",
-    "axios": "^0.18.1",
+    "axios": "^0.21.1",
     "c3": "^0.7.20",
     "cesium": "^1.59.0",
     "cesium-navigation-es6": "1.0.9",
