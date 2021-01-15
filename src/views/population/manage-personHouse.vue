@@ -15,17 +15,26 @@
 			</el-radio-group>
 
 			<!-- 历史数据的过滤栏 -->
-			<filter-panel v-if="exchangeValue != '人房数据' && userName ==='saxc1'" @operationChange="selectOperation" @statusChange="selectStatus" @timePicked="selectTimeRange" @reset="resetFilterData"></filter-panel>
+			<filter-panel
+			  v-if="exchangeValue != '人房数据' && userName ==='saxc1'" 
+				@operationChange="selectOperation" 
+				@statusChange="selectStatus" 
+				@timePicked="selectTimeRange" 
+				@reset="resetFilterData">
+			</filter-panel>
+
+      <!-- 导出当前表数据，格式为xlsx -->
+			<export-to-xlsx :table-header="tableHeaderForXlsx" :filter-fields="filterValForXlsx" :person-house-data="personHouseList"></export-to-xlsx>
 		</div>
 	
 		<el-table
-			:data="personHouseInfo" 
-			height="920" 
+			:data="personHouseList" 
+			height="835" 
 			border
 			class="personHouseTable"	
 			style="width: 100%"
 		>
-			<el-table-column 	align="center" type="index"	width="80" label="ID">
+			 <el-table-column align="center" type="index" :index="customizeIndex"	width="80" label="ID">
 			</el-table-column>
 			<el-table-column align="center" label="身份证" width="180">
 						<template slot-scope="{row}">
@@ -191,15 +200,16 @@
 				</template>
 			</el-table-column>
 		</el-table>
-
+    <!-- 新建 -->
 		<create-new-person-house 
 			:dialog-visible-for-creating="dialogVisibleForCreating" 
-			:person-house-info="personHouseInfo" 
 			:records-obj="recordsObj"
 			@createPersonHouse="getPersonHouseByExchangeValue" 
 			@closeCreatePanel="dialogVisibleForCreating = $event"
 		>
 		</create-new-person-house>
+    <!-- 分页显示 -->
+		<pagination :total-num="total" :page.sync="paginationSetting.curPage" :limit.sync="paginationSetting.limit" ></pagination>
 	
 	</div>
 </template>
@@ -216,9 +226,12 @@ import { GetPersonHouseInfoByUser,
 import { deepClone } from '@/utils/tools.js'
 import createNewPersonHouse from './components/createNewPersonHouse.vue';
 import filterPanel from './components/filterPanel.vue';
+import pagination from './components/pagination.vue';
+import exportToXlsx from './components/exportToXlsx';
+import ExportToXlsx from './components/exportToXlsx.vue';
 
 export default {
-	name: 'nanage-personHouse',
+	name: 'manage-personHouse',
 	data(){
 		return {
 			personHouseInfo: [],
@@ -236,17 +249,42 @@ export default {
 			recordsObj: {
 				netGridName: '',
 				communityName: ''
+			},
+			
+			//xlsx表配置项（表头、数据）
+			tableHeaderForXlsx: ['身份证', '姓名', '电话', '是否为户主','与户主的关系','人口性质','房屋性质','房间名','所属楼栋','编辑状态'],
+			filterValForXlsx: ['personId', 'name', 'phone','isHouseholder','relationWithHouseholder','populationCharacter','category','roomName','所属楼栋','status'],
+			
+			//分页默认配置
+			paginationSetting: {
+				limit: 20,
+				curPage: 1
 			}
-		
+
 		}
 	},
 	components: {
 		createNewPersonHouse,
-		filterPanel
+		filterPanel,
+		pagination,
+		exportToXlsx
 	},
 	created(){
 		this.getUserName();
 		this.getPersonHouseInfo();
+	},
+	computed:{
+		total(){
+			return this.personHouseInfo.length;
+		},
+		personHouseList(){
+			return this.personHouseInfo.filter((item, index) => {
+				return index >= (this.paginationSetting.curPage - 1) * this.paginationSetting.limit && index < this.paginationSetting.curPage * this.paginationSetting.limit;
+			})
+		},
+		customizeIndex(){
+			return (this.paginationSetting.curPage - 1) * this.paginationSetting.limit + 1;
+		}
 	},
 	methods:{
 		//请求人房信息
@@ -270,12 +308,14 @@ export default {
 		},
 
 		//切换“人房数据”和“人房在编辑数据”
-		radioExchange(value){
+		async radioExchange(value){
 			if(value === "人房数据"){
-				this.getPersonHouseInfo();
+				await this.getPersonHouseInfo();
 			}else{
-				this.getHistoryDataByNetGrid();
+				await this.getHistoryDataByNetGrid();
 			}
+			//每次切换数据时，重置queryList
+			this.resetPaginationSetting();
 		},
 		getHistoryDataByNetGrid(){
 			//请求人房的历史编辑数据（网格员）
@@ -290,7 +330,8 @@ export default {
 		filterToolFun(key, value){
 			this.personHouseInfo = this.tempPersonHouseEditInfo.filter((item, index) => {
 				return item[key] === value;
-			})
+			});
+			this.resetPaginationSetting();
 		},
 		//根据编辑类型过滤历史编辑数据（针对网格员）
 		selectOperation(operationVal){
@@ -305,11 +346,20 @@ export default {
 			this.personHouseInfo = this.tempPersonHouseEditInfo.filter((item, index) => {
 				let editTime = new Date(item.editTime).getTime(); 
 				return editTime >= startTime && editTime <= endTime;
-			})
+			});
+			this.resetPaginationSetting();
 		},
 		//重置：显示所有历史编辑数据
 		resetFilterData(){
 			this.personHouseInfo = this.tempPersonHouseEditInfo;
+			this.resetPaginationSetting();
+		},
+		//重置queryList为默认值
+		resetPaginationSetting(){
+			this.paginationSetting = {
+				limit: 20,
+				curPage: 1
+			}
 		},
 		
 		//(网格员)对人房数据的增、删、改(接收返回的原有人房数据+在编辑数据)
@@ -426,6 +476,7 @@ export default {
 					return '未通过批准, 点击驳回'
 			}
 		},
+		//街道显示数据状态映射
 		adminStatusMap(statusVal){
 			switch(statusVal){
 				case 'approved':

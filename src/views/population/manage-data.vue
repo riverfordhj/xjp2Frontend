@@ -23,10 +23,15 @@
         特殊人群
       </el-button> 
       <el-button class="filter-item" type="primary" icon="el-icon-search" @click="dialogVisible = true">高级检索</el-button> 
+
+			 <!-- 导出当前表数据，格式为xlsx -->
+			<export-to-xlsx :table-header="tableHeaderForXlsx" :filter-fields="filterValForXlsx" :person-house-data="personHouseList"></export-to-xlsx>
     </div>
 
-    <el-table :data="filterdPersonHouseInfo" height="800" border style="width: 100%" :row-class-name="tableRowClassName">
-      
+    <el-table :data="personHouseList" height="835" border style="width: 100%" :row-class-name="tableRowClassName">
+			
+      <el-table-column 	align="center" type="index" :index="customizeIndex"	width="80" label="ID">
+			</el-table-column>
       <el-table-column prop="roomNO" label="房号" sortable width="80" :sort-method="sortRoomNO" />
       <el-table-column prop="person.name" label="姓名" width="80">
         <template slot-scope="scope">
@@ -43,7 +48,7 @@
       <el-table-column prop="person.personId" label="身份证" width="170" />
       <el-table-column prop="person.phone" label="电话" width="120" />
       <el-table-column prop="person.ethnicGroups" label="民族" width="80" />
-      <el-table-column prop="isOwner" label="产权人" width="80" :formatter="formatter" />
+      <el-table-column prop="isOwner" label="产权人" width="80" />
       <el-table-column prop="isHouseholder" label="户主" width="80" />
       <el-table-column prop="relationWithHouseholder" label="与户主关系" />
       <el-table-column prop="isLiveHere" label="在此居住" width="80" />
@@ -80,11 +85,16 @@
 			<el-button type="primary" icon="el-icon-check" @click="superQuery">查 询</el-button>
 		</span>
 	</el-dialog>
+
+	<!-- 分页显示 -->
+	<pagination :total-num="total" :page.sync="paginationSetting.curPage" :limit.sync="paginationSetting.limit" ></pagination>
   </div>
 </template>
 
 <script>
 import { getSubdivsions, getBuildingsBySub, getPersons, getPersonsByBuilding, getPersonsBySubdivision, getPersonsBySearch, getSpecialGroups,getFields,getDataByQuery } from '@/api/person.js'
+import exportToXlsx from './components/exportToXlsx';
+import pagination from './components/pagination.vue';
 
 export default {
   name: 'PersonHouseData',
@@ -119,9 +129,24 @@ export default {
       sortOptions: [{ label: 'ID Ascending', key: '+id' }, { label: 'ID Descending', key: '-id' }],
       myStyle: {
         display: "none"
-      }
+			},
+
+			//xlsx表配置项（表头、数据）
+			tableHeaderForXlsx: ['房号', '姓名', '身份证', '电话','民族','产权人','户主','与户主关系','在此居住','人口性质','寄住原因','户籍地址','公司','海外华人','政治面貌','组织关系','社区','小区','楼栋','类型'],
+			filterValForXlsx: ['roomNO', 'person.name', 'person.personId','person.phone','person.ethnicGroups','isOwner','isHouseholder','relationWithHouseholder','isLiveHere','populationCharacter'
+													,'lodgingReason','person.address','person.company','person.isOverseasChinese','person.politicalState','person.organizationalRelation','communityName','subdivsionName'
+													,'bulidingName','type'],
+			//分页默认配置
+			paginationSetting: {
+				limit: 20,
+				curPage: 1
+			}
     }
-  },
+	},
+	components: {
+		exportToXlsx,
+		pagination
+	},
   // 数据管理，小区楼栋筛选
   computed: {
     filteredSubdivsions() {
@@ -140,7 +165,18 @@ export default {
         if (value[1]) { return this.buildings.filter(item => item.name.indexOf(value[1]) !== -1) }
       }
       return this.buildings
-    },
+		},
+		total(){
+			return this.filterdPersonHouseInfo.length;
+		},
+		personHouseList(){
+			return this.filterdPersonHouseInfo.filter((item, index) => {
+				return index >= (this.paginationSetting.curPage - 1) * this.paginationSetting.limit && index < this.paginationSetting.curPage * this.paginationSetting.limit;
+			})
+		},
+		customizeIndex(){
+			return (this.paginationSetting.curPage - 1) * this.paginationSetting.limit + 1;
+		}
   },
   created() {
     this.getSubdivsionsData()
@@ -149,26 +185,26 @@ export default {
   mounted() {
   },
   methods: {
-      removeform(item) {
-        var index = this.dataForms.indexOf(item)
-        if (index !== -1) {
-          this.dataForms.splice(index, 1)
-        }
-      },
-      addform() {
-        this.dataForms.push({
-          field:'',
-          operato: '',
-          sname:'',
-          key: Date.now()
-        });
-      },
+		removeform(item) {
+			var index = this.dataForms.indexOf(item)
+			if (index !== -1) {
+				this.dataForms.splice(index, 1)
+			}
+		},
+		addform() {
+			this.dataForms.push({
+				field:'',
+				operato: '',
+				sname:'',
+				key: Date.now()
+			});
+		},
     getSpecialGroupsData() {  
       getSpecialGroups().then(response => {
          // debugger
-        this.filterdPersonHouseInfo = this.personHouseInfo = response
+				this.filterdPersonHouseInfo = this.personHouseInfo = response;
+				this.resetPaginationSetting();
       }).catch(error => {
-        debugger
         console.log(error)
       })
     },
@@ -178,17 +214,15 @@ export default {
         // debugger
         this.fields = response
       }).catch(error => {
-        debugger
         console.log(error)
       })
     },
      superQuery() {
       //debugger         
       getDataByQuery(this.dataForms).then(response => {
-        debugger
-        this.filterdPersonHouseInfo = response
+				this.filterdPersonHouseInfo = response;
+				this.resetPaginationSetting();
       }).catch(error => {
-        debugger
         console.log(error)
       })
       this.dialogVisible =false 
@@ -198,7 +232,6 @@ export default {
         // debugger
         this.subdivsions = response
       }).catch(error => {
-        debugger
         console.log(error)
       })
     },
@@ -212,7 +245,6 @@ export default {
         // debugger
         this.buildings = response
       }).catch(error => {
-        debugger
         console.log(error)
       })
     },
@@ -221,7 +253,6 @@ export default {
         // debugger
         this.filterdPersonHouseInfo = this.personHouseInfo = response
       }).catch(error => {
-        debugger
         console.log(error)
       })
     },
@@ -230,9 +261,9 @@ export default {
       getPersonsBySubdivision(this.listQuery.subdivsion).then(response => {
         //debugger
         this.personHouseInfo = response;
-        this.filterdPersonHouseInfo  = response;
+				this.filterdPersonHouseInfo  = response;
+				this.resetPaginationSetting();
       }).catch(error => {
-        debugger
         console.log(error)
       })
     },
@@ -240,9 +271,9 @@ export default {
        //debugger
       getPersonsByBuilding(this.listQuery.building).then(response => {
         // debugger
-        this.filterdPersonHouseInfo = this.personHouseInfo = response
+				this.filterdPersonHouseInfo = this.personHouseInfo = response;
+				this.resetPaginationSetting();
       }).catch(error => {
-        debugger
         console.log(error)
       })
     },
@@ -261,10 +292,9 @@ export default {
       var subdivsionsid= this.listQuery.subdivsion.toString()
       var advancedname = this.listQuery.sname 
       getPersonsBySearch(subdivsionsid,advancedname).then(response => {
-         debugger
-        this.filterdPersonHouseInfo = response
+				this.filterdPersonHouseInfo = response;
+				this.resetPaginationSetting();
       }).catch(error => {
-        debugger
         console.log(error)
       })
     },
@@ -275,9 +305,6 @@ export default {
       //   return 'warning-row'
       // }
       // return ''
-    },
-    formatter(row, column) {
-      // debugger
     },
     // 将房号转换为数值，进行排序
     sortRoomNO(row, column) {
@@ -294,8 +321,7 @@ export default {
       // return value
     },
     filteroperato(val){
-      if (val == "小区" || val == "楼栋" || val == "房间" || val == "姓名" || val == "电话" || val == "身份证" || val == "姓名" ){
-         debugger
+      if (val == "小区" || val == "楼栋" || val == "房间" || val == "姓名" || val == "电话" || val == "身份证" || val == "姓名" || val == "性别" ){
         this.options =  [{
           value: '选项1',
           label: '='
@@ -312,7 +338,18 @@ export default {
        {
          return this.options
        }
-    },
+		},
+		// customizeIndex(index){
+		// 	return (this.pagination.curPage - 1)
+		// }
+
+		//重置queryList为默认值
+		resetPaginationSetting(){
+			this.paginationSetting = {
+				limit: 20,
+				curPage: 1
+			}
+		}
   }
 }
 </script>
