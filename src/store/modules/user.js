@@ -15,7 +15,8 @@ import {
 const state = {
   token: getToken(),
   name: '',
-  avatar: ''
+	avatar: '',
+	role: '',
 }
 
 const mutations = {
@@ -27,7 +28,10 @@ const mutations = {
   },
   SET_AVATAR: (state, avatar) => {
     state.avatar = avatar
-  }
+	},
+	SET_ROLE: (state, role) => {
+		state.role = role;
+	}
 }
 
 const actions = {
@@ -58,19 +62,20 @@ const actions = {
   }) {
     return new Promise((resolve, reject) => {
       getInfo(state.token).then(response => {
-        // const { data } = response
-        const data = response[0].value
+				const name = response[0].value;
+				const role = response[5].value;
         const avatar = ''
-
-        if (!data) {
+   
+        if (!name) {
           reject('Verification failed, please Login again.')
         }
 
-        // const { name, avatar } = data
+        // const { name, avatar } = name
       
-        commit('SET_NAME', data)// name
-        commit('SET_AVATAR', avatar)
-        resolve(data)
+        commit('SET_NAME', name)// name
+				commit('SET_AVATAR', avatar)
+				commit('SET_ROLE', role);
+        resolve(name)
       }).catch(error => {
         reject(error)
       })

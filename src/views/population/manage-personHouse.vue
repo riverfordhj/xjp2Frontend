@@ -2,7 +2,7 @@
 	<div class="container">
 		<div class="toolbar">
 			<el-button 
-				v-if="userName === 'saxc1'"
+				v-if="checkPermission('网格员')"
 				type="primary" 
 				icon="el-icon-edit"
 				@click="dialogVisibleForCreating = true"
@@ -16,7 +16,7 @@
 
 			<!-- 历史数据的过滤栏 -->
 			<filter-panel
-			  v-if="exchangeValue != '人房数据' && userName ==='saxc1'" 
+			  v-if="exchangeValue != '人房数据' && checkPermission('网格员')" 
 				@operationChange="selectOperation" 
 				@statusChange="selectStatus" 
 				@timePicked="selectTimeRange" 
@@ -79,6 +79,12 @@
 							<span v-else>{{ row.category }}</span>
 						</template>
 			</el-table-column>
+			<el-table-column align="center" label="房屋用途" width="120">
+						<template slot-scope="{row}">
+							<el-input v-if="row.edit" v-model="row.roomUse" class="edit-input" size="small" clearable/>
+							<span v-else>{{ row.roomUse }}</span>
+						</template>
+			</el-table-column>
 			<el-table-column align="center" label="房间名" width="120">
 						<template slot-scope="{row}">
 							<span>{{ row.roomName }}</span>
@@ -91,7 +97,7 @@
 			</el-table-column>
 			
 		
-			<el-table-column  v-if="userName === 'saxc1'" align="center" label="编辑" width="180">
+			<el-table-column  v-if="checkPermission('网格员')" align="center" label="编辑" width="180">
 				<template slot-scope="{row}">
 					<el-button-group v-if="row.edit === false && row.status === null">
 						<el-button
@@ -140,7 +146,7 @@
 				</template>
 			</el-table-column>
       
-			<el-table-column v-if="userName === 'saxc'" align="center" label="编辑" width="220">
+			<el-table-column v-if="checkPermission('社区')" align="center" label="编辑" width="220">
 				<template  slot-scope="{row}">
 					<el-button
 						v-if="waitingForConfirm(row)"
@@ -171,7 +177,7 @@
 				</template>
 			</el-table-column>
 
-			<el-table-column v-if="userName === 'admin'" align="center" label="编辑" width="220">
+			<el-table-column v-if="checkPermission('Administrator')" align="center" label="编辑" width="220">
 				<template  slot-scope="{row}">
 					<el-button
 						v-if="statusWithAdmin(row.status)"
@@ -223,19 +229,19 @@ import { GetPersonHouseInfoByUser,
 				 ConfirmByAdmin,
 				 SearchPersonHouseByNetGrid } from '@/api/person.js';
 
-import { deepClone } from '@/utils/tools.js'
+import { deepClone } from '@/utils/tools.js';
+import checkPermission from '@/utils/permission.js';//权限判断函数
+
 import createNewPersonHouse from './components/createNewPersonHouse.vue';
 import filterPanel from './components/filterPanel.vue';
 import pagination from './components/pagination.vue';
 import exportToXlsx from './components/exportToXlsx';
-import ExportToXlsx from './components/exportToXlsx.vue';
 
 export default {
 	name: 'manage-personHouse',
 	data(){
 		return {
 			personHouseInfo: [],
-			userName: '',
 		
 			// rolesObj: ['网格员', '水岸星城', 'Administrator'],
 			
@@ -270,7 +276,6 @@ export default {
 		exportToXlsx
 	},
 	created(){
-		this.getUserName();
 		this.getPersonHouseInfo();
 	},
 	computed:{
@@ -300,7 +305,7 @@ export default {
 		//为每条信息（对象）添加新属性
 		handlePersonHouseInfo (data){
 			this.personHouseInfo = data.map(item => {
-				if(this.userName === 'saxc1'){
+				if(this.checkPermission('网格员')){
 					item.edit = false;//edit: 控制修改部件的显示
 				}
 				return item;
@@ -438,10 +443,7 @@ export default {
 			})
 		},
 
-		//获取登录名
-		getUserName (){
-			this.userName = this.$store.getters.name;
-		},
+		checkPermission,//权限判断函数
 
 		//当status属性不为nul，表明当前行数据处于修改之后
 		waitingForVerify(row){

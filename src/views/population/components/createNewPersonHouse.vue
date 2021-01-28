@@ -17,7 +17,10 @@
 					<el-input v-model="formData.phone" placeholder="电话"></el-input>
 				</el-form-item>	
 				<el-form-item label="是否为户主" >
-					<el-input v-model="formData.isHouseholder" placeholder="是否为户主"></el-input>
+					<el-radio-group v-model="formData.isHouseholder" size="small">
+						<el-radio label="是" border>是</el-radio>
+						<el-radio label="否" border>否</el-radio>
+					</el-radio-group>
 				</el-form-item>
 				<el-form-item label="与户主的关系" >
 					<el-input v-model="formData.relationWithHouseholder" placeholder="与户主的关系"></el-input>
@@ -26,7 +29,16 @@
 					<el-input v-model="formData.populationCharacter" placeholder="人口性质"></el-input>
 				</el-form-item>
 				<el-form-item label="房屋性质" >
-					<el-input v-model="formData.category" placeholder="房屋性质"></el-input>
+					  <el-select v-model="formData.category" placeholder="请选择">
+							<el-option v-for="item in categoryValueArray" :key="item" :label="item" :value="item"></el-option>
+						</el-select>
+				</el-form-item>
+				<el-form-item label="房屋用途" >
+					 <el-radio-group v-model="formData.roomUse" size="small">
+						<el-radio label="居住" border>居住</el-radio>
+						<el-radio label="商用" border>商用</el-radio>
+						<el-radio label="其他" border>其他</el-radio>
+					</el-radio-group>
 				</el-form-item>
 				<el-form-item label="楼宇名称" >
 					<el-select v-model="formData.buildingName" placeholder="请选择" clearable  @change="buildingSelected">
@@ -56,7 +68,9 @@
 </template>
 
 <script>
-import { GetBuildingsByNetGrid, GetRoomsByBuildingAndNetgrid } from '@/api/person.js'
+import { GetBuildingsByNetGrid, GetRoomsByBuildingAndNetgrid } from '@/api/person.js';
+import checkPermission from '@/utils/permission.js';//权限判断函数
+
 export default {
 	name: 'createNewPersonHouse',
 	props: {
@@ -72,8 +86,6 @@ export default {
 	},
 	data(){
 		return {
-			userName: '',
-
 			dialogVisible: this.dialogVisibleForCreating,
 			//新建数据的必要字段（禁止修改属性名）
 			formData: {
@@ -94,12 +106,12 @@ export default {
 			},
 			buildingsData: [],
 			roomsData: [],
+
+			categoryValueArray: ['自用', '租用（借用）', '空置', '征收', '其他']
 		}
 	},
 	created(){
-		this.getUserName();
-
-		if(this.userName === 'saxc1'){
+		if(checkPermission('网格员')){
 			this.getBuildingsData();
 		}
 	},
@@ -135,10 +147,9 @@ export default {
 		handleClose(){
 			this.$emit('closeCreatePanel', false);
 		},
-		//获取登录名
-		getUserName (){
-			this.userName = this.$store.getters.name;
-		},
+
+		checkPermission
+	
 	}
 }
 </script>
