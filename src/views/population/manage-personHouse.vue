@@ -2,6 +2,7 @@
 	<div class="container">
 		<div class="toolbar">
 			<el-button 
+			  class="create-button"
 				v-if="checkPermission('网格员')"
 				type="primary" 
 				icon="el-icon-edit"
@@ -9,22 +10,30 @@
 		  >
 				新建
 			</el-button>
-			<el-radio-group v-model="exchangeValue" @change="radioExchange">
+			<el-radio-group class="radio-exchange" v-model="exchangeValue" @change="radioExchange">
 				<el-radio-button label="人房数据"></el-radio-button>
 				<el-radio-button label="历史数据"></el-radio-button>
 			</el-radio-group>
 
 			<!-- 历史数据的过滤栏 -->
-			<filter-panel
+			<history-filter-panel
 			  v-if="exchangeValue != '人房数据' && checkPermission('网格员')" 
 				@operationChange="selectOperation" 
 				@statusChange="selectStatus" 
 				@timePicked="selectTimeRange" 
 				@reset="resetFilterData">
-			</filter-panel>
+			</history-filter-panel>
 
-      <!-- 导出当前表数据，格式为xlsx -->
-			<export-to-xlsx :table-header="tableHeaderForXlsx" :filter-fields="filterValForXlsx" :person-house-data="personHouseList"></export-to-xlsx>
+  
+      <!-- 导出数据为xlsx格式表格 -->
+			<div class="exportContainer">
+				<export-to-xlsx :table-header="tableHeaderForXlsx" :filter-fields="filterValForXlsx" :person-house-data="personHouseList" label-name="导出当前"></export-to-xlsx>
+				<export-to-xlsx :table-header="tableHeaderForXlsx" :filter-fields="filterValForXlsx" :person-house-data="personHouseInfo" label-name="导出全部"></export-to-xlsx>
+			</div>
+			    <!-- 人房数据的过滤栏 -->
+			<div class="pr-filterbar" v-if="checkPermission('网格员')">
+				<filter-panel @transferBuildingAndRoom="filterPersonHouseInfo"></filter-panel>
+			</div>
 		</div>
 	
 		<el-table
@@ -34,70 +43,157 @@
 			class="personHouseTable"	
 			style="width: 100%"
 		>
-			 <el-table-column align="center" type="index" :index="customizeIndex"	width="80" label="ID">
+			 <el-table-column align="center" type="index" :index="customizeIndex"	width="50" label="ID" fixed="left">
 			</el-table-column>
-			<el-table-column align="center" label="身份证" width="180">
+			<el-table-column align="center" label="身份证" width="170" fixed="left">
 						<template slot-scope="{row}">
 							<span>{{ row.personId }}</span>
 						</template>
 			</el-table-column>
-			<el-table-column align="center" label="姓名" width="120">
+			<el-table-column align="center" label="姓名" width="90" fixed="left">
 						<template slot-scope="{row}">
 							<el-input v-if="row.edit" v-model="row.name" class="edit-input" size="small" clearable/>
 							<span v-else>{{ row.name }}</span>
 						</template>
 			</el-table-column>
-			<el-table-column align="center" width="180px"  label="电话" >
+			<el-table-column align="center" width="120px"  label="电话" >
 						<template slot-scope="{row}">
 							<el-input v-if="row.edit" v-model="row.phone" class="edit-input" size="small" clearable/>
 							<span v-else>{{row.phone}}</span>
 						</template>
 			</el-table-column>
-			<el-table-column align="center" label="是否为户主" width="120">
+
+			<el-table-column align="center" width="80px"  label="民族" >
 						<template slot-scope="{row}">
-							<el-input v-if="row.edit" v-model="row.isHouseholder" class="edit-input" size="small" clearable/>
+							<el-input v-if="row.edit" v-model="row.ethnicGroups" class="edit-input" size="small" clearable/>
+							<span v-else>{{row.ethnicGroups}}</span>
+						</template>
+			</el-table-column>
+			<el-table-column align="center" width="100px"  label="户籍地址" >
+						<template slot-scope="{row}">
+							<el-input v-if="row.edit" v-model="row.domicileAddress" class="edit-input" size="small" clearable/>
+							<span v-else>{{row.domicileAddress}}</span>
+						</template>
+			</el-table-column>
+			<el-table-column align="center" width="100px"  label="从业单位" >
+						<template slot-scope="{row}">
+							<el-input v-if="row.edit" v-model="row.company" class="edit-input" size="small" clearable/>
+							<span v-else>{{row.company}}</span>
+						</template>
+			</el-table-column>
+			<el-table-column align="center" width="90px"  label="政治面貌" >
+						<template slot-scope="{row}">
+							<el-select v-if="row.edit" v-model="row.politicalState" size="small" placeholder="请选择">
+								<el-option v-for="item in personRoomDataOptions.politicalStatuArray" :key="item" :label="item" :value="item"></el-option>
+							</el-select>
+							<span v-else>{{row.politicalState}}</span>
+						</template>
+			</el-table-column>
+			<el-table-column align="center" width="80px"  label="组织关系" >
+						<template slot-scope="{row}">
+							<el-select v-if="row.edit" v-model="row.organizationalRelation" size="small" placeholder="请选择">
+								<el-option v-for="item in personRoomDataOptions.organizationalRelationArray" :key="item" :label="item" :value="item"></el-option>
+							</el-select>
+							<span v-else>{{row.organizationalRelation}}</span>
+						</template>
+			</el-table-column>
+			<el-table-column align="center" width="80px"  label="是否侨胞" >
+						<template slot-scope="{row}">
+							<el-select v-if="row.edit" v-model="row.isOverseasChinese" size="small" placeholder="请选择">
+								<el-option v-for="item in personRoomDataOptions.FalseOrTrue" :key="item" :label="item" :value="item"></el-option>
+							</el-select>
+							<span v-else>{{row.isOverseasChinese}}</span>
+						</template>
+			</el-table-column>
+				<el-table-column align="center" width="80px"  label="婚姻状况" >
+						<template slot-scope="{row}">
+							<el-select v-if="row.edit" v-model="row.merriedStatus" size="small" placeholder="请选择">
+								<el-option v-for="item in personRoomDataOptions.merriedStatusArray" :key="item" :label="item" :value="item"></el-option>
+							</el-select>
+							<span v-else>{{row.merriedStatus}}</span>
+						</template>
+			</el-table-column>
+
+
+			<el-table-column align="center" label="是否为户主" width="90">
+						<template slot-scope="{row}">
+							<el-select v-if="row.edit" v-model="row.isHouseholder" size="small" placeholder="请选择">
+								<el-option v-for="item in personRoomDataOptions.FalseOrTrue" :key="item" :label="item" :value="item"></el-option>
+							</el-select>
 							<span v-else>{{ row.isHouseholder }}</span>
 						</template>
 			</el-table-column>
-			<el-table-column align="center" label="与户主的关系" width="120">
+			<el-table-column align="center" label="与户主的关系" width="100">
 						<template slot-scope="{row}">
-							<el-input v-if="row.edit" v-model="row.relationWithHouseholder" class="edit-input" size="small" clearable/>
+							<el-select v-if="row.edit" v-model="row.relationWithHouseholder" size="small" placeholder="请选择">
+								<el-option v-for="item in personRoomDataOptions.relationWithHouseholderArray" :key="item" :label="item" :value="item"></el-option>
+							</el-select>
 							<span v-else>{{ row.relationWithHouseholder }}</span>
 						</template>
 			</el-table-column>
-			<el-table-column align="center" label="人口性质" width="120">
+				<el-table-column align="center" label="是否为产权人" width="100">
 						<template slot-scope="{row}">
-							<el-input v-if="row.edit" v-model="row.populationCharacter" class="edit-input" size="small" clearable/>
+							<el-select v-if="row.edit" v-model="row.isOwner" size="small" placeholder="请选择">
+								<el-option v-for="item in personRoomDataOptions.FalseOrTrue" :key="item" :label="item" :value="item"></el-option>
+							</el-select>
+							<span v-else>{{ row.isOwner }}</span>
+						</template>
+			</el-table-column>
+			<el-table-column align="center" label="是否在此居住" width="100">
+						<template slot-scope="{row}">
+							<el-select v-if="row.edit" v-model="row.isLiveHere" size="small" placeholder="请选择">
+								<el-option v-for="item in personRoomDataOptions.FalseOrTrue" :key="item" :label="item" :value="item"></el-option>
+							</el-select>
+							<span v-else>{{ row.isLiveHere }}</span>
+						</template>
+			</el-table-column>
+			<el-table-column align="center" label="人口性质" width="90">
+						<template slot-scope="{row}">
+							<el-select v-if="row.edit" v-model="row.populationCharacter" size="small" placeholder="请选择">
+								<el-option v-for="item in personRoomDataOptions.populationCharacterArray" :key="item" :label="item" :value="item"></el-option>
+							</el-select>
 							<span v-else>{{ row.populationCharacter }}</span>
+						</template>
+			</el-table-column>
+			<el-table-column align="center" label="寄住原因" width="120">
+						<template slot-scope="{row}">
+							<el-select v-if="row.edit" v-model="row.lodgingReason" size="small" placeholder="请选择">
+								<el-option v-for="item in personRoomDataOptions.LodgingReasonArray" :key="item" :label="item" :value="item"></el-option>
+							</el-select>
+							<span v-else>{{ row.lodgingReason }}</span>
 						</template>
 			</el-table-column>
 
 		
 			<el-table-column align="center" label="房屋性质" width="120">
 						<template slot-scope="{row}">
-							<el-input v-if="row.edit" v-model="row.category" class="edit-input" size="small" clearable/>
+							<el-select v-if="row.edit" v-model="row.category" size="small" placeholder="请选择">
+								<el-option v-for="item in personRoomDataOptions.categoryValueArray" :key="item" :label="item" :value="item"></el-option>
+							</el-select>
 							<span v-else>{{ row.category }}</span>
 						</template>
 			</el-table-column>
-			<el-table-column align="center" label="房屋用途" width="120">
+			<el-table-column align="center" label="房屋用途" width="80">
 						<template slot-scope="{row}">
-							<el-input v-if="row.edit" v-model="row.roomUse" class="edit-input" size="small" clearable/>
+							<el-select v-if="row.edit" v-model="row.roomUse" size="small" placeholder="请选择">
+								<el-option v-for="item in personRoomDataOptions.roomUseArray" :key="item" :label="item" :value="item"></el-option>
+							</el-select>
 							<span v-else>{{ row.roomUse }}</span>
 						</template>
 			</el-table-column>
-			<el-table-column align="center" label="房间名" width="120">
+			<el-table-column align="center" label="房间名" width="80">
 						<template slot-scope="{row}">
 							<span>{{ row.roomName }}</span>
 						</template>
 			</el-table-column>
-			<el-table-column align="center" label="所属楼栋" width="220">
+			<el-table-column align="center" label="所属楼栋" width="160">
 						<template slot-scope="{row}">
 							<span>{{ `${row.communityName}-网格${row.netGrid}-${row.buildingName}栋` }}</span>
 						</template>
 			</el-table-column>
 			
 		
-			<el-table-column  v-if="checkPermission('网格员')" align="center" label="编辑" width="180">
+			<el-table-column  v-if="checkPermission('网格员')" align="center" label="编辑" width="170" fixed="right">
 				<template slot-scope="{row}">
 					<el-button-group v-if="row.edit === false && row.status === null">
 						<el-button
@@ -146,7 +242,7 @@
 				</template>
 			</el-table-column>
       
-			<el-table-column v-if="checkPermission('社区')" align="center" label="编辑" width="220">
+			<el-table-column v-if="checkPermission('社区')" align="center" label="编辑" width="220" fixed="right">
 				<template  slot-scope="{row}">
 					<el-button
 						v-if="waitingForConfirm(row)"
@@ -177,7 +273,7 @@
 				</template>
 			</el-table-column>
 
-			<el-table-column v-if="checkPermission('Administrator')" align="center" label="编辑" width="220">
+			<el-table-column v-if="checkPermission('Administrator')" align="center" label="编辑" width="220" fixed="right">
 				<template  slot-scope="{row}">
 					<el-button
 						v-if="statusWithAdmin(row.status)"
@@ -233,16 +329,19 @@ import { deepClone } from '@/utils/tools.js';
 import checkPermission from '@/utils/permission.js';//权限判断函数
 
 import createNewPersonHouse from './components/createNewPersonHouse.vue';
-import filterPanel from './components/filterPanel.vue';
+import historyFilterPanel from './components/historyFilterPanel.vue';
 import pagination from './components/pagination.vue';
 import exportToXlsx from './components/exportToXlsx';
+import filterPanel from './components/filterPanel.vue';
+
+import personRoomDataOptions from '@/assets/json/personRoomDataOptions.json';
 
 export default {
 	name: 'manage-personHouse',
 	data(){
 		return {
 			personHouseInfo: [],
-		
+			tempPersonHouseInfo: [],//人房数据的副本，用作人房数据过滤。
 			// rolesObj: ['网格员', '水岸星城', 'Administrator'],
 			
 			exchangeValue: '人房数据',
@@ -258,22 +357,26 @@ export default {
 			},
 			
 			//xlsx表配置项（表头、数据）
-			tableHeaderForXlsx: ['身份证', '姓名', '电话', '是否为户主','与户主的关系','人口性质','房屋性质','房间名','所属楼栋','编辑状态'],
-			filterValForXlsx: ['personId', 'name', 'phone','isHouseholder','relationWithHouseholder','populationCharacter','category','roomName','所属楼栋','status'],
+			tableHeaderForXlsx: ['身份证', '姓名', '民族','电话', '户籍地址','从业单位','政治面貌','组织关系','是否侨胞','婚姻状况','是否为户主',
+													 '与户主的关系','是否为产权人','是否在此居住','人口性质','房屋性质','寄住原因','房间名','房屋用途','所属楼栋','编辑状态'],
+			filterValForXlsx: ['personId', 'name', 'ethnicGroups','phone','domicileAddress','company','politicalState','organizationalRelation','isOverseasChinese','merriedStatus','isHouseholder',
+			                   'relationWithHouseholder','isOwner','isLiveHere','populationCharacter','category','lodgingReason','roomName','roomUse','所属楼栋','status'],
 			
 			//分页默认配置
 			paginationSetting: {
 				limit: 20,
 				curPage: 1
-			}
+			},
 
+      personRoomDataOptions,
 		}
 	},
 	components: {
 		createNewPersonHouse,
-		filterPanel,
+		historyFilterPanel,
 		pagination,
-		exportToXlsx
+		exportToXlsx,
+		filterPanel
 	},
 	created(){
 		this.getPersonHouseInfo();
@@ -302,6 +405,22 @@ export default {
 				console.log(err);
 			})
 		},
+		//根据条件（楼栋、房间）过滤人房数据
+		filterPersonHouseInfo(dataInfo){
+			debugger;
+			if(dataInfo.currentRoomName !== '' && dataInfo.currentBuildingName !== ''){
+				this.personHouseInfo = this.tempPersonHouseInfo.filter((item) => {
+					return item.buildingName === dataInfo.currentBuildingName && item.roomName === dataInfo.currentRoomName;
+				})
+			}else if(dataInfo.currentRoomName === '' && dataInfo.currentBuildingName !== ''){
+				this.personHouseInfo = this.tempPersonHouseInfo.filter((item) => {
+					return item.buildingName === dataInfo.currentBuildingName;
+				})
+			}else {
+				this.personHouseInfo = this.tempPersonHouseInfo;
+			}
+			this.resetPaginationSetting();
+		},
 		//为每条信息（对象）添加新属性
 		handlePersonHouseInfo (data){
 			this.personHouseInfo = data.map(item => {
@@ -309,7 +428,8 @@ export default {
 					item.edit = false;//edit: 控制修改部件的显示
 				}
 				return item;
-			})
+			});
+			this.tempPersonHouseInfo = deepClone(this.personHouseInfo, []);//返回一个深度克隆的副本
 		},
 
 		//切换“人房数据”和“人房在编辑数据”
@@ -380,11 +500,12 @@ export default {
 			//根据radio按钮状态，请求后端方法
 			if(this.exchangeValue === "人房数据"){
 				await this.updatePersonHouseInfo(newFormData);
+				this.dialogVisibleForCreating = false;
 			}else{
 				await updatePersonHouseByNetGrid_void(newFormData).catch(err => {console.log(err)});
 				await this.getHistoryDataByNetGrid();
+				this.dialogVisibleForCreating = false;
 			}
-			this.dialogVisibleForCreating = false;
 		},
 		//（网格员）提交“删除”
 		handleDelete(row){
@@ -495,7 +616,9 @@ export default {
 	.toolbar{
 		margin: 5px;
 	}
-
+  /* .create-button{
+		display: inline-block;
+	} */
 	.personHouseTable >>> div.cell,
 	.personHouseTable >>> div.cell input{
     padding: 0 3px
@@ -503,5 +626,25 @@ export default {
 
 	.cancel-btn{
 		margin-right: 5px;
+	}
+
+	.pr-filterbar{
+		float: right;
+	}
+
+	.exportContainer{
+		float: right;
+		padding-right: 10px;
+		padding-left: 10px;
+	}
+
+	.create-button{
+		padding-left: 15px;
+		padding-right: 15px;
+	}
+
+	.radio-exchange >>> span{
+		padding-left: 15px;
+		padding-right: 15px;
 	}
 </style>

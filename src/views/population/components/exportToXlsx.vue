@@ -7,7 +7,7 @@
 				icon="el-icon-download" 
 				@click="handleDownload"
 			>
-				导出
+				{{LabelName}}
 			</el-button>
 	</div>
 </template>
@@ -27,7 +27,12 @@ export default {
 		personHouseData: {
 			type: Array,
 			required: true
+		},
+		LabelName: {
+			type: String,
+			default: '导出'
 		}
+
 	},
 	data(){
 		return {
@@ -77,5 +82,9 @@ export default {
 <style scoped>
  .download-container{
 	 display: inline-block;
+ }
+ .filter-item{
+	 padding-left: 15px;
+	 padding-right: 15px;
  }
 </style>

@@ -1,107 +1,111 @@
 <template>
-	<div class="filterBar">
-		<el-select v-model="operationValue" clearable placeholder="全部" @change="selectOperation">
+	<div class="filter-panel">
+		<el-input v-model="filter" placeholder="过滤条件(楼栋,房间)" style="width: 160px;"  clearable />
+		<el-select 
+		  class="filter-select"
+			v-model="currentInfo.currentBuildingName" 
+			placeholder="请选择(楼栋)" 
+			clearable 
+			@change="buildingSelected" 
+			@clear="handleBuildingSelectClear"
+			style="width:160px"
+		>
 			<el-option
-				v-for="item in operationOptions"
-				:key="item.value"
-				:label="item.label"
-				:value="item.value">
+				v-for="item in filteredBuildingsData"
+				:key="item.id"
+				:value="item.buildingName">
 			</el-option>
 		</el-select>
-		<el-select v-model="statusValue" clearable placeholder="全部" @change="selectStatus">
+		<el-select 
+	   	class="filter-select"
+		  v-model="currentInfo.currentRoomName" 
+			placeholder="请选择(房间)"
+			clearable 
+			@change="roomSelected" 
+			@clear="handleRoomSelectClear"
+			style="width:130px"
+		>
 			<el-option
-				v-for="item in statusOptions"
-				:key="item.value"
-				:label="item.label"
-				:value="item.value">
+				v-for="item in filteredRoomsData"
+				:key="item.id"
+				:value="item.roomName">
 			</el-option>
 		</el-select>
-		<el-date-picker
-      v-model="dateTimeValue"
-      type="datetimerange"
-      align="right"
-      start-placeholder="开始日期"
-      end-placeholder="结束日期"
-      :default-time="['09:00:00', '17:00:00']"
-			@change="selectTime">
-    </el-date-picker>
 	</div>
 </template>
 
 <script>
+import { GetRoomsByBuildingAndNetgrid } from '@/api/person.js';
 export default {
 	name: 'filterPanel',
 	data(){
 		return {
-			operationValue: '',
-			operationOptions: [
-				{
-          value: 'creating',
-          label: '新建'
-				},{
-          value: 'updating',
-          label: '修改'
-        },{
-          value: 'deleting',
-          label: '删除'
-        }
-			],
+			currentInfo: {
+				currentBuildingName:'',
+				currentRoomName: '',
+			},
+			buildingsData: [],
+			roomsData: [],
+      filter:'',
 
-			statusValue: '',
-			statusOptions: [
-		    {
-					value: 'committed',
-					label: '待审核'
-				},{
-					value: 'verified',
-					label: '通过审核'
-				},{
-					value: 'failed',
-					label: '未通过审核'
-				}
-			],
-
-			dateTimeValue: ''
 		}
 	},
-	methods: {
-		//重置函数
-		resetFilter(){
-			this.operationValue = '';
-			this.statusValue = '';
-			this.dateTimeValue = '';
-			this.$emit('reset');
-		},
-		selectOperation(operationVal){
-			if(operationVal != ''){
-				this.$emit('operationChange', operationVal);
+	created(){
+		this.bus.$on('buildingsDataReceived', (data) => {
+			this.buildingsData = data;
+		})
+	},
+	computed:{
+		filteredBuildingsData(){
+			if(this.filter){
+				let filterArr = this.filter.split(/[，,]/gim);
+				return this.buildingsData.filter(item => item.buildingName.indexOf(filterArr[0]) !== -1);
 			}else{
-				this.resetFilter();
+				return this.buildingsData;
 			}
 		},
-		selectStatus(statusVal){
-			if(statusVal != ''){
-				this.$emit('statusChange', statusVal);
+		filteredRoomsData(){
+			if(this.filter){
+				let filterArr = this.filter.split(/[，,]/gim);
+				return this.roomsData.filter(item => item.roomName.indexOf(filterArr[1]) !== -1);
 			}else{
-				this.resetFilter();
+				return this.roomsData;
 			}
 		},
-		selectTime(timeVal){
-      if(timeVal != null){
-				//回调参数为Date对象，getTime方法返回时间戳
-				let startTime = timeVal[0].getTime();
-				let endTime = timeVal[1].getTime();
-				this.$emit('timePicked', startTime, endTime);
-			}else{
-				this.resetFilter();
-			}
+	},
+	methods:{
+		buildingSelected(buildingName){
+			//根据网格、楼栋，请求房间数据
+			GetRoomsByBuildingAndNetgrid(buildingName).then(res => {
+				this.roomsData = res;
+			}).catch(err => {
+				console.log(err);
+			})
+			this.currentInfo.currentRoomName = '';
+			this.fliterOptionsChanged();
+		},
+		roomSelected(){
+			this.fliterOptionsChanged();
+		},
+		handleBuildingSelectClear(){
+			this.currentInfo.currentRoomName = '';
+			this.fliterOptionsChanged();
+		},
+		handleRoomSelectClear(){
+			this.fliterOptionsChanged();
+		},
+		fliterOptionsChanged(){
+			this.$emit('transferBuildingAndRoom', this.currentInfo);
 		}
 	}
 }
 </script>
 
 <style scoped>
-  .filterBar{
+  .filter-panel{
 		display: inline-block;
+	}
+	.filter-panel >>> input {
+		padding-left: 5px;
 	}
 </style>

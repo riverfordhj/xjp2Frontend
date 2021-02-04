@@ -1,6 +1,6 @@
 <template>
-	 <div class="selectForm">
-				<el-input v-model="filter" placeholder="过滤条件(楼栋，楼层)" style="width: 200px;"  />
+	 <div class="selectForm" >
+				<el-input v-model="filter" placeholder="过滤条件(楼栋，楼层)" style="width: 200px;" size="small"  />
 				<el-select v-model="buildingsData.buildingValue"  placeholder="请选择楼栋"  @change="handleFirstSelect">
 					<el-option
 						v-for="item in filteredBuildingsData"

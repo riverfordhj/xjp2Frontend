@@ -24,7 +24,7 @@
       </el-button> 
       <el-button class="filter-item" type="primary" icon="el-icon-search" @click="dialogVisible = true">高级检索</el-button> 
 
-			 <!-- 导出当前表数据，格式为xlsx -->
+			  <!-- 导出数据为xlsx格式表格 -->
 			<export-to-xlsx :table-header="tableHeaderForXlsx" :filter-fields="filterValForXlsx" :person-house-data="personHouseList"></export-to-xlsx>
     </div>
 
