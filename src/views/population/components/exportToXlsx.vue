@@ -16,6 +16,18 @@
 export default {
 	name:'exportToXlsx',
 	props:{
+		multiHeader: {
+			type: Array,
+			default: function(){
+				return [];
+			}
+		},
+		mergesSetting: {
+			type: Array,
+			default: function(){
+				return [];
+			}
+		},
 		tableHeader: {
 			type: Array,
 			required: true
@@ -45,13 +57,17 @@ export default {
 		handleDownload() {
       this.downloadLoading = true;
       import('@/vendor/Export2Excel').then(excel => {
+				const mHeader = this.multiHeader;
 				const tHeader = this.tableHeader;
-				const filterVal =  this.filterFields;
+				const filterVal = this.filterFields;
 				const data = this.formatJson(filterVal)
+				const merges = this.mergesSetting;
 				
         excel.export_json_to_excel({
+					multiHeader: mHeader,
           header: tHeader,
-          data,
+					merges,
+					data,
           filename: 'table-list'
         });
         this.downloadLoading = false;
@@ -59,21 +75,30 @@ export default {
     },
     formatJson(filterVal) {
       return this.personHouseData.map(objItem => filterVal.map((item, index) => {
-				if(item === '所属楼栋'){
-				  return this.parseAddress(objItem);
+				if(item === '单元号' || item === '房号'){
+					debugger;
+				  return this.parseAddress(objItem, item);
 				}else if(item.includes('.')){
 					//取深层对象值
 					const tempList = item.split('.');
 					const deepObj = tempList[0];
 					const objKey = tempList[1];
 					return objItem[deepObj][objKey];
+				}else if(item === ''){
+					debugger;
+					return '';
 				}else{
 					return objItem[item];
 				}
       }))
 		},
-		parseAddress(objItem){
-			return `${objItem["communityName"]}-网格${objItem["netGrid"]}-${objItem["buildingName"]}栋`;
+		parseAddress(objItem, item){
+				debugger;
+			if(item === '单元号'){
+				return objItem["roomName"].split('-')[0];
+			}else if(item === '房号'){
+				return objItem["roomName"].split('-')[1];
+			}
 		}
 	}
 }

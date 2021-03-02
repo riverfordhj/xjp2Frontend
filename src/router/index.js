@@ -215,8 +215,8 @@ export const constantRoutes = [
         }
 			},
 			{
-        path: 'nanage-personHouse',
-        name: 'nanage-personHouse',
+        path: 'manage-personHouse',
+        name: 'manage-personHouse',
         component: () => import('@/views/population/manage-personHouse'),
         meta: {
           title: '人房数据管理',

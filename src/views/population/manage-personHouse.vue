@@ -10,6 +10,7 @@
 		  >
 				新建
 			</el-button>
+			<upload-excel :standard-header="tableHeaderForXlsx" :standard-header-en="filterValForXlsx" label-name="批处理新建"></upload-excel>
 			<el-radio-group class="radio-exchange" v-model="exchangeValue" @change="radioExchange">
 				<el-radio-button label="人房数据"></el-radio-button>
 				<el-radio-button label="历史数据"></el-radio-button>
@@ -27,8 +28,12 @@
   
       <!-- 导出数据为xlsx格式表格 -->
 			<div class="exportContainer">
-				<export-to-xlsx :table-header="tableHeaderForXlsx" :filter-fields="filterValForXlsx" :person-house-data="personHouseList" label-name="导出当前"></export-to-xlsx>
-				<export-to-xlsx :table-header="tableHeaderForXlsx" :filter-fields="filterValForXlsx" :person-house-data="personHouseInfo" label-name="导出全部"></export-to-xlsx>
+				<export-to-xlsx :multi-header="multiHeaderForXlsx" :merges-setting="mergesSetting" :table-header="tableHeaderForXlsx" 
+												:filter-fields="filterValForXlsx" :person-house-data="personHouseList" label-name="导出当前">
+				</export-to-xlsx>
+				<export-to-xlsx :multi-header="multiHeaderForXlsx" :merges-setting="mergesSetting" :table-header="tableHeaderForXlsx" 
+												:filter-fields="filterValForXlsx" :person-house-data="personHouseInfo" label-name="导出全部">
+				</export-to-xlsx>
 			</div>
 			    <!-- 人房数据的过滤栏 -->
 			<div class="pr-filterbar" v-if="checkPermission('网格员')">
@@ -45,7 +50,7 @@
 		>
 			 <el-table-column align="center" type="index" :index="customizeIndex"	width="50" label="ID" fixed="left">
 			</el-table-column>
-			<el-table-column align="center" label="身份证" width="170" fixed="left">
+			<el-table-column align="center" label="身份证号" width="170" fixed="left">
 						<template slot-scope="{row}">
 							<span>{{ row.personId }}</span>
 						</template>
@@ -56,7 +61,7 @@
 							<span v-else>{{ row.name }}</span>
 						</template>
 			</el-table-column>
-			<el-table-column align="center" width="120px"  label="电话" >
+			<el-table-column align="center" width="120px"  label="联系方式" >
 						<template slot-scope="{row}">
 							<el-input v-if="row.edit" v-model="row.phone" class="edit-input" size="small" clearable/>
 							<span v-else>{{row.phone}}</span>
@@ -123,7 +128,7 @@
 							<span v-else>{{ row.isHouseholder }}</span>
 						</template>
 			</el-table-column>
-			<el-table-column align="center" label="与户主的关系" width="100">
+			<el-table-column align="center" label="与户主关系" width="100">
 						<template slot-scope="{row}">
 							<el-select v-if="row.edit" v-model="row.relationWithHouseholder" size="small" placeholder="请选择">
 								<el-option v-for="item in personRoomDataOptions.relationWithHouseholderArray" :key="item" :label="item" :value="item"></el-option>
@@ -165,7 +170,7 @@
 			</el-table-column>
 
 		
-			<el-table-column align="center" label="房屋性质" width="120">
+			<el-table-column align="center" label="房屋类别" width="120">
 						<template slot-scope="{row}">
 							<el-select v-if="row.edit" v-model="row.category" size="small" placeholder="请选择">
 								<el-option v-for="item in personRoomDataOptions.categoryValueArray" :key="item" :label="item" :value="item"></el-option>
@@ -186,9 +191,29 @@
 							<span>{{ row.roomName }}</span>
 						</template>
 			</el-table-column>
+			<el-table-column align="center" label="面积m²" width="80">
+						<template slot-scope="{row}">
+							<span>{{ row.area }}</span>
+						</template>
+			</el-table-column>
 			<el-table-column align="center" label="所属楼栋" width="160">
 						<template slot-scope="{row}">
 							<span>{{ `${row.communityName}-网格${row.netGrid}-${row.buildingName}栋` }}</span>
+						</template>
+			</el-table-column>
+			<el-table-column align="center" label="地址" width="120">
+						<template slot-scope="{row}">
+							<span>{{ row.address }}</span>
+						</template>
+			</el-table-column>
+			<el-table-column align="center" label="其他" width="80">
+						<template slot-scope="{row}">
+							<span>{{ row.other }}</span>
+						</template>
+			</el-table-column>
+			<el-table-column align="center" label="所属小区" width="80">
+						<template slot-scope="{row}">
+							<span>{{ row.subdivisionName }}</span>
 						</template>
 			</el-table-column>
 			
@@ -333,6 +358,7 @@ import historyFilterPanel from './components/historyFilterPanel.vue';
 import pagination from './components/pagination.vue';
 import exportToXlsx from './components/exportToXlsx';
 import filterPanel from './components/filterPanel.vue';
+import uploadExcel from './components/uploadExcel.vue';
 
 import personRoomDataOptions from '@/assets/json/personRoomDataOptions.json';
 
@@ -353,14 +379,16 @@ export default {
 			//记录登录的网格员所属的网格和社区
 			recordsObj: {
 				netGridName: '',
-				communityName: ''
+				communityName: '',
 			},
 			
 			//xlsx表配置项（表头、数据）
-			tableHeaderForXlsx: ['身份证', '姓名', '民族','电话', '户籍地址','从业单位','政治面貌','组织关系','是否侨胞','婚姻状况','是否为户主',
-													 '与户主的关系','是否为产权人','是否在此居住','人口性质','房屋性质','寄住原因','房间名','房屋用途','所属楼栋','编辑状态'],
-			filterValForXlsx: ['personId', 'name', 'ethnicGroups','phone','domicileAddress','company','politicalState','organizationalRelation','isOverseasChinese','merriedStatus','isHouseholder',
-			                   'relationWithHouseholder','isOwner','isLiveHere','populationCharacter','category','lodgingReason','roomName','roomUse','所属楼栋','status'],
+			multiHeaderForXlsx: [['房屋信息','','','','','','','','','','','单位信息','','','','','','','人员信息','','','','','','','','','','','','','','','']],
+			tableHeaderForXlsx: ['所属社区','所属网格','地址','所属小区','楼栋名','单元号','房号','房屋类别','房屋用途','其他','面积m²','','','','','','','','姓名', '民族','身份证','联系方式', '户籍地址','是否为户主','与户主的关系','是否为产权人','是否在此居住',
+													'从业单位','政治面貌','组织关系','是否侨胞','婚姻状况','人口性质','寄住原因'],
+			mergesSetting: ['A1:K1','L1:R1','S1:AH1'],
+			filterValForXlsx: ['communityName','netGrid','address','subdivisionName','buildingName','单元号','房号','category','roomUse','other','area','','','','','','','','name', 'ethnicGroups','personId','phone','domicileAddress','isHouseholder','relationWithHouseholder','isOwner','isLiveHere',
+												'company','politicalState','organizationalRelation','isOverseasChinese','merriedStatus','populationCharacter','lodgingReason'],
 			
 			//分页默认配置
 			paginationSetting: {
@@ -376,7 +404,8 @@ export default {
 		historyFilterPanel,
 		pagination,
 		exportToXlsx,
-		filterPanel
+		filterPanel,
+		uploadExcel
 	},
 	created(){
 		this.getPersonHouseInfo();

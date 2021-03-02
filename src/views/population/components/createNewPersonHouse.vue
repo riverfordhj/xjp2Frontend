@@ -14,14 +14,14 @@
 						</el-form-item>
 					</el-col>
 					<el-col :span="12">
-						<el-form-item label="身份证" prop="personId">
+						<el-form-item label="身份证号" prop="personId">
 							<el-input v-model="formData.personId" placeholder="请填写" clearable></el-input>
 						</el-form-item>	
 					</el-col>
 				</el-row>
 				<el-row :gutter="20">
 					<el-col :span="12">
-						<el-form-item label="电话" prop="phone">
+						<el-form-item label="联系方式" prop="phone">
 							<el-input v-model="formData.phone" placeholder="请填写" clearable></el-input>
 						</el-form-item>	
 					</el-col>
@@ -84,7 +84,7 @@
 						</el-form-item>
 					</el-col>
 					<el-col :span="12">
-						<el-form-item label="与户主的关系" prop="relationWithHouseholder">
+						<el-form-item label="与户主关系" prop="relationWithHouseholder">
 							<el-select v-model="formData.relationWithHouseholder" placeholder="请选择" >
 									<el-option v-for="item in personRoomDataOptions.relationWithHouseholderArray" :key="item" :label="item" :value="item"></el-option>
 							</el-select>
@@ -125,7 +125,7 @@
 				</el-row>
 				<el-row :gutter="20">
 					<el-col :span="12">
-						<el-form-item label="房屋性质" prop="category">
+						<el-form-item label="房屋类别" prop="category">
 							<el-select v-model="formData.category" placeholder="请选择" >
 									<el-option v-for="item in personRoomDataOptions.categoryValueArray" :key="item" :label="item" :value="item"></el-option>
 							</el-select>
@@ -141,7 +141,7 @@
 				</el-row>
 				<el-row :gutter="20">
 					<el-col :span="12">
-						<el-form-item label="楼宇名称" prop="buildingName" >
+						<el-form-item label="楼栋名" prop="buildingName" >
 							<el-select v-model="formData.buildingName" placeholder="请选择"  @change="buildingSelected">
 								<el-option
 									v-for="item in buildingsData"
