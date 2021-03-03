@@ -294,7 +294,7 @@ export default {
       // return value
     },
     filteroperato(val){
-      if (val == "小区" || val == "楼栋" || val == "房间" || val == "姓名" || val == "电话" || val == "身份证" || val == "姓名" ){
+      if (val == "小区" || val == "楼栋" || val == "房间" || val == "姓名" || val == "电话" || val == "身份证" || val == "姓名"  || val == "性别" ){
          debugger
         this.options =  [{
           value: '选项1',
