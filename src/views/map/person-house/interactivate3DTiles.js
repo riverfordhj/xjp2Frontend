@@ -145,6 +145,20 @@ var interactOperate = {
     }
     return `${buildingId}-${unitid}-${roomId}`
   },
+  // 构造房间号，2-1002
+  getSimpleRoomNO(room) {
+    if (!Cesium.defined(room) || !Cesium.defined(room.getProperty)) {
+      return ''
+    }
+
+    const unitid = room.getProperty('unitid')
+    const roomId = room.getProperty('roomid')
+
+    if (!unitid || !roomId) {
+      return ''
+    }
+    return `${unitid}-${roomId}`
+  },
   // mouseclick事件处理
   onLeftClick(movement) {
     // debugger
@@ -203,13 +217,13 @@ var interactOperate = {
   // 根据屏幕坐标及roomNO选取 room model
   pickFeatureByRoomNO(position, roomNO) {
     const features = this.viewer.scene.drillPick(position)
-    debugger
+    // debugger
     for (let i = 0; i < features.length; i++) {
       const feature = features[i]
       if (!Cesium.defined(feature)) {
         continue
       } else {
-        const rN = this.getRoomNO(feature)
+        const rN = this.getSimpleRoomNO(feature)
         if (rN === roomNO) {
           return feature
         }
@@ -319,13 +333,13 @@ var interactOperate = {
   // Set feature infobox description
   setInfobox(pickedFeature) {
     const roomInfo = {}
-    roomInfo.CommunityName = pickedFeature.getProperty('community')
+    roomInfo.SubdivisionName = pickedFeature.getProperty('residence')
     roomInfo.BuildingName = pickedFeature.getProperty('buildingid')
     const unit = pickedFeature.getProperty('unitid')
     const roomId = pickedFeature.getProperty('roomid')
     roomInfo.RoomNO = `${unit}-${roomId}`
 
-    this.personHouseDataForm.roomid = `${roomInfo.CommunityName}-${roomInfo.BuildingName}-${roomInfo.RoomNO}`
+    this.personHouseDataForm.roomid = `${roomInfo.SubdivisionName}-${roomInfo.BuildingName}-${roomInfo.RoomNO}`
     // debugger
     this.getPersonInRoom(roomInfo) // JSON.stringify(
 

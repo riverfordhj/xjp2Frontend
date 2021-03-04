@@ -28,6 +28,20 @@ export function getPersonsByBuilding(buildingId) {
   })
 }
 
+export function getPersonsBySubdivision(SubdivisionId) {
+  return request({
+    url: `/person/GetPersonsBySubdivision/${SubdivisionId}`,
+    method: 'get'
+  })
+}
+
+export function getPersonsBySearch(str) {
+  return request({
+    url: `/person/GetPersonsBySearch/${str}`,
+    method: 'get'
+  })
+}
+
 export function getPersonByRoom(roomInfo) {
   return request({
     url: '/person/GetPersonsInRoom',
@@ -46,12 +60,20 @@ export function getPeopleByResidents(HouseId) {
   })
 }
 
-export function getPeopleByBuilding(BuildingName) {
+// export function getPeopleByBuilding(BuildingName) {
+//   return request({
+//     url: '/people/getPeopleByBuilding',
+//     method: 'get',
+//     params: {
+//       BuildingName: BuildingName
+//     }
+//   })
+// }
+
+// 通过楼栋号查找room
+export function getRoomByBuilding(buildingId) {
   return request({
-    url: '/people/getPeopleByBuilding',
-    method: 'get',
-    params: {
-      BuildingName: BuildingName
-    }
+    url: `/person/getRoomByBuilding/${buildingId}`,
+    method: 'get'
   })
 }

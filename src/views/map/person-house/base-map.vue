@@ -19,10 +19,10 @@
       class="dialog-3"
       title="图层目录"
       pinned="false"
-      :options="{top:60, height: 350, width: 280, buttonPin: false }"
+      :options="{ top: 60, width: 280, buttonPin: false }"
       @close="closeLayerTreePanel"
     >
-      <el-scrollbar :native="false" style="height:100%">
+      <el-scrollbar :native="false" style="height: 100%">
         <el-tree
           show-checkbox
           :data="modelTreeData"
@@ -45,6 +45,8 @@
 </template>
 
 <script>
+import axios from 'axios'
+
 import DialogDrag from 'vue-dialog-drag'
 
 var Cesium = require('cesium/Cesium')
@@ -55,7 +57,9 @@ import PersonHouseInfomationPage from './components/person-house-infomation-page
 import ColorSetPage from './components/color-set-page'
 
 // 3D 模型配置数据
-import modelsConfigData from '@/assets/3DModels/models.json'
+// const publicDir = process.env.BASE_URL
+// import modelsConfigData from publicDir + '3DModelsSetting.json'
+// var modelsConfigData = require(`${publicDir}3DModelsSetting.json`)
 
 export default {
   name: 'PersonHouseMap',
@@ -70,36 +74,13 @@ export default {
       sDTilesCollection: new Map(),
 
       layerTreeVisible: false,
-      modelTreeData: modelsConfigData,
-      // [
-      //   {
-      //     id: 1,
-      //     label: '实体模型',
-      //     children: [
-      //       {
-      //         id: 11,
-      //         label: '峯岚天下3栋',
-      //         url: 'http://localhost/xjp/3D/saxc/saxc/tileset.json' // fftx/1building3DTiles
-      //       }
-      //     ]
-      //   },
-      //   {
-      //     id: 2,
-      //     label: '单体模型',
-      //     children: [
-      //       {
-      //         id: 12,
-      //         label: '峯岚天下3栋',
-      //         url: 'http://localhost/xjp/3D/saxc/dth-SAXC/tileset.json' // fftx/dth3DTiles
-      //       }
-      //     ]
-      //   }
-      // ],
+      modelTreeData: [],
+
       defaultProps: {
         children: 'children',
         label: 'label'
       },
-      defaultChecked: [11, 12], // 模型树check状态
+      defaultChecked: [100, 101, 200, 201], // 模型树check状态
 
       // dialogVisible: false,
       currentModelId: -1, // 当前被设置的模型id
@@ -127,6 +108,9 @@ export default {
   },
   methods: {
     initMap() {
+      Cesium.Ion.defaultAccessToken =
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI5MjMyYjZiMC1lZmY1LTQzNmEtODg1NS01NmQzMmE2NWY2ZjMiLCJpZCI6NDQ1MSwic2NvcGVzIjpbImFzciIsImdjIl0sImlhdCI6MTU0MDg4NTM2Mn0.7OzWWlmUmJv_EJo0RFpuiL2G_KLgZBENAAXOgU1O1qM'
+
       this.viewer = new Cesium.Viewer('cesiumContainer', {
         shouldAnimate: true,
         baseLayerPicker: false,
@@ -151,31 +135,43 @@ export default {
       })
     },
     loadData() {
-      // 加载倾斜测量模型
-      this.modelTreeData[0].children.forEach((element) => {
-        this.load3DTiles(
-          this.viewer,
-          element.id,
-          element.url,
-          true,
-          null,
-          null
-        )
-      })
-      console.log('原始倾斜测量模型加载完成')
-
-      this.modelTreeData[1].children.forEach((element) => {
-        this.load3DTiles(
-          this.viewer,
-          element.id,
-          element.url,
-          true,
-          Cesium.ClassificationType.CESIUM_3D_TILE,
-          new Cesium.Cesium3DTileStyle({
-            color: 'rgba(255,255,255,0.01)'
+      axios
+        .request({
+          url: '/3DModelsSetting.json', // 读取public目录下3维模型配置文件
+          method: 'get'
+        })
+        .then((res) => {
+          // debugger
+          this.modelTreeData = res.data
+          // 加载倾斜测量模型
+          this.modelTreeData[0].children.forEach((element) => {
+            this.load3DTiles(
+              this.viewer,
+              element.id,
+              element.url,
+              true,
+              null,
+              null
+            )
           })
-        )
-      })
+          console.log('原始倾斜测量模型加载完成')
+
+          this.modelTreeData[1].children.forEach((element) => {
+            this.load3DTiles(
+              this.viewer,
+              element.id,
+              element.url,
+              true,
+              Cesium.ClassificationType.CESIUM_3D_TILE,
+              new Cesium.Cesium3DTileStyle({
+                color: 'rgba(255,255,255,0.01)'
+              })
+            )
+          })
+        })
+
+      // 设置3D模型mouse事件交互
+      interactOperate.install(this.viewer, this.personHouseDataForm)
     },
 
     load3DTiles(viewer, mouldId, url, isFlyto, classificationType, style) {
@@ -199,14 +195,21 @@ export default {
 
       tiltTileset.readyPromise.then((tileset) => {
         viewer.scene.primitives.add(tileset)
-        if (isFlyto) viewer.flyTo(tileset)
+        // 如默认tree中勾选，设置模型可见
+        tileset.show = false
+        this.defaultChecked.forEach((item) => {
+          if (item === mouldId) {
+            tileset.show = true
+            if (isFlyto) viewer.flyTo(tileset)
+          }
+        })
 
         self.sDTilesCollection.set(mouldId, tiltTileset)
         // debugger
-        // 设置3D模型mouse事件交互
-        if (style) {
-          interactOperate.install(self.viewer, self.personHouseDataForm)
-        }
+        // // 设置3D模型mouse事件交互
+        // if (style) {
+        //   interactOperate.install(self.viewer, self.personHouseDataForm)
+        // }
       })
     },
     // 处理菜单事件
@@ -286,7 +289,7 @@ export default {
 
     // 设置3D单体模型颜色
     setDthColor(color) {
-      debugger
+      // debugger
       var target = this.sDTilesCollection.get(this.currentModelId)
       if (Cesium.defined(target)) {
         target.style = new Cesium.Cesium3DTileStyle({
