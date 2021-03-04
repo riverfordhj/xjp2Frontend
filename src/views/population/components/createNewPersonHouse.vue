@@ -289,7 +289,6 @@ export default {
 							this.formData.communityName = this.recordsObj.communityName;
 
 							this.$emit('createPersonHouse', this.formData);
-							this.resetForm(formName);
           } else {
             return false;
           }

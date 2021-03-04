@@ -515,25 +515,30 @@ export default {
 				curPage: 1
 			}
 		},
-		
-		//(网格员)对人房数据的增、删、改(接收返回的原有人房数据+在编辑数据)
-		updatePersonHouseInfo(data){
-			updatePersonHouseByNetGrid(data).then(res => {
-				this.handlePersonHouseInfo(res);
-			}).catch(err => {
-				console.log(err);
-			});
-		},
-		//（网格员）提交“新建”
+		//（网格员）提交操作（对人房数据的增、删、改）
 		async getPersonHouseByExchangeValue(newFormData){
+			let isSuccess = true ;
 			//根据radio按钮状态，请求后端方法
 			if(this.exchangeValue === "人房数据"){
-				await this.updatePersonHouseInfo(newFormData);
-				this.dialogVisibleForCreating = false;
+		    await updatePersonHouseByNetGrid(newFormData).then(res => {
+								this.handlePersonHouseInfo(res);
+							}).catch(err => {isSuccess = false; console.log(err);});
+				this.editedOrNot(isSuccess);
 			}else{
-				await updatePersonHouseByNetGrid_void(newFormData).catch(err => {console.log(err)});
+				await updatePersonHouseByNetGrid_void(newFormData).catch(err => {isSuccess = false; console.log(err);});
 				await this.getHistoryDataByNetGrid();
-				this.dialogVisibleForCreating = false;
+				this.editedOrNot(isSuccess);
+			}
+		},
+		//编辑消息提示
+		editedOrNot(keyValue){
+			if(keyValue){
+				this.$message({
+					message: '编辑成功',
+					type: 'success'
+				});
+			}else{
+				this.$message.error('编辑失败');
 			}
 		},
 		//（网格员）提交“删除”
