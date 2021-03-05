@@ -141,7 +141,6 @@ export default {
           method: 'get'
         })
         .then((res) => {
-          // debugger
           this.modelTreeData = res.data
           // 加载倾斜测量模型
           this.modelTreeData[0].children.forEach((element) => {
@@ -153,8 +152,7 @@ export default {
               null,
               null
             )
-          })
-          console.log('原始倾斜测量模型加载完成')
+          });
 
           this.modelTreeData[1].children.forEach((element) => {
             this.load3DTiles(

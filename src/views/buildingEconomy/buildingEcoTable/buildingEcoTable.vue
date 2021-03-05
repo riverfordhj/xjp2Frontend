@@ -9,22 +9,24 @@
 		border	
 		style="width: 100%"
 	>
-	 <el-table-column align="center" label="企业名称" width="180">
+		<el-table-column 	align="center" type="index"	width="80" label="ID">
+		</el-table-column>
+	  <el-table-column align="center" label="企业名称" width="180">
         <template slot-scope="{row}">
           <span>{{ row.companyName }}</span>
         </template>
-	 </el-table-column>
-   <el-table-column align="center" label="楼宇名称" width="180">
+	  </el-table-column>
+    <el-table-column align="center" label="楼宇名称" width="180">
 				<template slot-scope="{row}">
 					<span>{{ row.buildingName }}</span>
 				</template>
-	 </el-table-column>
-	 <el-table-column align="center" label="联系人" width="180">
+	  </el-table-column>
+	  <el-table-column align="center" label="联系人" width="180">
         <template slot-scope="{row}">
           <span>{{ row.contacts }}</span>
         </template>
     </el-table-column>
-	 <el-table-column align="center" label="联系电话" width="180">
+	  <el-table-column align="center" label="联系电话" width="180">
         <template slot-scope="{row}">
           <span>{{ row.phone }}</span>
         </template>
@@ -46,40 +48,40 @@
           </template>
           <span v-else>{{ row.businessDirection }}</span>
         </template>
-      </el-table-column>
+    </el-table-column>
 
-      <el-table-column align="center" label="编辑" width="220">
-        <template slot-scope="{row}">
-          <el-button
-            v-if="row.edit"
-            type="success"
-            size="small"
-            icon="el-icon-circle-check-outline"
-						:loading="loading"
-            @click="confirmEdit(row)"
-          >
-            {{confirm}}
-          </el-button>
-					<el-button-group v-else>
-						<el-button
-							type="primary"
-							size="small"
-							icon="el-icon-edit"
-							@click="row.edit=!row.edit"
-						>
-							修改
-						</el-button>
-						<el-button 
-							type="primary" 
-							size="small"
-							icon="el-icon-delete"  
-							@click="handleDelete(row)"
-						>
-							删除
-						</el-button>
-					</el-button-group>
-        </template>
-      </el-table-column>
+		<el-table-column align="center" label="编辑" width="220">
+			<template slot-scope="{row}">
+				<el-button
+					v-if="row.edit"
+					type="success"
+					size="small"
+					icon="el-icon-circle-check-outline"
+					:loading="loading"
+					@click="confirmEdit(row)"
+				>
+					{{confirm}}
+				</el-button>
+				<el-button-group v-else>
+					<el-button
+						type="primary"
+						size="small"
+						icon="el-icon-edit"
+						@click="row.edit=!row.edit"
+					>
+						修改
+					</el-button>
+					<el-button 
+						type="primary" 
+						size="small"
+						icon="el-icon-delete"  
+						@click="handleDelete(row)"
+					>
+						删除
+					</el-button>
+				</el-button-group>
+			</template>
+		</el-table-column>
 	</el-table>
 
 	<el-dialog
@@ -119,7 +121,7 @@
 </template>
 
 <script>
-import {getCompanySomeFileds, updateCompanyFields, getCompanyBuildings, deleteCompany} from '@/api/company.js'
+import {getCompanySomeFileds, updateCompanyFields, getBuindingInfoByStatus, deleteCompany} from '@/api/company.js'
 
 export default {
 	name: 'buildingEcoTable',
@@ -147,7 +149,7 @@ export default {
 	methods: {
 		//请求楼栋数据
 		getBuildingInfo() {
-			getCompanyBuildings().then(res => {
+			getBuindingInfoByStatus().then(res => {
 				this.buildingsData = res;
 			})
 		},

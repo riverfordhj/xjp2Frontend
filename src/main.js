@@ -1,11 +1,4 @@
-/*
- * @Descripttion: 1
- * @version: 1
- * @Author: KanMing
- * @Date: 2019-05-24 09:21:57
- * @LastEditors: KanMing
- * @LastEditTime: 2019-09-25 19:30:08
- */
+
 import Vue from 'vue'
 
 import 'normalize.css/normalize.css' // A modern alternative to CSS resets
@@ -26,7 +19,8 @@ import '@/permission' // permission control
 // import * as VueWindow from '@hscmap/vue-window'
 import * as VueMenu from '@hscmap/vue-menu'
 
-
+//总线机制：实现非父子组件传值
+Vue.prototype.bus = new Vue();
 
 // Vue.use(VueWindow)
 Vue.use(VueMenu)

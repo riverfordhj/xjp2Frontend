@@ -1,0 +1,11 @@
+{
+	"FalseOrTrue": ["是", "否"],
+	"categoryValueArray": ["自用", "租用（借用）", "空置", "征收", "其他"],
+	"relationWithHouseholderArray": ["本人","夫妻","子女","父母","亲属","其他"],
+	"populationCharacterArray": ["常住人口","流动人口","寄住人口","外籍人士","其他"],
+	"roomUseArray": ["居住","商用","其他"],
+	"politicalStatuArray": ["中共党员","民主党派","团员","群众","其他"],
+	"organizationalRelationArray": ["户籍地","居住地","单位","其他"],
+	"merriedStatusArray": ["未婚","已婚","离异","丧偶"],
+	"LodgingReasonArray": ["房屋拆迁","入托上学","务工经商","投靠亲友","分配调动工作","分换住房","两处以上住房","其他"]
+}

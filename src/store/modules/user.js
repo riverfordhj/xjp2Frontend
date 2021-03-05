@@ -15,7 +15,8 @@ import {
 const state = {
   token: getToken(),
   name: '',
-  avatar: ''
+	avatar: '',
+	role: '',
 }
 
 const mutations = {
@@ -27,7 +28,10 @@ const mutations = {
   },
   SET_AVATAR: (state, avatar) => {
     state.avatar = avatar
-  }
+	},
+	SET_ROLE: (state, role) => {
+		state.role = role;
+	}
 }
 
 const actions = {
@@ -35,20 +39,17 @@ const actions = {
   login({
     commit
   }, userInfo) {
-		//debugger;
     const {username, password} = userInfo
     return new Promise((resolve, reject) => {
       login({
         username: username.trim(),
         password: password
       }).then(response => {
-        //debugger
         const { auth_token } = response
         commit('SET_TOKEN', auth_token)
         setToken(auth_token)
         resolve()
       }).catch(error => {
-				//debugger;
         reject(error)
       })
     })
@@ -61,20 +62,20 @@ const actions = {
   }) {
     return new Promise((resolve, reject) => {
       getInfo(state.token).then(response => {
-        // const { data } = response
-
-        const data = response[0].value
+				const name = response[0].value;
+				const role = response[5].value;
         const avatar = ''
-
-        if (!data) {
+   
+        if (!name) {
           reject('Verification failed, please Login again.')
         }
 
-        // const { name, avatar } = data
-
-        commit('SET_NAME', data)// name
-        commit('SET_AVATAR', avatar)
-        resolve(data)
+        // const { name, avatar } = name
+      
+        commit('SET_NAME', name)// name
+				commit('SET_AVATAR', avatar)
+				commit('SET_ROLE', role);
+        resolve(name)
       }).catch(error => {
         reject(error)
       })

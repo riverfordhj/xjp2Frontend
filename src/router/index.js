@@ -1,11 +1,3 @@
-/*
- * @Descripttion: test
- * @version: 1
- * @Author: KanMing
- * @Date: 2019-05-24 09:21:57
- * @LastEditors: KanMing
- * @LastEditTime: 2019-09-24 15:19:18
- */
 import Vue from 'vue'
 import Router from 'vue-router'
 
@@ -116,11 +108,11 @@ export const constantRoutes = [
         }
       },
       {
-        path: 'oldMen',
-        name: '老年证办理',
+        path: 'personnelDistribution',
+        name: 'personnelDistribution',
         component: () => import('@/views/map/monomerization_cesium/index_old'),
         meta: {
-          title: '老年证办理',
+          title: '人员位置分布',
           icon: 'map'
         }
       },
@@ -222,15 +214,15 @@ export const constantRoutes = [
           icon: 'search'
         }
 			},
-			// {
-			// 	path: 'company',
-			// 	name: 'companyInfo',
-			// 	component: () => import('@/views/population/company'),
-			// 	meta: {
-			// 		title: '入驻公司信息',
-			// 		icon: 'dataManager' 
-			// 	}
-			// }
+			{
+        path: 'manage-personHouse',
+        name: 'manage-personHouse',
+        component: () => import('@/views/population/manage-personHouse'),
+        meta: {
+          title: '人房数据管理',
+          icon: 'dataManager'
+        }
+			}
     ]
 	},
 	
@@ -244,6 +236,15 @@ export const constantRoutes = [
       icon: 'population'
 	  },
     children: [
+			{
+				path: 'buildingInfoTable',
+				name: 'buildingInfoTable',
+				component: () => import('@/views/buildingEconomy/buildingInfoTable'),
+				meta: {
+					title: '商业体信息表',
+					icon: 'table' 
+				}
+			},
 			{
 				path: 'company',
 				name: 'CompanyInfo',
@@ -279,18 +280,20 @@ export const constantRoutes = [
 					title: '楼宇地图',
 					icon: 'map'
 				}
-			},{
+			},
+			{
 				path: 'inquery-buildingEco',
 				name: 'IqueryBuildingEco',
-				component: () => import('@/views/buildingEconomy/inquery-buildingEco.vue'),
+				component: () => import('@/views/buildingEconomy/inqueryBuilding/inquery-buildingEco.vue'),
 				meta: {
 					title: '楼宇统计分析',
 					icon: 'search'
 				}
-			},{
+			},
+			{
 				path: 'inqueryBuildingTax',
 				name: 'inqueryBuildingTax',
-				component: () => import('@/views/buildingEconomy/inquery-companyTax.vue'),
+				component: () => import('@/views/buildingEconomy/inqueryCompanyTax/inquery-companyTax.vue'),
 				meta: {
 					title: '公司税收统计分析',
 					icon: 'search'
@@ -454,110 +457,7 @@ export const constantRoutes = [
       }
     ]
   },
-  // {
-  //   path: '/example',
-  //   component: Layout,
-  //   redirect: '/example/table',
-  //   name: 'Example',
-  //   meta: { title: 'Example', icon: 'example' },
-  //   children: [
-  //     {
-  //       path: 'table',
-  //       name: 'Table',
-  //       component: () => import('@/views/table/index'),
-  //       meta: { title: 'Table', icon: 'table' }
-  //     },
-  //     {
-  //       path: 'tree',
-  //       name: 'Tree',
-  //       component: () => import('@/views/tree/index'),
-  //       meta: { title: 'Tree', icon: 'tree' }
-  //     }
-  //   ]
-  // },
-
-  // {
-  //   path: '/form',
-  //   component: Layout,
-  //   children: [
-  //     {
-  //       path: 'index',
-  //       name: 'Form',
-  //       component: () => import('@/views/form/index'),
-  //       meta: { title: 'Form', icon: 'form' }
-  //     }
-  //   ]
-  // },
-
-  // {
-  //   path: '/nested',
-  //   component: Layout,
-  //   redirect: '/nested/menu1',
-  //   name: 'Nested',
-  //   meta: {
-  //     title: 'Nested',
-  //     icon: 'nested'
-  //   },
-  //   children: [
-  //     {
-  //       path: 'menu1',
-  //       component: () => import('@/views/nested/menu1/index'), // Parent router-view
-  //       name: 'Menu1',
-  //       meta: { title: 'Menu1' },
-  //       children: [
-  //         {
-  //           path: 'menu1-1',
-  //           component: () => import('@/views/nested/menu1/menu1-1'),
-  //           name: 'Menu1-1',
-  //           meta: { title: 'Menu1-1' }
-  //         },
-  //         {
-  //           path: 'menu1-2',
-  //           component: () => import('@/views/nested/menu1/menu1-2'),
-  //           name: 'Menu1-2',
-  //           meta: { title: 'Menu1-2' },
-  //           children: [
-  //             {
-  //               path: 'menu1-2-1',
-  //               component: () => import('@/views/nested/menu1/menu1-2/menu1-2-1'),
-  //               name: 'Menu1-2-1',
-  //               meta: { title: 'Menu1-2-1' }
-  //             },
-  //             {
-  //               path: 'menu1-2-2',
-  //               component: () => import('@/views/nested/menu1/menu1-2/menu1-2-2'),
-  //               name: 'Menu1-2-2',
-  //               meta: { title: 'Menu1-2-2' }
-  //             }
-  //           ]
-  //         },
-  //         {
-  //           path: 'menu1-3',
-  //           component: () => import('@/views/nested/menu1/menu1-3'),
-  //           name: 'Menu1-3',
-  //           meta: { title: 'Menu1-3' }
-  //         }
-  //       ]
-  //     },
-  //     {
-  //       path: 'menu2',
-  //       component: () => import('@/views/nested/menu2/index'),
-  //       meta: { title: 'menu2' }
-  //     }
-  //   ]
-  // },
-
-  // // {
-  // //   path: 'external-link',
-  // //   component: Layout,
-  // //   children: [
-  // //     {
-  // //       path: 'https://panjiachen.github.io/vue-element-admin-site/#/',
-  // //       meta: { title: 'External Link', icon: 'link' }
-  // //     }
-  // //   ]
-  // // },
-
+  
   // 404 page must be placed at the end !!!
   {
     path: '*',

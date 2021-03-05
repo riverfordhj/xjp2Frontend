@@ -49,3 +49,4 @@ var deepClone = function (origin, target){
 export {
 	flatCompanyInfo, deepClone
 };
+

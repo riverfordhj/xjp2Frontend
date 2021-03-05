@@ -29,7 +29,7 @@ module.exports = {
    */
   publicPath: './',
   outputDir: 'dist',
-  assetsDir: 'static',
+	assetsDir: 'static',
   lintOnSave: process.env.NODE_ENV === 'development',
   productionSourceMap: false,
   devServer: {
@@ -67,7 +67,8 @@ module.exports = {
 				'cesium': path.resolve(__dirname, cesiumSource),
 				'public': resolve('public')
       }
-    },
+		},
+		devtool: 'source-map',
     plugins: [
       new CopyWebpackPlugin([{
         from: path.join(cesiumSource, cesiumWorkers),
@@ -91,7 +92,12 @@ module.exports = {
       // new webpack.ProvidePlugin({
       //   $: 'jquery',
       //   'jQuery': 'jquery'
-      // })
+			// })
+			new webpack.ProvidePlugin({
+        $: "jquery",
+        jQuery: "jquery",
+        jquery: "jquery"
+      })
     ],
     module: {
       // unknownContextCritical: /^.\/.*$/

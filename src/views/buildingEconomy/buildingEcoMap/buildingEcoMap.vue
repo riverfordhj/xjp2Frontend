@@ -6,9 +6,9 @@
 </template>
 
 <script>
-import axios from 'axios'
+import axios from 'axios';
 import { interactOperate } from './interactivate.js';
-import companyInfoPanel from './components/companyInfoPanel.vue';
+import companyInfoPanel from './companyInfoComponents/companyInfoPanel.vue';
 
 var Cesium = require('cesium/Cesium');
 import 'cesium/Widgets/widgets.css';
@@ -31,10 +31,14 @@ export default {
 			companyDatas:{
 				show: false,
 				title: '',
-				compaiesFullInfo: [],
-				interactOperate
+				companiesFullInfo: [],
+				interactOperate,
+				clearFilter: false
 			},
-			modelTreeData: []
+			modelTreeData: [],
+
+			positionValue: {},
+			FloorValue: ''
 		}
 	},
 	components: {
@@ -43,6 +47,19 @@ export default {
 	mounted() {
 		this.init();
 		this.loadData();
+
+		this.bus.$on('deliveryPositionInfo', (pos, floorNum) =>{
+			this.FloorValue = floorNum;
+			console.log('I get it');
+			debugger;
+			this.positionValue = {
+					long: pos.long,
+					lat: pos.lat,
+					height: pos.height
+			};
+			// this.$nextTick(this.companyDatas.interactOperate.FlytoFloor(position, floorNum));
+			this.companyDatas.interactOperate.FlytoFloor(this.positionValue, this.FloorValue);
+		})
 	},
 	methods: {
 		init (){
@@ -107,6 +124,7 @@ export default {
 					// viewer.flyTo(tileset);
 					viewer.camera.flyToBoundingSphere(boundingSphere, hpr);
 				}
+				
       })
     }
 		

@@ -72,7 +72,7 @@ export default {
         building: undefined,
         room: undefined,
         filter: ''
-      }
+			}
     }
   },
 
@@ -138,14 +138,17 @@ export default {
       this.cureentBuildingName = building.name // 保持当前选择building’s name
 
       getRoomByBuilding(id).then(response => {
-        debugger
+        // debugger
         this.rooms = response
       }).catch(error => {
-        debugger
+        // debugger
         console.log(error)
       })
     },
     flyToRoom(roomId) {
+			//定位飞行过程中，信息面板设为不可见
+			this.personHouseInfo.show = false;
+
       const room = this.rooms.find(r => r.id === roomId)
       if (room) {
         const position = { // 70-2-1002
@@ -158,7 +161,10 @@ export default {
     },
     close() {
       this.personHouseInfo.show = false
-    }
+		},
+		handleFilter(){
+			
+		}
   }
 }
 </script>

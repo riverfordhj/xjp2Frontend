@@ -1,3 +1,4 @@
+
 <template>
   <div class="app-container">
     <div class="filter-container">
@@ -9,38 +10,39 @@
         <el-option v-for="item in filteredBuildings" :key="item.id" :label="item.name" :value="item.id" />
       </el-select>
     </div>
-
-    <div id="output" style="margin: 30px;" />
+    <!-- 引入统计组件 -->
+		<pivot-table-panel :statistical-data="persons" :default-settings = "defaultSettingsForPivot"></pivot-table-panel>
   </div>
 
 </template>
 
 <script>
-const $ = require('jquery')
-import 'jqueryui/jquery-ui'
-// import jquery from 'jquery'
-import 'pivottable/dist/pivot.css'
-import 'pivottable'
-import d3 from 'd3'
-import c3 from 'c3'
-import {c3_renderers} from '../c3_renderers'
-
-import { getSubdivsions, getBuildingsBySub, getRoomByBuilding, getPersons, getPersonsByBuilding } from '@/api/person.js'
+import pivotTablePanel from '@/components/pivotTablePanel.vue'
+import { getSubdivsions, getBuildingsBySub, getRoomByBuilding, getPersons, GetPersonsByBuilding_ZH } from '@/api/person.js'
 
 export default {
-  name: 'PersonStatistics',
+	name: 'PersonStatistics',
+	components:{
+		pivotTablePanel
+	},
   data() {
     return {
       subdivsions: [],
       buildings: [],
       persons: [],
       Address: {
-        subdivsion: undefined,
-        building: undefined,
+        subdivsion: '水岸星城',
+        building: 'G1',
         room: undefined,
         filter: ''
-      },
-      renderers: null
+			},
+
+			defaultSettingsForPivot: {
+				rows: ['楼栋名'],
+				cols: ['人口性质'],
+				aggregatorName: '频数',
+				rendererName: '柱形图'
+			}
     }
   },
   computed: {
@@ -63,67 +65,44 @@ export default {
     },
   },
   created() {
-    c3_renderers.call(this, $, c3)
-    this.renderers = $.extend($.pivotUtilities.renderers,$.pivotUtilities.c3_renderers)
+		//初始化请求小区信息
+		this.getSubdivsionsData()
 
-    this.getSubdivsionsData()
+		//初始化请求水岸星城G1栋信息
+		this.getBuildingsData(1);
+		this.changeSelectedBuilding(1);
   },
   mounted() {
   },
   methods: {
     getSubdivsionsData() {
       getSubdivsions().then(response => {
-        // debugger
+        debugger
         this.subdivsions = response
       }).catch(error => {
-        // debugger
         console.log(error)
       })
     },
     getBuildingsData(subdivsionId) {
       // debugger
       getBuildingsBySub(subdivsionId).then(response => {
-        // debugger
         this.buildings = response
       }).catch(error => {
-        debugger
         console.log(error)
       })
     },
     changeSelectedBuilding(buildingId) {
-      // debugger
-      getPersonsByBuilding(buildingId).then(response => {
-        // debugger
-        this.persons = response
-        this.setPivot()
-      }).catch(error => {
+      GetPersonsByBuilding_ZH(buildingId).then(response => {
         debugger
+        this.persons = response
+      }).catch(error => {
         console.log(error)
       })
     },
-    setPivot() {
-      const self = this
-      // debugger
-      // const pivotUIT = pivottable;
-      $('#output').pivotUI(
-        this.persons,
-        {
-          renderers: self.renderers
-        }
-        // [
-        //   { color: 'blue', shape: 'circle' },
-        //   { color: 'red', shape: 'triangle' }
-        // ],
-        // {
-        //   rows: ['color'],
-        //   cols: ['shape']
-        // }
-      )
-    }
   }
 }
 </script>
 
 <style >
-
 </style>
+

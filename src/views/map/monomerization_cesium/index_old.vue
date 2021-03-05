@@ -76,6 +76,7 @@ import FireHrydrantDialog from "./components/FireHrydrantDialog/index";
 import AdvancedSearch from "./components/AdvancedSearch/index";
 
 import { featureViewer } from "./cesium";
+import axios from 'axios';
 
 import oldMan from "../../../assets/cesium_images/80s.png";
 import oldMan1 from "../../../assets/cesium_images/oldMen1.png";
@@ -98,7 +99,7 @@ var tiles = null;
 var viewer = null;
 
 export default {
-  name: "",
+  name: "personnelDistribution",
   components: {
     OldMenDialog,
     FireDialog,
@@ -129,13 +130,11 @@ export default {
         enableZoomControls: true,
         enableCompassOuterRing: true,
       },
-      saxc3dTilesUrl: "http://202.114.148.160/saxc-plus/tileset.json",
-      // saxc3dTilesUrl: 'http://202.114.148.160/sogbTo3dtiles/DongJiaCun/tileset.json',
-      classifies: [
-        "http://106.14.203.229:8088/cesiumlab/SAXC单体化结果数据/矢量面3dtiles/saxc_c/tileset.json", // 水岸星城商业楼
-        "http://106.14.203.229:8088/cesiumlab/SAXC单体化结果数据/矢量面3dtiles/saxc_DHT/tileset.json", // 水岸星城别墅楼
-        "http://106.14.203.229:8088/cesiumlab/SAXC单体化结果数据/矢量面3dtiles/saxc_G/tileset.json", // 水岸星城高层楼
-      ],
+      // classifies: [
+      //   "http://106.14.203.229:8088/cesiumlab/SAXC单体化结果数据/矢量面3dtiles/saxc_c/tileset.json", // 水岸星城商业楼
+      //   "http://106.14.203.229:8088/cesiumlab/SAXC单体化结果数据/矢量面3dtiles/saxc_DHT/tileset.json", // 水岸星城别墅楼
+      //   "http://106.14.203.229:8088/cesiumlab/SAXC单体化结果数据/矢量面3dtiles/saxc_G/tileset.json", // 水岸星城高层楼
+      // ],
       opened: false,
       fireOpened: false,
       popend: false,
@@ -284,6 +283,8 @@ export default {
       viewer.flyTo(viewer.entities.getById(value));
     },
     init() {
+			Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI5MjMyYjZiMC1lZmY1LTQzNmEtODg1NS01NmQzMmE2NWY2ZjMiLCJpZCI6NDQ1MSwic2NvcGVzIjpbImFzciIsImdjIl0sImlhdCI6MTU0MDg4NTM2Mn0.7OzWWlmUmJv_EJo0RFpuiL2G_KLgZBENAAXOgU1O1qM';
+			
       viewer = new Cesium.Viewer("cesiumContainer", {
         shouldAnimate: true,
         baseLayerPicker: false,
@@ -438,107 +439,118 @@ export default {
       });
     },
     add3DtilesDyt(viewer) {
-      featureViewer.install(viewer);
-      // 添加倾斜模型
-      var _this = this;
-      var tiltTileset = new Cesium.Cesium3DTileset({
-        url: this.saxc3dTilesUrl,
-      });
+			axios.request({
+				url: '/3DModelsSetting.json', // 读取public目录下3维模型配置文件
+        method: 'get'
+			}).then((res) =>{
+				var saxcUrl = res.data[0].children[0].url;
+				var saxcDthUrl = res.data[1].children[0].url;
+				
+				featureViewer.install(viewer);
+				// 添加倾斜模型
+				var _this = this;
+				var tiltTileset = new Cesium.Cesium3DTileset({
+					url: saxcUrl,
+				});
 
-      tiltTileset.readyPromise.then(function (tileset) {
-        // _this.addMouseEvent(viewer)
-        // 添加导航
-        // CesiumNavigation(viewer, options);
-        // 初始化弹框
-        // initInfowindow(viewer)
-        viewer.scene.primitives.add(tileset);
-        viewer.flyTo(tileset);
+				tiltTileset.readyPromise.then(function (tileset) {
+					// _this.addMouseEvent(viewer)
+					// 添加导航
+					// CesiumNavigation(viewer, options);
+					// 初始化弹框
+					// initInfowindow(viewer)
+					viewer.scene.primitives.add(tileset);
+					viewer.flyTo(tileset);
 
-        // _this.$store.dispatch('AddCesiumData', tileset)
-        // debugger
-        tiles = tileset;
-        // tiles = tiltTileset
-        console.log("倾斜摄影加载完成", tiles);
-      });
-      // 添加矢量面分类图层
-      var classificationTileset = new Cesium.Cesium3DTileset({
-        url: "http://202.114.148.160/saxc-dth/tileset.json",
-        // url: 'http://202.114.148.160/saxcDY/tileset.json',
-        classificationType: Cesium.ClassificationType.CESIUM_3D_TILE,
-      });
-      classificationTileset.style = new Cesium.Cesium3DTileStyle({
-        color: "rgba(255,255,255,0.01)",
-      });
+					// _this.$store.dispatch('AddCesiumData', tileset)
+					// debugger
+					tiles = tileset;
+					// tiles = tiltTileset
+					console.log("倾斜摄影加载完成", tiles);
+				});
+				// 添加矢量面分类图层
+				var classificationTileset = new Cesium.Cesium3DTileset({
+					url: saxcDthUrl,
+					// url: 'http://202.114.148.160/saxcDY/tileset.json',
+					classificationType: Cesium.ClassificationType.CESIUM_3D_TILE,
+				});
+				classificationTileset.style = new Cesium.Cesium3DTileStyle({
+					color: "rgba(255,255,255,0.01)",
+				});
 
-      let gidName = "H15-1-4/5-2"; //测试房屋号G8-2-802
-      // classificationTileset.style = new Cesium.Cesium3DTileStyle({
-      //   color: {
-      //     conditions: [
-      //       // ["${Height} >= 100", 'color("purple", 0.5)'],
-      //       ["${gid} == ${gidName}", 'color("red")'],
-      //       ["true", "rgba(255,255,255,0.5)"],
-      //     ],
-      //   },
-      //   // show: "${Height} > 0",
-      //   // meta: {
-      //   //   description: '"Building id ${id} has height ${Height}."',
-      //   // },
-      // });
+				let gidName = "H15-1-4/5-2"; //测试房屋号G8-2-802
+				// classificationTileset.style = new Cesium.Cesium3DTileStyle({
+				//   color: {
+				//     conditions: [
+				//       // ["${Height} >= 100", 'color("purple", 0.5)'],
+				//       ["${gid} == ${gidName}", 'color("red")'],
+				//       ["true", "rgba(255,255,255,0.5)"],
+				//     ],
+				//   },
+				//   // show: "${Height} > 0",
+				//   // meta: {
+				//   //   description: '"Building id ${id} has height ${Height}."',
+				//   // },
+				// });
 
-      classificationTileset.readyPromise.then(function (tileset) {
-        viewer.scene.primitives.add(tileset);
+				classificationTileset.readyPromise.then(function (tileset) {
+					viewer.scene.primitives.add(tileset);
 
-        _this.dftTileset = classificationTileset;
+					_this.dftTileset = classificationTileset;
 
-        tileset.tileLoad.addEventListener((tile) => {
-          //tileVisible
-          // debugger
-          if (tile && tile.content) {
-            // debugger;
-            _this.dtfFeatures = tile.content;
-            console.log("dftfeatures", _this.dtfFeatures.featuresLength);
+					tileset.tileLoad.addEventListener((tile) => {
+						//tileVisible
+						// debugger
+						if (tile && tile.content) {
+							// debugger;
+							_this.dtfFeatures = tile.content;
+							console.log("dftfeatures", _this.dtfFeatures.featuresLength);
 
-            let fLength = tile.content.featuresLength;
+							let fLength = tile.content.featuresLength;
 
-            for (let i = 0; i < fLength; i++) {
-              let feature = tile.content.getFeature(i);
-              // debugger;
-              let value = feature.getProperty("gid");
-              if (value && value == gidName) {
-                // debugger;
-                // feature.color = Cesium.Color.RED;
-                _this.theFeature = feature;
-                console.log("find", gidName);
-                // viewer.flyTo(feature);
-                // _this.FlyTo(feature);
-              }
-            }
-          }
-        });
+							for (let i = 0; i < fLength; i++) {
+								let feature = tile.content.getFeature(i);
+								// debugger;
+								let value = feature.getProperty("gid");
+								if (value && value == gidName) {
+									// debugger;
+									// feature.color = Cesium.Color.RED;
+									_this.theFeature = feature;
+									console.log("find", gidName);
+									// viewer.flyTo(feature);
+									// _this.FlyTo(feature);
+								}
+							}
+						}
+					});
 
-        _this.$notify({
-          title: "成功",
-          message: "单体化加载完毕",
-          type: "success",
-        });
+					_this.$notify({
+						title: "成功",
+						message: "单体化加载完毕",
+						type: "success",
+					});
 
-        console.log("单体化模型", tileset);
-        // var handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas)
-        // handler.setInputAction(function(evt) {
-        //   var pick = viewer.scene.pick(evt.position)
-        //   if (pick) {
-        //     if (pick instanceof Cesium.Cesium3DTileFeature) {
-        //       // _this.hightLightAndGetProps(pick)
-        //       console.log(pick.getPropertyNames())
+					console.log("单体化模型", tileset);
+					// var handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas)
+					// handler.setInputAction(function(evt) {
+					//   var pick = viewer.scene.pick(evt.position)
+					//   if (pick) {
+					//     if (pick instanceof Cesium.Cesium3DTileFeature) {
+					//       // _this.hightLightAndGetProps(pick)
+					//       console.log(pick.getPropertyNames())
 
-        //       debugger
-        //       pick.color = Cesium.Color.fromAlpha(Cesium.Color.LAWNGREEN, 0.3)
-        //     }
-        //   }
-        // }, Cesium.ScreenSpaceEventType.LEFT_CLICK)
-        // viewer.flyTo(classificationTileset)
-      });
-      // this.addMouseEvent(viewer);
+					//       debugger
+					//       pick.color = Cesium.Color.fromAlpha(Cesium.Color.LAWNGREEN, 0.3)
+					//     }
+					//   }
+					// }, Cesium.ScreenSpaceEventType.LEFT_CLICK)
+					// viewer.flyTo(classificationTileset)
+				});
+				// this.addMouseEvent(viewer);
+			}).catch(err => {
+				console.log(err);
+			})
+      
     },
     addMouseEvent(viewer) {
       console.log("addmouseevent");

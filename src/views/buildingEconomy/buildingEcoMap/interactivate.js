@@ -246,7 +246,7 @@ var interactOperate = {
     var offset = this.offsetFromHeadingPitchRange(
       heading,
       pitch,
-      30
+      120
     )
 
     var transform = Cesium.Transforms.eastNorthUpToFixedFrame(pos)
@@ -333,10 +333,11 @@ var interactOperate = {
 	//后端获取数据
 	getCompanyFullInfo(companyInfo){
 		getInfoByFloor(companyInfo).then(res => {
+			// debugger;
 			if(this.companyDatas.show !== true){
 				this.companyDatas.show = true;
 			}
-			this.companyDatas.compaiesFullInfo = flatCompanyInfo(res);
+			this.companyDatas.companiesFullInfo = flatCompanyInfo(res);
 		}).catch(err => {
 			console.log(err);
 		});
@@ -350,7 +351,7 @@ var interactOperate = {
       'Loading <div class="cesium-infoBox-loading"></div>'
     this.viewer.selectedEntity = selectedEntity
 
-		debugger;
+		// debugger;
     var names = pickedFeature._content.batchTable.getPropertyNames(
       pickedFeature._batchId
     )

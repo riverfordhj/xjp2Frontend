@@ -14,6 +14,7 @@ export function getSubdivsions() {
   })
 }
 
+
 export function getPersons() {
   return request({
     url: '/person/GetPersons',
@@ -25,6 +26,13 @@ export function getPersons() {
 export function getPersonsByBuilding(buildingId) {
   return request({
     url: `/person/GetPersonsByBuilding/${buildingId}`,
+    method: 'get'
+  })
+}
+//通过楼栋查找人员信息（返回中文数据）
+export function GetPersonsByBuilding_ZH(buildingId) {
+  return request({
+    url: `/person/GetPersonsByBuilding_ZH/${buildingId}`,
     method: 'get'
   })
 }
@@ -107,3 +115,106 @@ export function getRoomByBuilding(buildingId) {
     method: 'get'
   })
 }
+
+/* ***认证、授权*** */
+//根据用户，返回小区数据
+export function GetSubdivsionsByUser() {
+  return request({
+    url: '/person/GetSubdivsionsByUser',
+    method: 'get'
+  })
+}
+
+//根据用户，返回房间数据
+export function GetRoomsByUser() {
+  return request({
+    url: `/person/GetRoomsByUser`,
+    method: 'get'
+  })
+}
+
+//根据用户，返回人房数据
+export function GetPersonHouseInfoByUser() {
+	return request({
+		url: '/person/GetPersonsByUser',
+		method: 'get'
+	})
+}
+
+//（网格员）修改人房数据
+export function updatePersonHouseByNetGrid(editParams) {
+	return request({
+		url: '/person/UpdatePersonHouseByNetGrid',
+		method: 'post',
+		data: editParams
+	})
+}
+
+//（网格员）修改人房数据（不返回数据）
+export function updatePersonHouseByNetGrid_void(editParams) {
+	return request({
+		url: '/person/UpdatePersonHouseByNetGrid_void',
+		method: 'post',
+		data: editParams
+	})
+}
+
+//社区审核网格员修改后的人房数据
+export function VerifyByCommunity(VerifyData) {
+  return request({
+    url: '/person/VerifyByCommunity',
+		method: 'post',
+    data: VerifyData
+  })
+}
+//admin（街道）批准社区审核后的人房数据
+export function ConfirmByAdmin(confirmData) {
+  return request({
+    url: '/person/ConfirmByAdmin',
+    method: 'post',
+    data: confirmData
+  })
+}
+
+//返回指定网格内的楼栋
+export function GetBuildingsByNetGrid() {
+  return request({
+    url: '/person/GetBuildingsByNetGrid',
+    method: 'get'
+  })
+}
+//返回指定楼栋内的房间
+export function GetRoomsByBuildingAndNetgrid(buildingName) {
+  return request({
+    url: '/person/GetRoomsByBuildingAndNetgrid',
+		method: 'get',
+		params: {
+      buildingName
+    }
+  })
+}
+export function GetPersonHouseHistoryInfo() {
+  return request({
+    url: '/person/GetPersonHouseHistoryInfo',
+		method: 'get'
+  })
+}
+
+//返回指定网格员提交后的数据（社区审核之前）
+export function SearchPersonHouseByNetGrid() {
+  return request({
+    url: '/person/SearchPersonHouseByNetGrid',
+		method: 'get'
+  })
+}
+
+//批处理新建personHouseData
+export function BatchingPersonHouseData(tableList) {
+  return request({
+    url: '/person/BatchingPersonHouseData',
+		method: 'post',
+		data: tableList
+  })
+}
+
+/* ****** */
