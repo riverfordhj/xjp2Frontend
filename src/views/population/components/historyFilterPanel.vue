@@ -106,6 +106,9 @@ export default {
 		display: inline-block;
 	}
 	.filter-select{
-		width: 130px;
+		width: 110px;
+	}
+	.filterBar >>> input {
+		padding-left: 5px;
 	}
 </style>

@@ -10,8 +10,16 @@
 		  >
 				新建
 			</el-button>
-			<upload-excel :standard-header="tableHeaderForXlsx" :standard-header-en="filterValForXlsx" label-name="批处理新建"></upload-excel>
-			<el-radio-group class="radio-exchange" v-model="exchangeValue" @change="radioExchange">
+
+			<!-- 批处理新建人房数据 -->
+			<upload-excel 
+				v-if="checkPermission('网格员')"
+				:standard-header="tableHeaderForXlsx" 
+				:standard-header-en="filterValForXlsx" 
+				label-name="批量新建">
+			</upload-excel>
+
+			<el-radio-group  class="radio-exchange" v-model="exchangeValue" @change="radioExchange">
 				<el-radio-button label="人房数据"></el-radio-button>
 				<el-radio-button label="历史数据"></el-radio-button>
 			</el-radio-group>
@@ -42,13 +50,22 @@
 		</div>
 	
 		<el-table
+	    ref="multipleTable"
 			:data="personHouseList" 
 			height="835" 
 			border
 			class="personHouseTable"	
 			style="width: 100%"
+			@selection-change="handleSelectionChange"
 		>
-			 <el-table-column align="center" type="index" :index="customizeIndex"	width="50" label="ID" fixed="left">
+			<el-table-column 
+				v-if="checkPermission('社区') || checkPermission('Administrator')" 
+				align="center" 
+				type="selection" 
+				:selectable="isSelectable"
+				width="40">
+			</el-table-column>
+			<el-table-column align="center" type="index" :index="customizeIndex"	width="50" label="ID" fixed="left">
 			</el-table-column>
 			<el-table-column align="center" label="身份证号" width="170" fixed="left">
 						<template slot-scope="{row}">
@@ -268,6 +285,16 @@
 			</el-table-column>
       
 			<el-table-column v-if="checkPermission('社区')" align="center" label="编辑" width="220" fixed="right">
+				<template slot="header">
+					<el-button 
+						:loading="loading"
+						type="success"
+						size="small"
+						@click="toggleSelection('verified')"
+					>
+						审核通过全部勾选项
+					</el-button>
+				</template>
 				<template  slot-scope="{row}">
 					<el-button
 						v-if="waitingForConfirm(row)"
@@ -299,6 +326,16 @@
 			</el-table-column>
 
 			<el-table-column v-if="checkPermission('Administrator')" align="center" label="编辑" width="220" fixed="right">
+				<template slot="header">
+					<el-button 
+						:loading="loading"
+						type="success"
+						size="small"
+						@click="toggleSelection('approved')"
+					>
+						批准全部勾选项
+					</el-button>
+				</template>
 				<template  slot-scope="{row}">
 					<el-button
 						v-if="statusWithAdmin(row.status)"
@@ -362,6 +399,8 @@ import uploadExcel from './components/uploadExcel.vue';
 
 import personRoomDataOptions from '@/assets/json/personRoomDataOptions.json';
 
+var selectionRowDatas = [];
+
 export default {
 	name: 'manage-personHouse',
 	data(){
@@ -424,6 +463,42 @@ export default {
 		}
 	},
 	methods:{
+		toggleSelection(statusVal){
+			if(selectionRowDatas.length === 0){
+				this.warnMessageFun('请勾选后，再操作')
+			}else{
+				if(checkPermission('社区')){
+					selectionRowDatas.forEach((item) => {
+						this.verifyEdit(item, statusVal);
+					});
+				}else if(checkPermission('Administrator')){
+					selectionRowDatas.forEach((item) => {
+						this.confirmEdit(item, statusVal);
+					});
+				}
+			}
+      //提交后格式化
+			selectionRowDatas = [];
+		},
+		//
+		isSelectable(row, index){
+			if(checkPermission('社区')){
+				return row.status !== 'verified' && row.status !== 'failed';
+			}else if(checkPermission('Administrator')){
+				return row.status !== 'approved' && row.status !== 'rejected';
+			}
+		},
+		warnMessageFun(news){
+			this.$message({
+				message: news,
+				type: 'warning'
+			});
+		},
+		//同步勾选项数据
+		handleSelectionChange(rows){
+			selectionRowDatas = rows;
+			console.log(selectionRowDatas);
+		},
 		//请求人房信息
 		getPersonHouseInfo (){
 			GetPersonHouseInfoByUser().then((res) => {
@@ -436,7 +511,6 @@ export default {
 		},
 		//根据条件（楼栋、房间）过滤人房数据
 		filterPersonHouseInfo(dataInfo){
-			debugger;
 			if(dataInfo.currentRoomName !== '' && dataInfo.currentBuildingName !== ''){
 				this.personHouseInfo = this.tempPersonHouseInfo.filter((item) => {
 					return item.buildingName === dataInfo.currentBuildingName && item.roomName === dataInfo.currentRoomName;
@@ -650,9 +724,6 @@ export default {
 	.toolbar{
 		margin: 5px;
 	}
-  /* .create-button{
-		display: inline-block;
-	} */
 	.personHouseTable >>> div.cell,
 	.personHouseTable >>> div.cell input{
     padding: 0 3px
@@ -673,8 +744,8 @@ export default {
 	}
 
 	.create-button{
-		padding-left: 15px;
-		padding-right: 15px;
+		padding-left: 10px;
+		padding-right: 10px;
 	}
 
 	.radio-exchange >>> span{
