@@ -7,6 +7,27 @@ export function getBuildingsBySub(subId) {
   })
 }
 
+export function getCommunitys() {
+  return request({
+    url: '/person/GetCommunitys',
+    method: 'get'
+  })
+}
+
+export function getNetGridInCommunity(commuityId) {
+  return request({
+    url: `/person/GetNetGridInCommunity/${commuityId}`,
+    method: 'get'
+  })
+}
+
+export function getBuildingInNetGrid(netId) {
+  return request({
+    url: `/person/GetBuildingInNetGrid/${netId}`,
+    method: 'get'
+  })
+}
+
 export function getSubdivsions() {
   return request({
     url: '/person/GetSubdivsions',
@@ -36,10 +57,10 @@ export function GetPersonsByBuilding_ZH(buildingId) {
     method: 'get'
   })
 }
-
-export function getPersonsBySubdivision(subdivisionId) {
+//通过网格查找人员信息
+export function getPersonsByNetGrid(netId) {
   return request({
-    url: `/person/GetPersonsBySubdivision/${subdivisionId}`,
+    url: `/person/GetPersonsByNetGrid/${netId}`,
     method: 'get'
   })
 }

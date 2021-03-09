@@ -335,13 +335,13 @@ var interactOperate = {
   // Set feature infobox description
   setInfobox(pickedFeature) {
     const roomInfo = {}
-    roomInfo.SubdivisionName = pickedFeature.getProperty('residence')
+    roomInfo.AddressName = pickedFeature.getProperty('newid')
     roomInfo.BuildingName = pickedFeature.getProperty('buildingid')
     const unit = pickedFeature.getProperty('unitid')
     const roomId = pickedFeature.getProperty('roomid')
     roomInfo.RoomNO = `${unit}-${roomId}`
 
-    this.personHouseDataForm.roomid = `${roomInfo.SubdivisionName}-${roomInfo.BuildingName}-${roomInfo.RoomNO}`
+    this.personHouseDataForm.roomid = `${roomInfo.AddressName}-${roomInfo.BuildingName}-${roomInfo.RoomNO}`
     // debugger
     this.getPersonInRoom(roomInfo) // JSON.stringify(
 

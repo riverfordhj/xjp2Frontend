@@ -80,7 +80,7 @@ export default {
         children: 'children',
         label: 'label'
       },
-      defaultChecked: [100, 101, 200, 201], // 模型树check状态
+      defaultChecked: [102, 202], // 模型树check状态
 
       // dialogVisible: false,
       currentModelId: -1, // 当前被设置的模型id
