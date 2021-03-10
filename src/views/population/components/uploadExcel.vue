@@ -185,7 +185,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
  .load-excel{
 	 display: none;
 	 z-index: -9999;
@@ -193,5 +193,9 @@ export default {
  
  .upload-excel-container{
 	 display: inline-block;
+ }
+
+ .upload-excel-container >>> .el-button{
+	 padding: 12px 10px;
  }
 </style>
