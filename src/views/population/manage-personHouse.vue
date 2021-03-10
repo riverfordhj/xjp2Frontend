@@ -286,14 +286,22 @@
       
 			<el-table-column v-if="checkPermission('社区')" align="center" label="编辑" width="220" fixed="right">
 				<template slot="header">
-					<el-button 
-						:loading="loading"
-						type="success"
-						size="small"
-						@click="toggleSelection('verified')"
-					>
-						审核通过全部勾选项
-					</el-button>
+					<el-button-group >
+						<el-button 
+							type="success"
+							size="small"
+							@click="toggleSelection('verified')"
+						>
+							通过所选项
+						</el-button>
+						<el-button 
+							type="warning"
+							size="small"
+							@click="toggleSelection('failed')"
+						>
+							驳回所选项
+						</el-button>
+					</el-button-group>
 				</template>
 				<template  slot-scope="{row}">
 					<el-button
@@ -318,7 +326,7 @@
 							size="small"
 							@click="verifyEdit(row, 'failed')"
 						>
-							不予通过
+							驳回
 						</el-button>
 					</el-button-group>
 					
@@ -327,14 +335,22 @@
 
 			<el-table-column v-if="checkPermission('Administrator')" align="center" label="编辑" width="220" fixed="right">
 				<template slot="header">
-					<el-button 
-						:loading="loading"
-						type="success"
-						size="small"
-						@click="toggleSelection('approved')"
-					>
-						批准全部勾选项
-					</el-button>
+					<el-button-group >
+						<el-button 
+							type="success"
+							size="small"
+							@click="toggleSelection('approved')"
+						>
+							批准所选项
+						</el-button>
+						<el-button 
+							type="warning"
+							size="small"
+							@click="toggleSelection('rejected')"
+						>
+							驳回所选项
+						</el-button>
+					</el-button-group>
 				</template>
 				<template  slot-scope="{row}">
 					<el-button
@@ -358,7 +374,7 @@
 							size="small"
 							@click="confirmEdit(row, 'rejected')"
 						>
-							不予批准
+							驳回
 						</el-button>
 					</el-button-group>
 				</template>
@@ -557,6 +573,10 @@ export default {
 		//历史数据的过滤工具函数
 		filterToolFun(key, value){
 			this.personHouseInfo = this.tempPersonHouseEditInfo.filter((item, index) => {
+				if(value.includes('&')){
+					const valueArray = value.split('&');
+					return item[key] === valueArray[0] || item[key] === valueArray[1];
+				}
 				return item[key] === value;
 			});
 			this.resetPaginationSetting();
@@ -689,6 +709,7 @@ export default {
 		netGridStatusMap(statusVal){
 			switch(statusVal){
 				case 'committed':
+				case 'rejected':
 					return '待审核';
 				case 'failed':
 					return '未通过审核, 点击修改';

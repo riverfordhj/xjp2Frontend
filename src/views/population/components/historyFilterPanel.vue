@@ -51,7 +51,7 @@ export default {
 			statusValue: '',
 			statusOptions: [
 		    {
-					value: 'committed',
+					value: 'committed&rejected',
 					label: '待审核'
 				},{
 					value: 'verified',
