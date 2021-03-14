@@ -31,7 +31,7 @@
 			<export-to-xlsx :table-header="tableHeaderForXlsx" :filter-fields="filterValForXlsx" :person-house-data="personHouseList"></export-to-xlsx>
     </div>
 
-    <el-table :data="personHouseList" height="835" border style="width: 100%" :row-class-name="tableRowClassName">
+    <el-table :data="personHouseList" height="835" border style="width: 100%" :row-class-name="tableRowClassName" @row-dblclick="handleDoubleClick">
 			
       <el-table-column 	align="center" type="index" :index="customizeIndex"	width="80" label="ID">
 			</el-table-column>
@@ -97,7 +97,7 @@
 </template>
 
 <script>
-import { getCommunitys, getNetGridInCommunity, getBuildingInNetGrid, getSubdivsions, getPersonsByNetGrid, getPersons, getPersonsByBuilding, getPersonsBySubdivision, getPersonsBySearch, getSpecialGroups,getFields,getDataByQuery } from '@/api/person.js'
+import { getCommunitys, getNetGridInCommunity, getBuildingInNetGrid, getSubdivsions, getPersonsByNetGrid, getPersons, getPersonsByBuilding, getPersonByRoom, getPersonsBySearch, getSpecialGroups,getFields,getDataByQuery } from '@/api/person.js'
 import exportToXlsx from './components/exportToXlsx';
 import pagination from './components/pagination.vue';
 
@@ -105,6 +105,7 @@ export default {
   name: 'PersonHouseData',
   data() {
     return {
+      roomInfo:{},
       communities:[],
       netGrids:[],
       subdivsions: [],
@@ -397,7 +398,24 @@ export default {
 				limit: 20,
 				curPage: 1
 			}
-		}
+		},
+    handleDoubleClick(row){
+			this.$router.push({name: 'PersonHouseMap'});
+      debugger
+      this.roomInfo = {
+        AddressName:row.bulidingAddress,
+        BuildingName:row.bulidingName,
+        RoomNO:row.roomNO
+        }
+        debugger
+        this.handleDelivery(this.roomInfo);
+		},
+    handleDelivery(roomInfo){
+			 getPersonByRoom(roomInfo).then(response => {
+     //跳转人房地图未实现定位和信息显示
+  
+    })
+		},
   }
 }
 </script>
