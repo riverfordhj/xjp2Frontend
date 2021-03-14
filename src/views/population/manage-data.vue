@@ -36,14 +36,14 @@
       <el-table-column 	align="center" type="index" :index="customizeIndex"	width="80" label="ID">
 			</el-table-column>
       <el-table-column prop="roomNO" label="房号" sortable width="80" :sort-method="sortRoomNO" />
-      <el-table-column prop="person.name" label="姓名" width="80">
+      <el-table-column  label="姓名" width="80">
         <template slot-scope="scope">
           <el-popover trigger="hover" placement="top">
             <ul>
               <li v-for="item in scope.row.specialGroup" :key="item.Id">特殊人群：{{ item.type }}</li> 
             </ul>
-            <div slot="reference" class="name-wrapper" v-if="scope.row.person">
-              <el-tag size="medium">{{ scope.row.person.name }}</el-tag>
+            <div slot="reference" class="name-wrapper" >
+              <el-tag  size="medium">{{ scope.row.person.name }}</el-tag>
             </div>
           </el-popover>
         </template>
@@ -57,7 +57,7 @@
       <el-table-column prop="isLiveHere" label="在此居住" width="80" />
       <el-table-column prop="populationCharacter" label="人口性质" />
       <el-table-column prop="lodgingReason" label="寄住原因" />
-      <el-table-column prop="person.address" label="户籍地址" />
+      <el-table-column prop="person.domicileAddress" label="户籍地址" />
       <el-table-column prop="person.company" label="公司" />
       <el-table-column prop="person.isOverseasChinese" label="海外华人" />
       <el-table-column prop="person.politicalState" label="政治面貌" />
@@ -66,7 +66,8 @@
       <el-table-column prop="subdivsionName" label="小区" />
       <el-table-column prop="bulidingName" label="楼栋" />
       <el-table-column prop="bulidingAddress" label="地址" />
-      <el-table-column prop="type" label="类型" />
+      <el-table-column prop="type" label="类型" >
+      </el-table-column>
     </el-table>
     
   <el-dialog title="高级检索" :visible.sync="dialogVisible"	width="40%" center>                                        
@@ -110,7 +111,7 @@ export default {
       buildings: [],
       personHouseInfo: [],
       filterdPersonHouseInfo: [],
-      //specialGroups: [],
+      specialGroups: [],
       dialogVisible: false,
       fields:[],
       dataForms:[
@@ -228,7 +229,7 @@ export default {
     getSpecialGroupsData() {  
       getSpecialGroups().then(response => {
          // debugger
-				this.filterdPersonHouseInfo = this.personHouseInfo = response;
+				this.filterdPersonHouseInfo = response;
 				this.resetPaginationSetting();
       }).catch(error => {
         console.log(error)
@@ -344,13 +345,13 @@ export default {
         console.log(error)
       })
     },
-    tableRowClassName({ row, rowIndex }) {
-      // debugger     
-       //if (row.specialGroup.length) {
-      //if (scope.row.type) {
-      //   return 'warning-row'
-      // }
-      // return ''
+    tableRowClassName({ row }) {
+       //debugger     
+       if (row.specialGroup) {
+         if(row.specialGroup.length){
+            return 'warning-row'
+         }              
+       }
     },
     // 将房号转换为数值，进行排序
     sortRoomNO(row, column) {
@@ -401,11 +402,10 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
   .el-table .warning-row {
-    background: oldlace;
+    background:rgb(182, 95, 44);
   }
-
   .el-table .success-row {
     background: #f0f9eb;
   }
