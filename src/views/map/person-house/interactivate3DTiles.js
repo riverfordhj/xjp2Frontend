@@ -238,9 +238,7 @@ var interactOperate = {
     // debugger
     this.roomNO = roomNO
 
-    var longitude = Cesium.Math.toRadians(
-      position.long
-    )
+    var longitude = Cesium.Math.toRadians(position.long)
     var latitude = Cesium.Math.toRadians(position.lat)
     var height = position.height
 
