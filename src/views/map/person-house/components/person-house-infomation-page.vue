@@ -136,6 +136,14 @@ export default {
     //this.getSubdivsionsData()
      this.getCommunitysData()
   },
+  mounted(){
+    this.bus.$on('transferRoomId',(position,roomname)=>{
+         debugger
+         this.personHouseInfo.interactOperate.FlytoRoom(position, roomname)
+         
+          
+    })
+  },
   methods: {
       getCommunitysData() {
       //debugger
@@ -204,17 +212,21 @@ export default {
         console.log(error)
       })
     },
+    
     flyToRoom(roomId) {
+      debugger
 			//定位飞行过程中，信息面板设为不可见
 			this.personHouseInfo.show = false;
-
+     debugger
       const room = this.rooms.find(r => r.id === roomId)
       if (room) {
+        debugger
         const position = { // 70-2-1002
           long: room.longitude,
           lat: room.latitude,
           height: room.height
         }
+        debugger
         this.personHouseInfo.interactOperate.FlytoRoom(position, room.name)
       }
     },

@@ -109,6 +109,14 @@ export function getPersonByRoom(roomInfo) {
   })
 }
 
+export function getRoomId(roomInfo) {
+  return request({
+    url: '/person/GetRoomId',
+    method: 'post',
+    data: roomInfo
+  })
+}
+
 export function getPeopleByResidents(HouseId) {
   return request({
     url: '/people/getPeopleByResidents',

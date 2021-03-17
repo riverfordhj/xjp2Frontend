@@ -97,7 +97,7 @@
 </template>
 
 <script>
-import { getCommunitys, getNetGridInCommunity, getBuildingInNetGrid, getSubdivsions, getPersonsByNetGrid, getPersons, getPersonsByBuilding, getPersonByRoom, getPersonsBySearch, getSpecialGroups,getFields,getDataByQuery } from '@/api/person.js'
+import { getCommunitys, getNetGridInCommunity, getBuildingInNetGrid, getSubdivsions, getPersonsByNetGrid, getPersons, getPersonsByBuilding,getRoomId, getPersonsBySearch, getSpecialGroups,getFields,getDataByQuery } from '@/api/person.js'
 import exportToXlsx from './components/exportToXlsx';
 import pagination from './components/pagination.vue';
 
@@ -401,20 +401,27 @@ export default {
 		},
     handleDoubleClick(row){
 			this.$router.push({name: 'PersonHouseMap'});
-      debugger
+      //debugger
       this.roomInfo = {
         AddressName:row.bulidingAddress,
         BuildingName:row.bulidingName,
         RoomNO:row.roomNO
         }
-        debugger
-        this.handleDelivery(this.roomInfo);
-		},
-    handleDelivery(roomInfo){
-			 getPersonByRoom(roomInfo).then(response => {
-     //跳转人房地图未实现定位和信息显示
-  
-    })
+        //debugger
+        getRoomId(this.roomInfo).then(response => {
+         debugger
+         const position = { // 70-2-1002
+          long: response[0].longitude,
+          lat: response[0].latitude,
+          height: response[0].height
+        }
+        var roomname = response[0].name
+         debugger
+        this.bus.$emit("transferRoomId", position,roomname);
+      }).catch(error => {
+        console.log(error)
+      })
+      
 		},
   }
 }
