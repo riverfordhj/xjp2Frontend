@@ -51,6 +51,8 @@
       <el-table-column prop="person.personId" label="身份证" width="170" />
       <el-table-column prop="person.phone" label="电话" width="120" />
       <el-table-column prop="person.ethnicGroups" label="民族" width="80" />
+      <el-table-column prop="sex" label="性别" />
+      <el-table-column prop="age" label="年龄" />
       <el-table-column prop="isOwner" label="产权人" width="80" />
       <el-table-column prop="isHouseholder" label="户主" width="80" />
       <el-table-column prop="relationWithHouseholder" label="与户主关系" />
@@ -63,6 +65,7 @@
       <el-table-column prop="person.politicalState" label="政治面貌" />
       <el-table-column prop="person.organizationalRelation" label="组织关系" />
       <el-table-column prop="communityName" label="社区" />
+      <el-table-column prop="netGridName" label="网格" />
       <el-table-column prop="subdivsionName" label="小区" />
       <el-table-column prop="bulidingName" label="楼栋" />
       <el-table-column prop="bulidingAddress" label="地址" />
@@ -429,7 +432,7 @@ export default {
 
 <style>
   .el-table .warning-row {
-    background:rgb(182, 95, 44);
+    background:	#faebd7;
   }
   .el-table .success-row {
     background: #f0f9eb;
