@@ -6,7 +6,7 @@
       <el-select v-model="Address.community" placeholder="社区" clearable style="width: 100px" class="filter-item" @change="getNetGridData">
           <el-option v-for="item in filteredCommunities" :key="item.id" :label="item.name" :value="item.id" />
       </el-select>
-      <el-select v-model="Address.netGrid" placeholder="网格" clearable style="width: 100px" class="filter-item" @change="getBuildingsData">
+      <el-select v-model="Address.netGrid" placeholder="网格" clearable style="width: 100px" class="filter-item" @change="SelectedNetGrid" >
           <el-option v-for="item in filteredNetGrids" :key="item.id" :label="'网格' + item.name" :value="item.id" />
       </el-select>
       <el-select v-model="Address.building" placeholder="楼栋" clearable class="filter-item" style="width: 150px" @change="changeSelectedBuilding">
@@ -21,7 +21,7 @@
 
 <script>
 import pivotTablePanel from '@/components/pivotTablePanel.vue'
-import { getCommunitys, getNetGridInCommunity,getBuildingInNetGrid, GetPersonsByBuilding_ZH } from '@/api/person.js'
+import { getCommunitys, getNetGridInCommunity,getBuildingInNetGrid, GetPersonsByNetGrid_ZH,GetPersonsByBuilding_ZH } from '@/api/person.js'
 
 export default {
 	name: 'PersonStatistics',
@@ -38,7 +38,7 @@ export default {
       Address: {
         community:'',
         netGrid:'',
-        building: '1',
+        building: '',
         room: undefined,
         filter: ''
 			},
@@ -88,13 +88,17 @@ export default {
   },
   created() {
     this.getCommunitysData()
-		//初始化请求水岸星城G1栋信息
-		this.getBuildingsData(1);
-		this.changeSelectedBuilding(1);
+		//初始化请求网格1
+		//this.getBuildingsData(1);
+		this.changeSelectedNetGrid(1);
   },
   mounted() {
   },
   methods: {
+    SelectedNetGrid(item){
+          this.getBuildingsData(item);
+          this.changeSelectedNetGrid(item);
+    },
     getCommunitysData() {
       getCommunitys().then(response => {
         this.communities = response
@@ -120,6 +124,14 @@ export default {
       }
       getBuildingInNetGrid(item).then(response => {
         this.buildings = response
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+    changeSelectedNetGrid(netGridId){
+      GetPersonsByNetGrid_ZH(netGridId).then(response =>{
+        debugger
+        this.persons = response
       }).catch(error => {
         console.log(error)
       })

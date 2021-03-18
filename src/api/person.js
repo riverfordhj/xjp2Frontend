@@ -50,6 +50,13 @@ export function getPersonsByBuilding(buildingId) {
     method: 'get'
   })
 }
+//通过网格查找人员信息（返回中文数据）
+export function GetPersonsByNetGrid_ZH(netGridId) {
+  return request({
+    url: `/person/GetPersonsByNetGrid_ZH/${netGridId}`,
+    method: 'get'
+  })
+}
 //通过楼栋查找人员信息（返回中文数据）
 export function GetPersonsByBuilding_ZH(buildingId) {
   return request({
