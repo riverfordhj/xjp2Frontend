@@ -90,6 +90,13 @@ export function getSpecialGroups() {
     method: 'get'
   })
 }
+//获取特殊人群的位置信息
+export function getSpecialPersonLoction_ZH() {
+  return request({
+    url:  '/person/GetSpecialPersonLoction_ZH',
+    method: 'get'
+  })
+}
 export function getFields() {
   return request({
     url: '/person/GetFields',

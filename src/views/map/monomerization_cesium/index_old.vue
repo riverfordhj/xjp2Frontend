@@ -19,7 +19,7 @@
         </el-dropdown-menu>
       </el-dropdown>
     </div>
-    <OldMen-Dialog :opened="opened" />
+    <OldMen-Dialog :opened="opened" :locationinfo="filterLoctionInfo" />
     <Fire-Dialog :fire-opened="fireOpened" />
     <people-Dialog :popend="popend" />
     <IllegalBuilding :iopend="iopend" />
@@ -65,6 +65,7 @@
 // import Cesium from 'cesium/Cesium'
 var Cesium = require("cesium/Cesium");
 import "cesium/Widgets/widgets.css";
+import Son from '../../../components/OldMenDialog/index'
 import OldMenDialog from "../../../components/OldMenDialog";
 import FireDialog from "./components/FireDialog/index1";
 import peopleDialog from "./components/peopleDialog/index";
@@ -77,6 +78,7 @@ import AdvancedSearch from "./components/AdvancedSearch/index";
 
 import { featureViewer } from "./cesium";
 import axios from 'axios';
+import { getSpecialPersonLoction_ZH } from '@/api/person.js';
 
 import oldMan from "../../../assets/cesium_images/80s.png";
 import oldMan1 from "../../../assets/cesium_images/oldMen1.png";
@@ -100,6 +102,7 @@ var viewer = null;
 
 export default {
   name: "personnelDistribution",
+  
   components: {
     OldMenDialog,
     FireDialog,
@@ -110,12 +113,16 @@ export default {
     KeyPeople,
     FireHrydrantDialog,
     AdvancedSearch,
+    Son,
   },
   data() {
     return {
       dtfFeatures: null,
       dftTileset: null,
       theFeature: null,
+
+      SpecialPersonLoctionInfo: [],
+      filterLoctionInfo:{},
 
       selectOptions: [],
       value: "",
@@ -130,11 +137,6 @@ export default {
         enableZoomControls: true,
         enableCompassOuterRing: true,
       },
-      // classifies: [
-      //   "http://106.14.203.229:8088/cesiumlab/SAXC单体化结果数据/矢量面3dtiles/saxc_c/tileset.json", // 水岸星城商业楼
-      //   "http://106.14.203.229:8088/cesiumlab/SAXC单体化结果数据/矢量面3dtiles/saxc_DHT/tileset.json", // 水岸星城别墅楼
-      //   "http://106.14.203.229:8088/cesiumlab/SAXC单体化结果数据/矢量面3dtiles/saxc_G/tileset.json", // 水岸星城高层楼
-      // ],
       opened: false,
       fireOpened: false,
       popend: false,
@@ -147,9 +149,10 @@ export default {
     };
   },
   mounted() {
-    this.initSeletion();
+    //this.initSeletion();
     // this.selectOptions.push
     this.init();
+    
 
     // this.SelectHouseBySearchProperty();
   },
@@ -160,7 +163,7 @@ export default {
       }
 
       if (feature && feature._content && feature._content.tile) {
-        debugger;
+        //debugger;
         let cartographic = Cesium.Cartographic.fromCartesian(
           feature._content.tile.boundingSphere.center
         );
@@ -272,10 +275,18 @@ export default {
     },
     initSeletion() {
       var _this = this;
-      oldMenJson.map((man) => {
-        _this.selectOptions.push({
-          value: man["姓名"],
-          label: man["姓名"],
+      debugger
+      getSpecialPersonLoction_ZH().then(response =>{
+        debugger
+        _this.SpecialPersonLoctionInfo = response;
+        console.log(_this.SpecialPersonLoctionInfo);
+        response.map((man)  => {
+          debugger
+          //oldMenJson.map((man) => {
+          _this.selectOptions.push({
+            value: man["姓名"],
+            label: man["姓名"],
+          });
         });
       });
     },
@@ -338,75 +349,62 @@ export default {
       var _this = this;
       window.setTimeout(function () {
         _this.add3DtilesDyt(viewer);
-        oldMenJson.map((men) => {
-          _this.addEntity(
-            viewer,
-            Cesium.Cartesian3.fromDegrees(
-              parseFloat(men["经度"]),
-              parseFloat(men["纬度"]),
-              parseFloat(men["楼层"]) * 3 + 10
-            ),
-            men["姓名"],
-            people
-          );
+        getSpecialPersonLoction_ZH().then(response =>{
+          response.filter(item => item["类型"] === "精神病人").map((men)  => {
+            _this.addEntity(
+              viewer,
+              Cesium.Cartesian3.fromDegrees(
+                parseFloat(men["经度"]),
+                parseFloat(men["纬度"]),
+                parseFloat(men["楼层"]) * 3 + 10
+              ),
+              men["姓名"],
+              people
+            );
+          });
         });
-        _this.addEntity(
-          viewer,
-          Cesium.Cartesian3.fromDegrees(114.33850575, 30.577023283, 13),
-          "刘德兰",
-          oldMan1
-        );
-        // _this.addEntity(
-        //   viewer,
-        //   Cesium.Cartesian3.fromDegrees(114.340873606, 30.5805503113, 120),
-        //   '火灾',
-        //   // fire_icon
-        // )
-        // _this.addEntity(
-        //   viewer,
-        //   Cesium.Cartesian3.fromDegrees(114.3337911398, 30.5787513665, 20),
-        //   '违章建筑',
-        //   IllegalBuildingImg
-        // )
-        //   occupation.map((o, i) => {
-        //     if (o['type'] === '占道') {
-        //       _this.addEntity(
-        //         viewer,
-        //         Cesium.Cartesian3.fromDegrees(parseFloat(o['long']), parseFloat(o['lat']), 10),
-        //         '违法占道',
-        //         trash
-        //       )
-        //     } else {
-        //       _this.addEntity(
-        //         viewer,
-        //         Cesium.Cartesian3.fromDegrees(parseFloat(o['long']), parseFloat(o['lat']), 10),
-        //         '环境卫生',
-        //         trash
-        //       )
-        //     }
-        //   })
-        // _this.addPosition(viewer, house_xy, jzJson, '家庭住址')
-        // _this.addPosition(viewer, house_xy, jzJson, '家庭住址')
-        // _this.addEntity(
-        //   viewer,
-        //   Cesium.Cartesian3.fromDegrees(114.340349, 30.57929372, 100),
-        //   '涉政人员',
-        //   keyPeople
-        // )
-        // _this.addEntity(
-        //   viewer,
-        //   Cesium.Cartesian3.fromDegrees(114.3419146, 30.58028803, 154),
-        //   '刑满释放人员',
-        //   keyPeople
-        // )
-        // fireHydrant.map(f => {
-        //   _this.addEntity(
-        //     viewer,
-        //     Cesium.Cartesian3.fromDegrees(parseFloat(f['y']), parseFloat(f['x']), 10),
-        //     '消防栓',
-        //     fireHydrantImg
-        //   )
-        // })
+         getSpecialPersonLoction_ZH().then(response =>{
+          response.filter(item => item["类型"] === "信访维稳人员").map((men)  => {
+            _this.addEntity(
+              viewer,
+              Cesium.Cartesian3.fromDegrees(
+                parseFloat(men["经度"]),
+                parseFloat(men["纬度"]),
+                parseFloat(men["楼层"]) * 3 + 10
+              ),
+              men["姓名"],
+              people
+            );
+          });
+        });
+         getSpecialPersonLoction_ZH().then(response =>{
+          response.filter(item => item["类型"] === "邪教人员").map((men)  => {
+            _this.addEntity(
+              viewer,
+              Cesium.Cartesian3.fromDegrees(
+                parseFloat(men["经度"]),
+                parseFloat(men["纬度"]),
+                parseFloat(men["楼层"]) * 3 + 10
+              ),
+              men["姓名"],
+              people
+            );
+          });
+        });
+        getSpecialPersonLoction_ZH().then(response =>{
+          response.filter(item => item["类型"] === "吸毒人员").map((men)  => {
+            _this.addEntity(
+              viewer,
+              Cesium.Cartesian3.fromDegrees(
+                parseFloat(men["经度"]),
+                parseFloat(men["纬度"]),
+                parseFloat(men["楼层"]) * 3 + 10
+              ),
+              men["姓名"],
+              oldMan1
+            );
+          });
+        });
       }, 2000);
     },
     addPosition(viewer, xyJson, tJson, tKey) {
@@ -443,8 +441,8 @@ export default {
 				url: '/3DModelsSetting.json', // 读取public目录下3维模型配置文件
         method: 'get'
 			}).then((res) =>{
-				var saxcUrl = res.data[0].children[0].url;
-				var saxcDthUrl = res.data[1].children[0].url;
+				var saxcUrl = res.data[0].children[2].url;
+				var saxcDthUrl = res.data[1].children[2].url;
 				
 				featureViewer.install(viewer);
 				// 添加倾斜模型
@@ -500,7 +498,7 @@ export default {
 
 					tileset.tileLoad.addEventListener((tile) => {
 						//tileVisible
-						// debugger
+						 debugger
 						if (tile && tile.content) {
 							// debugger;
 							_this.dtfFeatures = tile.content;
@@ -716,17 +714,20 @@ export default {
           ? pickedPrimitive.id
           : undefined;
         if (Cesium.defined(pickedEntity)) {
-          // debugger
-          if (pickedEntity.label.text._value === "刘德兰") {
+           debugger
+          if (pickedEntity.label.text._value !== "") {
             _this.opened = !_this.opened;
-            // debugger
-            console.log("刘德兰", pickedEntity);
-            return;
+             debugger
+            console.log(pickedEntity.label.text._value, pickedEntity);
+             getSpecialPersonLoction_ZH().then(response =>{
+                _this.filterLoctionInfo = response.find(item => item["姓名"] === pickedEntity.label.text._value)                       
+             });
+             return;
           }
           if (pickedEntity.label.text._value === "消防栓") {
             _this.fopened = !_this.fopened;
             // debugger;
-            return;
+            
           }
           if (pickedEntity.label.text._value === "违法占道") {
             _this.ropend = !_this.ropend;
@@ -742,11 +743,11 @@ export default {
             return;
           }
           if (pickedEntity.label.text._value === "违章建筑") {
-            debugger;
+           // debugger;
             _this.iopend = !_this.iopend;
             return;
           }
-          debugger;
+         // debugger;
           if (pickedEntity.label.text._value === "矫正人员") {
             _this.keyType = 1;
             _this.kopened = true;

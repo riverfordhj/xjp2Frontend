@@ -1,18 +1,19 @@
 <template>
   <el-dialog
     :title="title"
+    :data="locationinfo"
     :visible.sync="dialogVisible"
     width="25%"
   >
     <div class="main">
-      <div>
+      <div  >
         <div class="msg">
           <el-row>
             <el-col :span="8">
               <div class="grid-content bg-purple">姓名</div>
             </el-col>
             <el-col :span="16">
-              <div class="grid-content bg-purple">刘德兰</div>
+              <div class="grid-content bg-purple">{{locationinfo["姓名"]}}</div>
             </el-col>
           </el-row>
           <el-row>
@@ -20,7 +21,7 @@
               <div class="grid-content bg-purple">性别</div>
             </el-col>
             <el-col :span="16">
-              <div class="grid-content bg-purple">女</div>
+              <div class="grid-content bg-purple">{{locationinfo["性别"]}}</div>
             </el-col>
           </el-row>
           <el-row>
@@ -28,7 +29,7 @@
               <div class="grid-content bg-purple">年龄</div>
             </el-col>
             <el-col :span="16">
-              <div class="grid-content bg-purple">60</div>
+              <div class="grid-content bg-purple">{{locationinfo["年龄"]}}</div>
             </el-col>
           </el-row>
           <el-row>
@@ -36,7 +37,7 @@
               <div class="grid-content bg-purple">电话</div>
             </el-col>
             <el-col :span="16">
-              <div class="grid-content bg-purple">18971250339</div>
+              <div class="grid-content bg-purple">{{locationinfo["联系电话"]}}</div>
             </el-col>
           </el-row>
           <el-row>
@@ -44,17 +45,17 @@
               <div class="grid-content bg-purple">居住地址</div>
             </el-col>
             <el-col :span="16">
-              <div class="grid-content bg-purple">水星新城-H15-2-101</div>
+              <div class="grid-content bg-purple">{{locationinfo["居住地址"]}}</div>
             </el-col>
           </el-row>
-          <!-- <el-row>
+          <el-row>
             <el-col :span="8">
-              <div class="grid-content bg-purple">身份证号</div>
+              <div class="grid-content bg-purple">类型</div>
             </el-col>
             <el-col :span="16">
-              <div class="grid-content bg-purple">422429194105096540</div>18971250339
+              <div class="grid-content bg-purple">{{locationinfo["类型"]}}</div>
             </el-col>
-          </el-row> -->
+          </el-row>
         </div>
         <div class="img">
           <img
@@ -78,6 +79,12 @@ export default {
     opened: {
       type: Boolean,
       default: false
+    },
+    locationinfo:{
+       type: Object,
+       default:function() {
+        return []
+      }
     }
   },
   data() {
