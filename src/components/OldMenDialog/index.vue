@@ -6,7 +6,7 @@
     width="25%"
   >
     <div class="main">
-      <div  >
+      <div>
         <div class="msg">
           <el-row>
             <el-col :span="8">
@@ -37,7 +37,7 @@
               <div class="grid-content bg-purple">电话</div>
             </el-col>
             <el-col :span="16">
-              <div class="grid-content bg-purple">{{locationinfo["联系电话"]}}</div>
+              <div class="grid-content bg-purple">{{locationinfo["联系电话"] || "无"}}</div>
             </el-col>
           </el-row>
           <el-row>
@@ -57,14 +57,13 @@
             </el-col>
           </el-row>
         </div>
-        <div class="img">
+        <!-- <div class="img">
           <img
             src="../../assets/cesium_images/刘德兰.png"
             alt=""
             class="oldMan-img"
           >
-        </div>
-
+        </div> -->
       </div>
 
     </div>
@@ -104,7 +103,7 @@ export default {
 <style scoped>
 .main {
   width: 100%;
-  height: 200px;
+  height: 240px;
   /* background-color: cadetblue; */
 }
 
@@ -117,7 +116,7 @@ export default {
 
 .msg {
   float: left;
-  width: 60%;
+  width: 100%;
   font-size: 14px;
   color: #606266;
 }

@@ -65,7 +65,6 @@
 // import Cesium from 'cesium/Cesium'
 var Cesium = require("cesium/Cesium");
 import "cesium/Widgets/widgets.css";
-import Son from '../../../components/OldMenDialog/index'
 import OldMenDialog from "../../../components/OldMenDialog";
 import FireDialog from "./components/FireDialog/index1";
 import peopleDialog from "./components/peopleDialog/index";
@@ -80,23 +79,19 @@ import { featureViewer } from "./cesium";
 import axios from 'axios';
 import { getSpecialPersonLoction_ZH } from '@/api/person.js';
 
-import oldMan from "../../../assets/cesium_images/80s.png";
+
 import oldMan1 from "../../../assets/cesium_images/oldMen1.png";
-import fire_icon from "../../../assets/cesium_images/fire_icon.png";
 import fire from "../../../assets/cesium_images/fire.png";
-import IllegalBuildingImg from "../../../assets/cesium_images/违章.png";
 import people from "../../../assets/cesium_images/people.png";
-import trash from "../../../assets/cesium_images/trash.png";
-import warning from "../../../assets/cesium_images/warning.png";
 import keyPeople from "../../../assets/cesium_images/重点人员.png";
-import fireHydrantImg from "../../../assets/cesium_images/消火栓.png";
+
+import addictsPeople from "../../../assets/cesium_images/吸毒人员.png"
+import cultPeople from "../../../assets/cesium_images/邪教人员.png"
+import lettersPeople from "../../../assets/cesium_images/信访人员.png"
+import mentalPatient from "../../../assets/cesium_images/精神病.png"
+
 
 import oldMenJson from "../../../assets/json/newOldMen.json";
-import occupation from "../../../assets/json/occupation.json";
-import house_xy from "../../../assets/json/house_xy.json";
-import jzJson from "../../../assets/json/jz.json";
-import fireHydrant from "../../../assets/json/fireHydrant.json";
-
 var tiles = null;
 var viewer = null;
 
@@ -113,7 +108,6 @@ export default {
     KeyPeople,
     FireHrydrantDialog,
     AdvancedSearch,
-    Son,
   },
   data() {
     return {
@@ -359,7 +353,7 @@ export default {
                 parseFloat(men["楼层"]) * 3 + 10
               ),
               men["姓名"],
-              people
+              mentalPatient
             );
           });
         });
@@ -373,7 +367,7 @@ export default {
                 parseFloat(men["楼层"]) * 3 + 10
               ),
               men["姓名"],
-              people
+              lettersPeople
             );
           });
         });
@@ -387,7 +381,7 @@ export default {
                 parseFloat(men["楼层"]) * 3 + 10
               ),
               men["姓名"],
-              people
+              cultPeople
             );
           });
         });
@@ -401,7 +395,7 @@ export default {
                 parseFloat(men["楼层"]) * 3 + 10
               ),
               men["姓名"],
-              oldMan1
+              addictsPeople
             );
           });
         });
