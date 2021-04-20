@@ -146,6 +146,7 @@ export default {
       })
     },
     flyToRoom(roomId) {
+			debugger;
 			//定位飞行过程中，信息面板设为不可见
 			this.personHouseInfo.show = false;
 

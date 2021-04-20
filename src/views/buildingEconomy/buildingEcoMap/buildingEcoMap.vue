@@ -121,7 +121,6 @@ export default {
 				var boundingSphere = tileset.boundingSphere;
 				var hpr = new Cesium.HeadingPitchRange(0.0, -0.5, boundingSphere *2);
         if (isFlyto){
-					// viewer.flyTo(tileset);
 					viewer.camera.flyToBoundingSphere(boundingSphere, hpr);
 				}
 				

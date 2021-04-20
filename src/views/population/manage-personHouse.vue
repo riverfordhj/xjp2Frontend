@@ -408,7 +408,7 @@ import checkPermission from '@/utils/permission.js';//权限判断函数
 
 import createNewPersonHouse from './components/createNewPersonHouse.vue';
 import historyFilterPanel from './components/historyFilterPanel.vue';
-import pagination from './components/pagination.vue';
+import pagination from '../../components/pagination.vue';
 import exportToXlsx from './components/exportToXlsx';
 import filterPanel from './components/filterPanel.vue';
 import uploadExcel from './components/uploadExcel.vue';

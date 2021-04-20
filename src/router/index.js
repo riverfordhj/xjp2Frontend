@@ -225,6 +225,24 @@ export const constantRoutes = [
 			}
     ]
 	},
+
+	{
+    path: '/house',
+    component: Layout,
+		redirect:'/house/manage-house',
+    name: 'House',
+    children: [
+      {
+        path: 'manage-house',
+        name: 'manage-house',
+        component: () => import('@/views/house/manage-house'),
+        meta: {
+          title: '房屋管理',
+          icon: 'house'
+        }
+      }
+    ]
+  },
 	
 	{
     path: '/buildingCompany',
@@ -301,8 +319,6 @@ export const constantRoutes = [
 			}
     ]
 	},
-	
-	
 
   {
     path: '/education',
@@ -326,9 +342,6 @@ export const constantRoutes = [
   {
     path: '/public-security',
     component: Layout,
-    // redirect: '/example/table',
-    // name: 'Example',
-    // meta: { title: 'Example', icon: 'example' },
     children: [
       {
         path: 'index',
@@ -337,25 +350,6 @@ export const constantRoutes = [
         meta: {
           title: '公安',
           icon: 'publicSecurity'
-        }
-      }
-    ]
-  },
-
-  {
-    path: '/house',
-    component: Layout,
-    // redirect: '/example/table',
-    // name: 'Example',
-    // meta: { title: 'Example', icon: 'example' },
-    children: [
-      {
-        path: 'index',
-        name: '房屋管理',
-        component: () => import('@/views/house/index'),
-        meta: {
-          title: '房屋管理',
-          icon: 'house'
         }
       }
     ]
