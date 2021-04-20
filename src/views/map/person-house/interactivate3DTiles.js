@@ -238,9 +238,7 @@ var interactOperate = {
     // debugger
     this.roomNO = roomNO
 
-    var longitude = Cesium.Math.toRadians(
-      position.long
-    )
+    var longitude = Cesium.Math.toRadians(position.long)
     var latitude = Cesium.Math.toRadians(position.lat)
     var height = position.height
 
@@ -335,13 +333,13 @@ var interactOperate = {
   // Set feature infobox description
   setInfobox(pickedFeature) {
     const roomInfo = {}
-    roomInfo.SubdivisionName = pickedFeature.getProperty('residence')
+    roomInfo.AddressName = pickedFeature.getProperty('newid')
     roomInfo.BuildingName = pickedFeature.getProperty('buildingid')
     const unit = pickedFeature.getProperty('unitid')
     const roomId = pickedFeature.getProperty('roomid')
     roomInfo.RoomNO = `${unit}-${roomId}`
 
-    this.personHouseDataForm.roomid = `${roomInfo.SubdivisionName}-${roomInfo.BuildingName}-${roomInfo.RoomNO}`
+    this.personHouseDataForm.roomid = `${roomInfo.AddressName}-${roomInfo.BuildingName}-${roomInfo.RoomNO}`
     // debugger
     this.getPersonInRoom(roomInfo) // JSON.stringify(
 

@@ -112,7 +112,7 @@ export const constantRoutes = [
         name: 'personnelDistribution',
         component: () => import('@/views/map/monomerization_cesium/index_old'),
         meta: {
-          title: '人员位置分布',
+          title: '特殊人群分布',
           icon: 'map'
         }
       },

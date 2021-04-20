@@ -7,6 +7,27 @@ export function getBuildingsBySub(subId) {
   })
 }
 
+export function getCommunitys() {
+  return request({
+    url: '/person/GetCommunitys',
+    method: 'get'
+  })
+}
+
+export function getNetGridInCommunity(commuityId) {
+  return request({
+    url: `/person/GetNetGridInCommunity/${commuityId}`,
+    method: 'get'
+  })
+}
+
+export function getBuildingInNetGrid(netId) {
+  return request({
+    url: `/person/GetBuildingInNetGrid/${netId}`,
+    method: 'get'
+  })
+}
+
 export function getSubdivsions() {
   return request({
     url: '/person/GetSubdivsions',
@@ -29,6 +50,13 @@ export function getPersonsByBuilding(buildingId) {
     method: 'get'
   })
 }
+//通过网格查找人员信息（返回中文数据）
+export function GetPersonsByNetGrid_ZH(netGridId) {
+  return request({
+    url: `/person/GetPersonsByNetGrid_ZH/${netGridId}`,
+    method: 'get'
+  })
+}
 //通过楼栋查找人员信息（返回中文数据）
 export function GetPersonsByBuilding_ZH(buildingId) {
   return request({
@@ -36,10 +64,10 @@ export function GetPersonsByBuilding_ZH(buildingId) {
     method: 'get'
   })
 }
-
-export function getPersonsBySubdivision(subdivisionId) {
+//通过网格查找人员信息
+export function getPersonsByNetGrid(netId) {
   return request({
-    url: `/person/GetPersonsBySubdivision/${subdivisionId}`,
+    url: `/person/GetPersonsByNetGrid/${netId}`,
     method: 'get'
   })
 }
@@ -59,6 +87,13 @@ export function getPersonsBySearch(subdivsion ,sname) {
 export function getSpecialGroups() {
   return request({
     url:  '/person/GetSpecialGroups',
+    method: 'get'
+  })
+}
+//获取特殊人群的位置信息
+export function getSpecialPersonLoction_ZH() {
+  return request({
+    url:  '/person/GetSpecialPersonLoction_ZH',
     method: 'get'
   })
 }
@@ -83,6 +118,14 @@ export function getDataByQuery(dataForms) {
 export function getPersonByRoom(roomInfo) {
   return request({
     url: '/person/GetPersonsInRoom',
+    method: 'post',
+    data: roomInfo
+  })
+}
+
+export function getRoomId(roomInfo) {
+  return request({
+    url: '/person/GetRoomId',
     method: 'post',
     data: roomInfo
   })

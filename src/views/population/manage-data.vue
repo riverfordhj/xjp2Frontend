@@ -1,18 +1,21 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input v-model="listQuery.filter" placeholder="过滤(小区，楼栋)" clearable style="width: 180px;" class="filter-item" />
-      <el-select v-model="listQuery.subdivsion" placeholder="小区" clearable style="width: 150px" class="filter-item" @change="getBuildingsData">
-        <el-option v-for="item in filteredSubdivsions" :key="item.id" :label="item.name" :value="item.id" />
+      <el-input v-model="listQuery.filter" placeholder="过滤(社区，网格，楼栋)" clearable style="width: 180px;" class="filter-item" />
+      <el-select v-model="listQuery.community" placeholder="社区" clearable style="width: 150px" class="filter-item" @change="getNetGridData">
+        <el-option v-for="item in filteredCommunities" :key="item.id" :label="item.name + '社区' " :value="item.id" />
       </el-select>
-      <el-select v-model="listQuery.building" placeholder="楼栋" clearable class="filter-item" style="width: 130px">
-        <el-option v-for="item in filteredBuildings" :key="item.id" :label="item.name" :value="item.id" />
+      <el-select v-model="listQuery.netGrid" placeholder="网格" clearable style="width: 100px" class="filter-item" @change="getBuildingsData">
+        <el-option v-for="item in filteredNetGrids" :key="item.id" :label="'网格' + item.name" :value="item.id" />
+      </el-select>
+      <el-select v-model="listQuery.building" placeholder="楼栋" clearable class="filter-item" style="width: 150px">
+        <el-option v-for="item in filteredBuildings" :key="item.id" :label="item.address + '-' + item.name + '栋'" :value="item.id" />
       </el-select>
       <el-select v-model="listQuery.sort" style="width: 140px" class="filter-item" @change="handleFilter">
         <el-option v-for="item in sortOptions" :key="item.key" :label="item.label" :value="item.key" />
       </el-select>
       <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
-        小区查询
+        楼栋查询
       </el-button>
      
       <el-input v-model="listQuery.sname" placeholder="请输入姓名、身份证号、电话查询" style="width: 280px;" class="filter-item" @keyup.enter.native="searchPerson" />
@@ -28,19 +31,19 @@
 			<export-to-xlsx :table-header="tableHeaderForXlsx" :filter-fields="filterValForXlsx" :person-house-data="personHouseList"></export-to-xlsx>
     </div>
 
-    <el-table :data="personHouseList" height="835" border style="width: 100%" :row-class-name="tableRowClassName">
+    <el-table :data="personHouseList" height="835" border style="width: 100%" :row-class-name="tableRowClassName" @row-dblclick="handleDoubleClick">
 			
       <el-table-column 	align="center" type="index" :index="customizeIndex"	width="80" label="ID">
 			</el-table-column>
       <el-table-column prop="roomNO" label="房号" sortable width="80" :sort-method="sortRoomNO" />
-      <el-table-column prop="person.name" label="姓名" width="80">
+      <el-table-column  label="姓名" width="80">
         <template slot-scope="scope">
           <el-popover trigger="hover" placement="top">
             <ul>
               <li v-for="item in scope.row.specialGroup" :key="item.Id">特殊人群：{{ item.type }}</li> 
             </ul>
-            <div slot="reference" class="name-wrapper" v-if="scope.row.person">
-              <el-tag size="medium">{{ scope.row.person.name }}</el-tag>
+            <div slot="reference" class="name-wrapper" >
+              <el-tag  size="medium">{{ scope.row.person.name }}</el-tag>
             </div>
           </el-popover>
         </template>
@@ -48,21 +51,26 @@
       <el-table-column prop="person.personId" label="身份证" width="170" />
       <el-table-column prop="person.phone" label="电话" width="120" />
       <el-table-column prop="person.ethnicGroups" label="民族" width="80" />
+      <el-table-column prop="sex" label="性别" />
+      <el-table-column prop="age" label="年龄" />
       <el-table-column prop="isOwner" label="产权人" width="80" />
       <el-table-column prop="isHouseholder" label="户主" width="80" />
       <el-table-column prop="relationWithHouseholder" label="与户主关系" />
       <el-table-column prop="isLiveHere" label="在此居住" width="80" />
       <el-table-column prop="populationCharacter" label="人口性质" />
       <el-table-column prop="lodgingReason" label="寄住原因" />
-      <el-table-column prop="person.address" label="户籍地址" />
+      <el-table-column prop="person.domicileAddress" label="户籍地址" />
       <el-table-column prop="person.company" label="公司" />
       <el-table-column prop="person.isOverseasChinese" label="海外华人" />
       <el-table-column prop="person.politicalState" label="政治面貌" />
       <el-table-column prop="person.organizationalRelation" label="组织关系" />
       <el-table-column prop="communityName" label="社区" />
+      <el-table-column prop="netGridName" label="网格" />
       <el-table-column prop="subdivsionName" label="小区" />
       <el-table-column prop="bulidingName" label="楼栋" />
-      <el-table-column prop="type" label="类型" />
+      <el-table-column prop="bulidingAddress" label="地址" />
+      <el-table-column prop="type" label="类型" >
+      </el-table-column>
     </el-table>
     
   <el-dialog title="高级检索" :visible.sync="dialogVisible"	width="40%" center>                                        
@@ -92,7 +100,7 @@
 </template>
 
 <script>
-import { getSubdivsions, getBuildingsBySub, getPersons, getPersonsByBuilding, getPersonsBySubdivision, getPersonsBySearch, getSpecialGroups,getFields,getDataByQuery } from '@/api/person.js'
+import { getCommunitys, getNetGridInCommunity, getBuildingInNetGrid, getSubdivsions, getPersonsByNetGrid, getPersons, getPersonsByBuilding,getRoomId, getPersonsBySearch, getSpecialGroups,getFields,getDataByQuery } from '@/api/person.js'
 import exportToXlsx from './components/exportToXlsx';
 import pagination from '../../components/pagination.vue';
 
@@ -100,11 +108,14 @@ export default {
   name: 'PersonHouseData',
   data() {
     return {
+      roomInfo:{},
+      communities:[],
+      netGrids:[],
       subdivsions: [],
+      buildings: [],
       personHouseInfo: [],
       filterdPersonHouseInfo: [],
-      buildings: [],
-      //specialGroups: [],
+      specialGroups: [],
       dialogVisible: false,
       fields:[],
       dataForms:[
@@ -119,6 +130,8 @@ export default {
         page: 1,
         limit: 20,
         name: '',
+        community:'',
+        netGrid:'',
         subdivsion: '',
         building: undefined,
         filter: '',
@@ -149,21 +162,38 @@ export default {
 	},
   // 数据管理，小区楼栋筛选
   computed: {
-    filteredSubdivsions() {
-      // debugger
+       filteredCommunities() {
+       //debugger
       if (this.listQuery.filter) {
-        //	debugger;
+      	//debugger;
         const value = this.listQuery.filter.split(/[，,]/g)
-        return this.subdivsions.filter(item => item.name.indexOf(value[0]) !== -1)
+        return this.communities.filter(item => item.name.indexOf(value[0]) !== -1)
       } else {
-        return this.subdivsions
+        return this.communities
       }
     },
-    filteredBuildings() {
+    filteredNetGrids() {
+       //debugger
       if (this.listQuery.filter) {
+        	//debugger;
         const value = this.listQuery.filter.split(/[，,]/g)
-        if (value[1]) { return this.buildings.filter(item => item.name.indexOf(value[1]) !== -1) }
+        if (value[1]){
+         // debugger
+          return this.netGrids.filter(item => item.name.indexOf(value[1]) !== -1)
+          }
+      } 
+       return this.netGrids       
+    },
+    filteredBuildings() {
+     // debugger
+      if (this.listQuery.filter) {
+       // debugger
+        const value = this.listQuery.filter.split(/[，,]/g)
+        if (value[2]) { 
+          return this.buildings.filter(item => item.name.indexOf(value[2]) !== -1) 
+          }
       }
+      //debugger
       return this.buildings
 		},
 		total(){
@@ -181,6 +211,7 @@ export default {
   created() {
     this.getSubdivsionsData()
     this.getFieldsData()
+    this.getCommunitysData()
   },
   mounted() {
   },
@@ -202,7 +233,7 @@ export default {
     getSpecialGroupsData() {  
       getSpecialGroups().then(response => {
          // debugger
-				this.filterdPersonHouseInfo = this.personHouseInfo = response;
+				this.filterdPersonHouseInfo = response;
 				this.resetPaginationSetting();
       }).catch(error => {
         console.log(error)
@@ -227,6 +258,15 @@ export default {
       })
       this.dialogVisible =false 
     },
+      getCommunitysData() {
+      //debugger
+      getCommunitys().then(response => {
+        // debugger
+        this.communities = response
+      }).catch(error => {
+        console.log(error)
+      })
+    },
     getSubdivsionsData() {
       getSubdivsions().then(response => {
         // debugger
@@ -235,13 +275,26 @@ export default {
         console.log(error)
       })
     },
+     getNetGridData(item) {
+      // debugger
+      if (!item) { // 如果取消社区选取
+        this.netGrids = []
+        return
+      }
+      getNetGridInCommunity(item).then(response => {
+         //debugger
+        this.netGrids = response
+      }).catch(error => {
+        console.log(error)
+      })
+    },
     getBuildingsData(item) {
       // debugger
-      if (!item) { // 如果取消小区选取
+      if (!item) { // 如果取消网格选取
         this.buildings = []
         return
       }
-      getBuildingsBySub(item).then(response => {
+      getBuildingInNetGrid(item).then(response => {
         // debugger
         this.buildings = response
       }).catch(error => {
@@ -256,12 +309,11 @@ export default {
         console.log(error)
       })
     },
-    getPersonsBySubdivisionData() {
-      // debugger
-      getPersonsBySubdivision(this.listQuery.subdivsion).then(response => {
-        //debugger
-        this.personHouseInfo = response;
-				this.filterdPersonHouseInfo  = response;
+    getPersonsByNetGridData() {
+       debugger
+      getPersonsByNetGrid(this.listQuery.netGrid).then(response => {
+        debugger
+        this.filterdPersonHouseInfo = this.personHouseInfo = response;
 				this.resetPaginationSetting();
       }).catch(error => {
         console.log(error)
@@ -278,12 +330,11 @@ export default {
       })
     },
     handleFilter() {
-       // debugger
-      if (this.listQuery.subdivsion) { // 如果选择小区
+      if (this.listQuery.netGrid) { // 如果选择网格
         if (this.listQuery.building) { // 如果选取建筑物
           this.getPersonsByBuildingData()
         } else {
-          this.getPersonsBySubdivisionData()
+          this.getPersonsByNetGridData()
         }
       }
     },
@@ -298,13 +349,13 @@ export default {
         console.log(error)
       })
     },
-    tableRowClassName({ row, rowIndex }) {
-      // debugger     
-       //if (row.specialGroup.length) {
-      //if (scope.row.type) {
-      //   return 'warning-row'
-      // }
-      // return ''
+    tableRowClassName({ row }) {
+       //debugger     
+       if (row.specialGroup) {
+         if(row.specialGroup.length){
+            return 'warning-row'
+         }              
+       }
     },
     // 将房号转换为数值，进行排序
     sortRoomNO(row, column) {
@@ -321,7 +372,8 @@ export default {
       // return value
     },
     filteroperato(val){
-      if (val == "小区" || val == "楼栋" || val == "房间" || val == "姓名" || val == "电话" || val == "身份证" || val == "姓名" || val == "性别" ){
+      if (val == "社区" ||val == "网格" || val == "楼栋" || val == "房间" || val == "姓名" || val == "电话" || val == "身份证" || val == "姓名"  || val == "性别" ){
+         debugger
         this.options =  [{
           value: '选项1',
           label: '='
@@ -349,16 +401,39 @@ export default {
 				limit: 20,
 				curPage: 1
 			}
-		}
+		},
+    handleDoubleClick(row){
+			this.$router.push({name: 'PersonHouseMap'});
+      //debugger
+      this.roomInfo = {
+        AddressName:row.bulidingAddress,
+        BuildingName:row.bulidingName,
+        RoomNO:row.roomNO
+        }
+        //debugger
+        getRoomId(this.roomInfo).then(response => {
+         debugger
+         const position = { // 70-2-1002
+          long: response[0].longitude,
+          lat: response[0].latitude,
+          height: response[0].height
+        }
+        var roomname = response[0].name
+         debugger
+        this.bus.$emit("transferRoomId", position,roomname);
+      }).catch(error => {
+        console.log(error)
+      })
+      
+		},
   }
 }
 </script>
 
-<style scoped>
+<style>
   .el-table .warning-row {
-    background: oldlace;
+    background:	#faebd7;
   }
-
   .el-table .success-row {
     background: #f0f9eb;
   }
