@@ -2,13 +2,6 @@
   <div>
     <div id="cesiumContainer" ref="cesiumContainer" />
     <div class="mainMenu">
-      <!-- <hsc-menu-style-white>
-        <hsc-menu-bar style="border-radius: 0 0 4pt 0;">
-          <hsc-menu-bar-item label="基础">
-            <hsc-menu-item label="图层管理" @click="openLayerTreePanel" />
-          </hsc-menu-bar-item>
-        </hsc-menu-bar>
-      </hsc-menu-style-white>-->
       <el-dropdown @command="handleMenuCommand">
         <el-button type="primary">
           选房
@@ -19,52 +12,36 @@
         </el-dropdown-menu>
       </el-dropdown>
     </div>
+
+    <dialog-drag 
+        v-show="dialogVisible"
+        id="dialog-2"
+        title="检索"
+        pinned="false"
+        :options="{ top: 60, width: 280, buttonPin: false }"
+        @close="closeLayerPanel"
+    >
+      <div>
+          <input type="text" v-model="value"  placeholder="请输入姓名/电话/身份证" style="width: 190px; height:30px;" class="filter-item" @keyup.enter.native="selectionChange" />
+          <button type="primary"  icon="el-icon-search" @click="asComfirm">查询</button>
+      </div>
+    </dialog-drag>
+
     <OldMen-Dialog :opened="opened" :locationinfo="filterLoctionInfo" />
     <Fire-Dialog :fire-opened="fireOpened" />
     <people-Dialog :popend="popend" />
     <IllegalBuilding :iopend="iopend" />
     <PartyDialog :partyopend="partyopend" />
-    <!-- <AdvancedSearch
-      class="AdvancedSearch"
-      @asComfirm="asComfirm"
-    />-->
-    <!-- <FireHrydrantDialog :fopened="fopened" /> -->
-    <!-- <transition name="fade">
-      <RightPanel v-if="ropend" />
-    </transition>-->
-    <!-- <transition name="fade">
-      <KeyPeople
-        v-if="kopened"
-        :ktype="keyType"
-      />
-      KeyPeople
-    </transition>-->
-
-    <!-- <el-select
-      v-model="value"
-      class="select"
-      placeholder="请选择或输入查询信息"
-      filterable
-      @change="selectionChange"
-    >
-      <el-option
-        v-for="item in selectOptions"
-        :key="item.value"
-        :label="item.label"
-        :value="item.value"
-      />
-    </el-select>-->
-    <!-- <el-button
-      style="position:absolute;left:10px;top:10px"
-      @click="consoleTiles"
-    >test</el-button>-->
   </div>
 </template>
 
 <script>
-// import Cesium from 'cesium/Cesium'
+
+import axios from 'axios'
+import DialogDrag from 'vue-dialog-drag'
 var Cesium = require("cesium/Cesium");
 import "cesium/Widgets/widgets.css";
+
 import OldMenDialog from "../../../components/OldMenDialog";
 import FireDialog from "./components/FireDialog/index1";
 import peopleDialog from "./components/peopleDialog/index";
@@ -76,13 +53,11 @@ import FireHrydrantDialog from "./components/FireHrydrantDialog/index";
 import AdvancedSearch from "./components/AdvancedSearch/index";
 
 import { featureViewer } from "./cesium";
-import axios from 'axios';
 import { getSpecialPersonLoction_ZH } from '@/api/person.js';
 
 
-import oldMan1 from "../../../assets/cesium_images/oldMen1.png";
+
 import fire from "../../../assets/cesium_images/fire.png";
-import people from "../../../assets/cesium_images/people.png";
 import keyPeople from "../../../assets/cesium_images/重点人员.png";
 
 import addictsPeople from "../../../assets/cesium_images/吸毒人员.png"
@@ -90,8 +65,6 @@ import cultPeople from "../../../assets/cesium_images/邪教人员.png"
 import lettersPeople from "../../../assets/cesium_images/信访人员.png"
 import mentalPatient from "../../../assets/cesium_images/精神病.png"
 
-
-import oldMenJson from "../../../assets/json/newOldMen.json";
 var tiles = null;
 var viewer = null;
 
@@ -99,6 +72,7 @@ export default {
   name: "personnelDistribution",
   
   components: {
+    DialogDrag,
     OldMenDialog,
     FireDialog,
     peopleDialog,
@@ -111,9 +85,11 @@ export default {
   },
   data() {
     return {
+      dialogVisible: false,
       dtfFeatures: null,
       dftTileset: null,
       theFeature: null,
+      entityName:'',
 
       SpecialPersonLoctionInfo: [],
       filterLoctionInfo:{},
@@ -143,7 +119,6 @@ export default {
     };
   },
   mounted() {
-    //this.initSeletion();
     // this.selectOptions.push
     this.init();
     
@@ -151,6 +126,15 @@ export default {
     // this.SelectHouseBySearchProperty();
   },
   methods: {
+       handleMenuCommand(command) {
+      if (command === 'showLayer') {
+        this.dialogVisible = true
+      }
+    },
+    // 关闭图层面板
+    closeLayerPanel() {
+      this.dialogVisible = false
+    },
     FlyTo(feature) {
       if (!feature) {
         feature = this.theFeature;
@@ -224,11 +208,11 @@ export default {
       return offset;
     },
 
-    handleMenuCommand(command) {
-      if (this.dtfFeatures) {
-        this.SelectHouseBySearchProperty();
-      }
-    },
+    // handleMenuCommand(command) {
+    //   if (this.dtfFeatures) {
+    //     this.SelectHouseBySearchProperty();
+    //   }
+    // },
     SelectHouseBySearchProperty() {
       console.log("in SelectHouseBySearchProperty()");
 
@@ -239,43 +223,16 @@ export default {
         // viewer.flyTo(this.theFeature.tileset)
         this.FlyTo();
       }
-      // if (this.dtfFeatures && this.dtfFeatures.featuresLength) {
-      //   let featuresLength = this.dtfFeatures.featuresLength;
-      //   for (let i = 0; i < featuresLength; i++) {
-      //     let feature = this.dtfFeatures.getFeature(i);
-      //     // debugger;
-      //     let value = feature.getProperty("gid");
-      //     if (value && value == gidName) {
-      //       debugger;
-      //       feature.color = Cesium.Color.RED;
-
-      //       // viewer.flyTo(feature);
-      //     }
-      //   }
-      // }
-      // this.dftTileset.style = new Cesium.Cesium3DTileStyle({
-      //   color: {
-      //     conditions: [
-      //       // ["${Height} >= 100", 'color("purple", 0.5)'],
-      //       ["${gid} == ${gidName}", 'color("red")'],
-      //       ["true", "rgba(255,255,255,0.5)"],
-      //     ],
-      //   },
-      // show: "${Height} > 0",
-      // meta: {
-      //   description: '"Building id ${id} has height ${Height}."',
-      // },
-      // });
     },
     initSeletion() {
       var _this = this;
-      debugger
+      
       getSpecialPersonLoction_ZH().then(response =>{
-        debugger
+        
         _this.SpecialPersonLoctionInfo = response;
         console.log(_this.SpecialPersonLoctionInfo);
         response.map((man)  => {
-          debugger
+          
           //oldMenJson.map((man) => {
           _this.selectOptions.push({
             value: man["姓名"],
@@ -285,6 +242,7 @@ export default {
       });
     },
     selectionChange(value) {
+      
       viewer.flyTo(viewer.entities.getById(value));
     },
     init() {
@@ -344,62 +302,71 @@ export default {
       window.setTimeout(function () {
         _this.add3DtilesDyt(viewer);
         getSpecialPersonLoction_ZH().then(response =>{
-          response.filter(item => item["类型"] === "精神病人").map((men)  => {
+          response.filter(item => item["类型"] === "精神病人").forEach(item => {
             _this.addEntity(
+              item["身份证号码"],
+              item["联系电话"],
               viewer,
               Cesium.Cartesian3.fromDegrees(
-                parseFloat(men["经度"]),
-                parseFloat(men["纬度"]),
-                parseFloat(men["楼层"]) * 3 + 10
+                parseFloat(item["经度"]),
+                parseFloat(item["纬度"]),
+                parseFloat(item["楼层"]) * 3 + 10
               ),
-              men["姓名"],
+              item["姓名"],
               mentalPatient
             );
           });
         });
+        console.log(viewer.entities.values);
          getSpecialPersonLoction_ZH().then(response =>{
-          response.filter(item => item["类型"] === "信访维稳人员").map((men)  => {
+          response.filter(item => item["类型"] === "信访维稳人员").forEach((item)  => {
             _this.addEntity(
+              item["身份证号码"],
+              item["联系电话"],
               viewer,
               Cesium.Cartesian3.fromDegrees(
-                parseFloat(men["经度"]),
-                parseFloat(men["纬度"]),
-                parseFloat(men["楼层"]) * 3 + 10
+                parseFloat(item["经度"]),
+                parseFloat(item["纬度"]),
+                parseFloat(item["楼层"]) * 3 + 10
               ),
-              men["姓名"],
+              item["姓名"],
               lettersPeople
             );
           });
         });
          getSpecialPersonLoction_ZH().then(response =>{
-          response.filter(item => item["类型"] === "邪教人员").map((men)  => {
+          response.filter(item => item["类型"] === "邪教人员").forEach((item)  => {
             _this.addEntity(
+              item["身份证号码"],
+              item["联系电话"],
               viewer,
               Cesium.Cartesian3.fromDegrees(
-                parseFloat(men["经度"]),
-                parseFloat(men["纬度"]),
-                parseFloat(men["楼层"]) * 3 + 10
+                parseFloat(item["经度"]),
+                parseFloat(item["纬度"]),
+                parseFloat(item["楼层"]) * 3 + 10
               ),
-              men["姓名"],
+              item["姓名"],
               cultPeople
             );
           });
         });
         getSpecialPersonLoction_ZH().then(response =>{
-          response.filter(item => item["类型"] === "吸毒人员").map((men)  => {
+          response.filter(item => item["类型"] === "吸毒人员").forEach((item)  => {
             _this.addEntity(
+              item["身份证号码"],
+              item["联系电话"],
               viewer,
               Cesium.Cartesian3.fromDegrees(
-                parseFloat(men["经度"]),
-                parseFloat(men["纬度"]),
-                parseFloat(men["楼层"]) * 3 + 10
+                parseFloat(item["经度"]),
+                parseFloat(item["纬度"]),
+                parseFloat(item["楼层"]) * 3 + 10
               ),
-              men["姓名"],
+              item["姓名"],
               addictsPeople
             );
           });
         });
-      }, 2000);
+      }, 1000);
     },
     addPosition(viewer, xyJson, tJson, tKey) {
       var _this = this;
@@ -471,19 +438,6 @@ export default {
 				});
 
 				let gidName = "H15-1-4/5-2"; //测试房屋号G8-2-802
-				// classificationTileset.style = new Cesium.Cesium3DTileStyle({
-				//   color: {
-				//     conditions: [
-				//       // ["${Height} >= 100", 'color("purple", 0.5)'],
-				//       ["${gid} == ${gidName}", 'color("red")'],
-				//       ["true", "rgba(255,255,255,0.5)"],
-				//     ],
-				//   },
-				//   // show: "${Height} > 0",
-				//   // meta: {
-				//   //   description: '"Building id ${id} has height ${Height}."',
-				//   // },
-				// });
 
 				classificationTileset.readyPromise.then(function (tileset) {
 					viewer.scene.primitives.add(tileset);
@@ -492,7 +446,7 @@ export default {
 
 					tileset.tileLoad.addEventListener((tile) => {
 						//tileVisible
-						 debugger
+						 
 						if (tile && tile.content) {
 							// debugger;
 							_this.dtfFeatures = tile.content;
@@ -571,39 +525,16 @@ export default {
             // _this.hightLightAndGetProps(pick);
 
             _this.opened = !_this.opened;
-            // // 弹出框 start
-            // var position = viewer.scene.pickPosition(evt.position)
-            // if (!position) {
-            //   position = Cesium.Cartesian3.fromDegrees(0, 0, 0)
-            // }
-            // infoWindowPosition = position
-            // /* 气泡相关 4/4 start */
-            // $('#bubble').show()
-            // for (var i = table.rows.length - 1; i > -1; i--) {
-            //   table.deleteRow(i)
-            // }
+
             var propertyNames = pick.getPropertyNames();
-            // var length = propertyNames.length
-            // for (var i = 0; i < length; ++i) {
-            //   var propertyName = propertyNames[i]
-            //   var newRow = table.insertRow()
-            //   var
-            //     cell1 = newRow.insertCell()
-            //   var cell2 = newRow.insertCell()
-            //   cell1.innerHTML = propertyName
-            //   cell2.innerHTML = pick.getProperty(propertyName)
+
             console.log(propertyNames);
           }
         } else {
           // infoWindowPosition = null
           // $('#bubble').hide()
         }
-        // }
-        //   setTimeout(() => {
-        //   console.log('选择的尸体', viewer.selectedEntity)
-        // }, 2000)
-        //   // this.identity(viewer, evt.position.x, evt.position.y);
-        //   console.log('相机视角', viewer.scene.camera)
+  
       }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
     },
     hightLightAndGetProps(tileFeature) {
@@ -636,9 +567,11 @@ export default {
       //   console.log(data)
       // })
     },
-    addEntity(viewer, postion, text, img) {
+    addEntity(personID, phone, viewer, postion, text, img) {
       viewer.entities.add({
         // id: text,
+        id:personID,
+        phone:phone,
         position: postion,
         label: {
           text: text,
@@ -708,79 +641,47 @@ export default {
           ? pickedPrimitive.id
           : undefined;
         if (Cesium.defined(pickedEntity)) {
-           debugger
+          //  debugger
+          // 点击页面上的实体图片返回相关信息pickedEntity
           if (pickedEntity.label.text._value !== "") {
             _this.opened = !_this.opened;
-             debugger
+            //  debugger
             console.log(pickedEntity.label.text._value, pickedEntity);
              getSpecialPersonLoction_ZH().then(response =>{
                 _this.filterLoctionInfo = response.find(item => item["姓名"] === pickedEntity.label.text._value)                       
              });
              return;
           }
-          if (pickedEntity.label.text._value === "消防栓") {
-            _this.fopened = !_this.fopened;
-            // debugger;
-            
-          }
-          if (pickedEntity.label.text._value === "违法占道") {
-            _this.ropend = !_this.ropend;
-            return;
-          }
-          if (pickedEntity.label.text._value === "火灾") {
-            _this.fireOpened = !_this.fireOpened;
-            return;
-          }
           if (pickedEntity.label.text._value === "陈瑞华") {
-            debugger;
+            // debugger;
             _this.popend = !_this.popend;
             return;
           }
-          if (pickedEntity.label.text._value === "违章建筑") {
-           // debugger;
-            _this.iopend = !_this.iopend;
-            return;
-          }
-         // debugger;
-          if (pickedEntity.label.text._value === "矫正人员") {
-            _this.keyType = 1;
-            _this.kopened = true;
-            return;
-          }
-          if (pickedEntity.label.text._value === "刑满释放人员") {
-            _this.keyType = 2;
-            return;
-          }
-          if (pickedEntity.label.text._value === "涉政人员") {
-            _this.keyType = 3;
-            return;
-          }
-          // _this.opened = !_this.opened
-          // windowParams.opened = !windowParams.opened
         }
       }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
     },
     asComfirm() {
       var _this = this;
-      oldMenJson.map((men) => {
-        if (men["姓名"].indexOf("陈") !== -1) {
-          _this.addEntity(
-            viewer,
-            Cesium.Cartesian3.fromDegrees(
-              parseFloat(men["经度"]),
-              parseFloat(men["纬度"]),
-              parseFloat(men["楼层"]) * 3 + 10
-            ),
-            men["姓名"],
-            people
-          );
-        }
-      });
-      viewer.flyTo(viewer.entities);
+      var arr = viewer.entities.values;
+       debugger
+      var entity = arr.find(o =>(o.label.text._value == _this.value || o.id ==  _this.value || o.phone == _this.value ));
+       debugger
+      console.log(entity.id,entity.phone);
+      debugger
+      if(entity){
+        debugger
+        viewer.flyTo(entity);
+      }else{
+        alert('请输入正确姓名')
+      }
+      
     },
   },
 };
 </script>
+
+<style src="vue-dialog-drag/dist/vue-dialog-drag.css"></style>
+<style src="vue-dialog-drag/dist/dialog-styles.css"></style>
 
 <style scoped>
 #cesiumContainer {
