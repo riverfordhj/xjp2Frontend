@@ -18,13 +18,15 @@
         id="dialog-2"
         title="检索"
         pinned="false"
-        :options="{ top: 60, width: 280, buttonPin: false }"
+        :options="{ top: 60, width: 330, buttonPin: false }"
         @close="closeLayerPanel"
     >
-      <div>
-          <input type="text" v-model="value"  placeholder="请输入姓名/电话/身份证" style="width: 190px; height:30px;" class="filter-item" @keyup.enter.native="selectionChange" />
-          <button type="primary"  icon="el-icon-search" @click="asComfirm">查询</button>
-      </div>
+      <el-form  :rules="rules">
+         <el-form-item  prop="entityName">
+            <el-input type="text" v-model="entityName"  placeholder="请输入姓名/电话/身份证" style="width: 200px; height:30px;"   @keyup.enter.native="selectionChange" clearable />
+            <el-button type="primary"  icon="el-icon-search" @click="asComfirm">查询</el-button>
+         </el-form-item>
+      </el-form>
     </dialog-drag>
 
     <OldMen-Dialog :opened="opened" :locationinfo="filterLoctionInfo" />
@@ -85,6 +87,12 @@ export default {
   },
   data() {
     return {
+      rules:{
+        entityName:[
+          { required: true, message: '不能为空', trigger: 'blur' }
+        ]
+
+      },
       dialogVisible: false,
       dtfFeatures: null,
       dftTileset: null,
@@ -141,7 +149,6 @@ export default {
       }
 
       if (feature && feature._content && feature._content.tile) {
-        //debugger;
         let cartographic = Cesium.Cartographic.fromCartesian(
           feature._content.tile.boundingSphere.center
         );
@@ -258,30 +265,11 @@ export default {
         homeButton: false,
         navigationHelpButton: false,
         animation: false,
-        // infoBox: false,
         requestRenderMode: true,
-        // imageryProvider: new Cesium.WebMapTileServiceImageryProvider({
-        //   url: 'http://t0.tianditu.com/img_w/wmts?service=wmts&request=GetTile&version=1.0.0&LAYER=img&tileMatrixSet=w&TileMatrix={TileMatrix}&TileRow={TileRow}&TileCol={TileCol}&style=default&format=tiles&tk=b97312f85a240009c717a8480b6d54d2',
-        //   layer: 'tdtBasicLayer',
-        //   style: 'default',
-        //   format: 'image/jpeg',
-        //   tileMatrixSetID: 'GoogleMapsCompatible',
-        //   show: false
-        // }) // 天地图影像
-        // terrainProvider: Cesium.createWorldTerrain() //建议不要加载全球地形
+     
       });
-      // viewer.extend(Cesium.viewerCesiumInspectorMixin)
-      // debugger;
       this.initCamera(viewer);
       this.initInfobox(viewer);
-      // this.addFire(viewer)
-
-      // var cartesian3 = new Cesium.Cartesian3(530983, 3383756, 0)
-      // var cartographic = Cesium.Ellipsoid.WGS84.cartesianToCartographic(cartesian3)
-      // var lat = Cesium.Math.toDegrees(cartographic.latitude)
-      // var lng = Cesium.Math.toDegrees(cartographic.longitude)
-      // var alt = cartographic.height
-      // console.log(lat, lng, alt)
     },
     initCamera(viewer) {
       console.log("我要飞起来");
@@ -349,6 +337,8 @@ export default {
               cultPeople
             );
           });
+        }).catch(err =>{
+          console.log(err);
         });
         getSpecialPersonLoction_ZH().then(response =>{
           response.filter(item => item["类型"] === "吸毒人员").forEach((item)  => {
@@ -420,9 +410,6 @@ export default {
 					// initInfowindow(viewer)
 					viewer.scene.primitives.add(tileset);
 					viewer.flyTo(tileset);
-
-					// _this.$store.dispatch('AddCesiumData', tileset)
-					// debugger
 					tiles = tileset;
 					// tiles = tiltTileset
 					console.log("倾斜摄影加载完成", tiles);
@@ -448,7 +435,7 @@ export default {
 						//tileVisible
 						 
 						if (tile && tile.content) {
-							// debugger;
+
 							_this.dtfFeatures = tile.content;
 							console.log("dftfeatures", _this.dtfFeatures.featuresLength);
 
@@ -456,11 +443,9 @@ export default {
 
 							for (let i = 0; i < fLength; i++) {
 								let feature = tile.content.getFeature(i);
-								// debugger;
+	
 								let value = feature.getProperty("gid");
 								if (value && value == gidName) {
-									// debugger;
-									// feature.color = Cesium.Color.RED;
 									_this.theFeature = feature;
 									console.log("find", gidName);
 									// viewer.flyTo(feature);
@@ -477,22 +462,8 @@ export default {
 					});
 
 					console.log("单体化模型", tileset);
-					// var handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas)
-					// handler.setInputAction(function(evt) {
-					//   var pick = viewer.scene.pick(evt.position)
-					//   if (pick) {
-					//     if (pick instanceof Cesium.Cesium3DTileFeature) {
-					//       // _this.hightLightAndGetProps(pick)
-					//       console.log(pick.getPropertyNames())
-
-					//       debugger
-					//       pick.color = Cesium.Color.fromAlpha(Cesium.Color.LAWNGREEN, 0.3)
-					//     }
-					//   }
-					// }, Cesium.ScreenSpaceEventType.LEFT_CLICK)
-					// viewer.flyTo(classificationTileset)
+		
 				});
-				// this.addMouseEvent(viewer);
 			}).catch(err => {
 				console.log(err);
 			})
@@ -641,19 +612,17 @@ export default {
           ? pickedPrimitive.id
           : undefined;
         if (Cesium.defined(pickedEntity)) {
-          //  debugger
           // 点击页面上的实体图片返回相关信息pickedEntity
           if (pickedEntity.label.text._value !== "") {
             _this.opened = !_this.opened;
-            //  debugger
+
             console.log(pickedEntity.label.text._value, pickedEntity);
              getSpecialPersonLoction_ZH().then(response =>{
                 _this.filterLoctionInfo = response.find(item => item["姓名"] === pickedEntity.label.text._value)                       
              });
              return;
           }
-          if (pickedEntity.label.text._value === "陈瑞华") {
-            // debugger;
+          if (pickedEntity.label.text._value === "陈瑞华") {;
             _this.popend = !_this.popend;
             return;
           }
@@ -663,11 +632,7 @@ export default {
     asComfirm() {
       var _this = this;
       var arr = viewer.entities.values;
-       debugger
-      var entity = arr.find(o =>(o.label.text._value == _this.value || o.id ==  _this.value || o.phone == _this.value ));
-       debugger
-      console.log(entity.id,entity.phone);
-      debugger
+      var entity = arr.find(o =>(o.label.text._value == _this.entityName || o.id ==  _this.entityName || o.phone == _this.entityName && o.id != '' && o.phone != '' ));
       if(entity){
         debugger
         viewer.flyTo(entity);
