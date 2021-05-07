@@ -637,7 +637,7 @@ export default {
         debugger
         viewer.flyTo(entity);
       }else{
-        alert('请输入正确姓名')
+         this.$message.error('请输入正确姓名、身份证、电话');
       }
       
     },
