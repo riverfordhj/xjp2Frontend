@@ -190,9 +190,9 @@ export const constantRoutes = [
       {
         path: 'manage-data',
         name: 'PersonHouseData',
-        component: () => import('@/views/population/manage-data'),
+        component: () => import('@/views/population/inquery-data'),
         meta: {
-          title: '数据管理',
+          title: '数据查询',
           icon: 'dataManager'
         }
       },
@@ -208,7 +208,7 @@ export const constantRoutes = [
       {
         path: 'inquery-population',
         name: 'PersonStatistics',
-        component: () => import('@/views/population/inquery-population'),
+        component: () => import('@/views/population/statistical-population'),
         meta: {
           title: '统计分析',
           icon: 'search'
