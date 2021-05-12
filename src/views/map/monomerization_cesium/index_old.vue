@@ -4,11 +4,11 @@
     <div class="mainMenu">
       <el-dropdown @command="handleMenuCommand">
         <el-button type="primary">
-          选房
+          菜单
           <i class="el-icon-arrow-down el-icon--right" />
         </el-button>
         <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item command="showLayer">选房</el-dropdown-item>
+          <el-dropdown-item command="showLayer">检索</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
     </div>
@@ -23,7 +23,7 @@
     >
       <el-form  :rules="rules">
          <el-form-item  prop="entityName">
-            <el-input type="text" v-model="entityName"  placeholder="请输入姓名/电话/身份证" style="width: 200px; height:30px;"   @keyup.enter.native="selectionChange" clearable />
+            <el-input type="text" v-model="entityName"  placeholder="请输入姓名/电话/身份证" style="width: 200px; height:30px;"   clearable />
             <el-button type="primary"  icon="el-icon-search" @click="asComfirm">查询</el-button>
          </el-form-item>
       </el-form>
@@ -54,7 +54,8 @@ import KeyPeople from "./components/KeyPeople/index";
 import FireHrydrantDialog from "./components/FireHrydrantDialog/index";
 import AdvancedSearch from "./components/AdvancedSearch/index";
 
-import { featureViewer } from "./cesium";
+import {featureViewer } from './cesium.js'
+import { interactOperate } from '../person-house/interactivate3DTiles.js'
 import { getSpecialPersonLoction_ZH } from '@/api/person.js';
 
 
@@ -62,10 +63,10 @@ import { getSpecialPersonLoction_ZH } from '@/api/person.js';
 import fire from "../../../assets/cesium_images/fire.png";
 import keyPeople from "../../../assets/cesium_images/重点人员.png";
 
-import addictsPeople from "../../../assets/cesium_images/吸毒人员.png"
-import cultPeople from "../../../assets/cesium_images/邪教人员.png"
-import lettersPeople from "../../../assets/cesium_images/信访人员.png"
-import mentalPatient from "../../../assets/cesium_images/精神病.png"
+import addictsPeople from "../../../assets/cesium_images/吸毒人员.svg"
+import cultPeople from "../../../assets/cesium_images/邪教人员.svg"
+import lettersPeople from "../../../assets/cesium_images/信访人员.svg"
+import mentalPatient from "../../../assets/cesium_images/精神病.svg"
 
 var tiles = null;
 var viewer = null;
@@ -127,11 +128,7 @@ export default {
     };
   },
   mounted() {
-    // this.selectOptions.push
     this.init();
-    
-
-    // this.SelectHouseBySearchProperty();
   },
   methods: {
        handleMenuCommand(command) {
@@ -152,37 +149,6 @@ export default {
         let cartographic = Cesium.Cartographic.fromCartesian(
           feature._content.tile.boundingSphere.center
         );
-
-        // cartographic.height *= 0.5;
-        // viewer.camera.flyToBoundingSphere(feature._content.tile.boundingSphere)
-        // viewer.camera.flyTo({
-        //   destination: feature._content.tile.boundingSphere.center,
-        // });
-        // var position = viewer.scene.globe.ellipsoid.cartographicToCartesian(
-        //   cartographic
-        // );
-
-        // var camera = viewer.scene.camera;
-        // var heading = camera.heading;
-        // var pitch = camera.pitch;
-
-        // var offset = this.offsetFromHeadingPitchRange(
-        //   heading,
-        //   pitch,
-        //   cartographic.height * 2.0
-        // );
-
-        // var transform = Cesium.Transforms.eastNorthUpToFixedFrame(position);
-        // Cesium.Matrix4.multiplyByPoint(transform, offset, position);
-
-        // camera.flyTo({
-        //   destination: position,
-        //   orientation: {
-        //     heading: heading,
-        //     pitch: pitch,
-        //   },
-        //   easingFunction: Cesium.EasingFunction.QUADRATIC_OUT,
-        // });
       }
     },
     offsetFromHeadingPitchRange(heading, pitch, range) {
@@ -247,10 +213,6 @@ export default {
           });
         });
       });
-    },
-    selectionChange(value) {
-      
-      viewer.flyTo(viewer.entities.getById(value));
     },
     init() {
 			Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI5MjMyYjZiMC1lZmY1LTQzNmEtODg1NS01NmQzMmE2NWY2ZjMiLCJpZCI6NDQ1MSwic2NvcGVzIjpbImFzciIsImdjIl0sImlhdCI6MTU0MDg4NTM2Mn0.7OzWWlmUmJv_EJo0RFpuiL2G_KLgZBENAAXOgU1O1qM';
@@ -395,7 +357,8 @@ export default {
 				var saxcUrl = res.data[0].children[2].url;
 				var saxcDthUrl = res.data[1].children[2].url;
 				
-				featureViewer.install(viewer);
+		    featureViewer.install(viewer);
+        //interactOperate.install(viewer);
 				// 添加倾斜模型
 				var _this = this;
 				var tiltTileset = new Cesium.Cesium3DTileset({
@@ -557,7 +520,7 @@ export default {
           ),
           horizontalOrigin: Cesium.HorizontalOrigin.LEFT,
           // verticalOrigin : LSGlobe.VerticalOrigin.BOTTOM, //垂直方向以底部来计算标签的位置
-          pixelOffset: new Cesium.Cartesian2(15, -2), // 偏移量
+          pixelOffset: new Cesium.Cartesian2(20, -2), // 偏移量
           disableDepthTestDistance: 1000000000, // 优先级
           scale: 0.5,
         },
@@ -565,8 +528,8 @@ export default {
           image: img, // default: undefined
           text: "123",
           show: true, // default
-          width: 50,
-          height: 50,
+          width: 55,
+          height: 55,
           disableDepthTestDistance: 1000000000,
           scale: 0.6,
           // translucencyByDistance: new Cesium.NearFarScalar(
@@ -604,10 +567,6 @@ export default {
       var _this = this;
       handler.setInputAction((movement) => {
         var pickedPrimitive = viewer.scene.pick(movement.position);
-        // if (pickedPrimitive.show === true) {
-        //   _this.partyopend = !_this.partyopend
-        //   return
-        // }
         var pickedEntity = Cesium.defined(pickedPrimitive)
           ? pickedPrimitive.id
           : undefined;
@@ -615,16 +574,11 @@ export default {
           // 点击页面上的实体图片返回相关信息pickedEntity
           if (pickedEntity.label.text._value !== "") {
             _this.opened = !_this.opened;
-
             console.log(pickedEntity.label.text._value, pickedEntity);
              getSpecialPersonLoction_ZH().then(response =>{
                 _this.filterLoctionInfo = response.find(item => item["姓名"] === pickedEntity.label.text._value)                       
              });
              return;
-          }
-          if (pickedEntity.label.text._value === "陈瑞华") {;
-            _this.popend = !_this.popend;
-            return;
           }
         }
       }, Cesium.ScreenSpaceEventType.LEFT_CLICK);

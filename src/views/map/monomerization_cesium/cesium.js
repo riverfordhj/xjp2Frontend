@@ -178,7 +178,7 @@ var featureViewer = {
       // A feature was picked, so show it's overlay content
       var name = pickedFeature.getProperty('gid')
       if (!Cesium.defined(name)) {
-        name = pickedFeature.getProperty('id')
+        name = pickedFeature.getProperty('buildingid') + "-" +  pickedFeature.getProperty('unitid') + "-" + pickedFeature.getProperty('roomid')
       }
       if (!Cesium.defined(name)) {
         name = pickedFeature.getProperty('ID')
