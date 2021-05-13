@@ -102,7 +102,7 @@
 <script>
 import { getCommunitys, getNetGridInCommunity, getBuildingInNetGrid, getSubdivsions, getPersonsByNetGrid, getPersons, getPersonsByBuilding,getRoomId, getPersonsBySearch, getSpecialGroups,getFields,getDataByQuery } from '@/api/person.js'
 import exportToXlsx from './components/exportToXlsx';
-import pagination from './components/pagination.vue';
+import pagination from '../../components/pagination.vue';
 
 export default {
   name: 'PersonHouseData',

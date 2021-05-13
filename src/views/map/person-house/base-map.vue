@@ -56,10 +56,6 @@ import { interactOperate } from './interactivate3DTiles.js'
 import PersonHouseInfomationPage from './components/person-house-infomation-page'
 import ColorSetPage from './components/color-set-page'
 
-// 3D 模型配置数据
-// const publicDir = process.env.BASE_URL
-// import modelsConfigData from publicDir + '3DModelsSetting.json'
-// var modelsConfigData = require(`${publicDir}3DModelsSetting.json`)
 
 export default {
   name: 'PersonHouseMap',
@@ -203,11 +199,6 @@ export default {
         })
 
         self.sDTilesCollection.set(mouldId, tiltTileset)
-        // debugger
-        // // 设置3D模型mouse事件交互
-        // if (style) {
-        //   interactOperate.install(self.viewer, self.personHouseDataForm)
-        // }
       })
     },
     // 处理菜单事件

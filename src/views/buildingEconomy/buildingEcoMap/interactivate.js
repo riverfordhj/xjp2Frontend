@@ -137,7 +137,7 @@ var interactOperate = {
 
   // mouseclick事件处理
   onLeftClick(movement) {
-    // debugger
+    debugger
     // Pick a new feature
     const room = this.pickFeature(movement.position)
 

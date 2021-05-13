@@ -10,7 +10,7 @@
     >
       <!-- <el-scrollbar :native="false" style="height:100%, height: 100%">-->
       <div class="filter-container">
-        <el-input v-model="Address.filter" placeholder="过滤(社区，网格，楼栋)" style="width: 180px;" class="filter-item" />
+        <el-input v-model="Address.filter" placeholder="过滤(社区，网格，楼栋)" style="width: 150px;" class="filter-item"/>
         <el-select v-model="Address.community" placeholder="社区" clearable style="width: 100px" class="filter-item" @change="getNetGridData">
           <el-option v-for="item in filteredCommunities" :key="item.id" :label="item.name" :value="item.id" />
         </el-select>
@@ -190,7 +190,7 @@ export default {
     },
     
     flyToRoom(roomId) {
-      debugger
+			debugger;
 			//定位飞行过程中，信息面板设为不可见
 			this.personHouseInfo.show = false;
       const room = this.rooms.find(r => r.id === roomId)

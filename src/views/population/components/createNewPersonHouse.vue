@@ -141,12 +141,13 @@
 				</el-row>
 				<el-row :gutter="20">
 					<el-col :span="12">
-						<el-form-item label="楼栋名" prop="buildingName" >
-							<el-select v-model="formData.buildingName" placeholder="请选择"  @change="buildingSelected">
+						<el-form-item label="楼栋名" prop="buildingValue" >
+							<el-select v-model="formData.buildingValue" placeholder="请选择"  @change="buildingSelected">
 								<el-option
 									v-for="item in buildingsData"
 									:key="item.id"
-									:value="item.buildingName">
+									:label="`${item.address}-${item.buildingName}栋`"
+									:value="`${item.buildingName}-${item.address}`">
 								</el-option>
 							</el-select>
 						</el-form-item>
@@ -180,6 +181,8 @@
 import { GetBuildingsByNetGrid, GetRoomsByBuildingAndNetgrid } from '@/api/person.js';
 import checkPermission from '@/utils/permission.js';//权限判断函数
 import personRoomDataOptions from '@/assets/json/personRoomDataOptions.json';
+
+import { deepClone } from '@/utils/tools.js';
 
 export default {
 	name: 'createNewPersonHouse',
@@ -221,7 +224,8 @@ export default {
 				category: '',
 				roomName: '',
 				roomUse: '',
-				buildingName: '',
+				buildingValue: '',
+				address: '',
 				netGrid: '',
 				communityName: '',
 				operation: '',
@@ -249,7 +253,7 @@ export default {
 				 category: [{ required: true, message: '选项不能为空', trigger: 'change' }],
 				 roomName: [{ required: true, message: '选项不能为空', trigger: 'change' }],
 				 roomUse: [{ required: true, message: '选项不能为空', trigger: 'change' }],
-				 buildingName: [{ required: true, message: '选项不能为空', trigger: 'change' }],
+				 buildingValue: [{ required: true, message: '选项不能为空', trigger: 'change' }],
 			}
 		}
 	},
@@ -271,9 +275,12 @@ export default {
 				this.bus.$emit('buildingsDataReceived', res);
 			});
 		},
-		buildingSelected(buildingName){
+		buildingSelected(buildingValue){
+			const buildingName = buildingValue.split('-')[0];
+			const address = buildingValue.split('-')[1];
+			debugger;
 			//根据网格、楼栋，请求房间数据
-			GetRoomsByBuildingAndNetgrid(buildingName).then(res => {
+			GetRoomsByBuildingAndNetgrid(buildingName, address).then(res => {
 				this.roomsData = res;
 			}).catch(err => {
 				console.log(err);
@@ -288,7 +295,15 @@ export default {
 							this.formData.netGrid = this.recordsObj.netGridName;
 							this.formData.communityName = this.recordsObj.communityName;
 
-							this.$emit('createPersonHouse', this.formData);
+							//创建一个新的表单提交对象，目的是为了将buildingValue属性拆分为buildingName和address两个属性。
+							var newFormData = deepClone(this.formData);
+							const buildingName = newFormData.buildingValue.split('-')[0]
+							const address = newFormData.buildingValue.split('-')[1];
+							newFormData.buildingName = buildingName;
+							newFormData.address = address;
+							delete newFormData.buildingValue;
+
+							this.$emit('createPersonHouse', newFormData);
           } else {
             return false;
           }

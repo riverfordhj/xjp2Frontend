@@ -2,7 +2,7 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input v-model="Address.filter" placeholder="过滤(社区，网格，楼栋)" style="width: 200px;" class="filter-item" @keyup.enter.native="handleLocalFilter" />
+      <el-input v-model="Address.filter" placeholder="过滤(社区，网格，楼栋)" style="width: 200px;" class="filter-item" />
       <el-select v-model="Address.community" placeholder="社区" clearable style="width: 100px" class="filter-item" @change="getNetGridData">
           <el-option v-for="item in filteredCommunities" :key="item.id" :label="item.name" :value="item.id" />
       </el-select>

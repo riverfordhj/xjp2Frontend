@@ -227,12 +227,13 @@ export function GetBuildingsByNetGrid() {
   })
 }
 //返回指定楼栋内的房间
-export function GetRoomsByBuildingAndNetgrid(buildingName) {
+export function GetRoomsByBuildingAndNetgrid(buildingName, address) {
   return request({
     url: '/person/GetRoomsByBuildingAndNetgrid',
 		method: 'get',
 		params: {
-      buildingName
+      buildingName,
+			address
     }
   })
 }

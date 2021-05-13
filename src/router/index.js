@@ -74,7 +74,6 @@ export const constantRoutes = [
   {
     path: '/map',
     component: Layout,
-    // redirect: '/dashboard',
     meta: {
       title: '地图',
       icon: 'map'
@@ -137,7 +136,6 @@ export const constantRoutes = [
       {
         path: 'public-service',
         name: '公共服务',
-        // component: () => import('@/views/map/public-service/index'),
         component: () =>
           import('@/views/map/monomerization_cesium/index_service'),
         meta: {
@@ -157,7 +155,6 @@ export const constantRoutes = [
       {
         path: 'party-building',
         name: '基层党建',
-        // component: () => import('@/views/map/party-building/index'),
         component: () => import('@/views/map/monomerization_cesium/index_party'),
         meta: {
           title: '基层党建',
@@ -167,7 +164,6 @@ export const constantRoutes = [
       {
         path: 'governance',
         name: '综治维稳',
-        // component: () => import('@/views/map/party-building/index'),
         component: () => import('@/views/map/monomerization_cesium/index_governance'),
         meta: {
           title: '综治维稳',
@@ -225,6 +221,24 @@ export const constantRoutes = [
 			}
     ]
 	},
+
+	{
+    path: '/house',
+    component: Layout,
+		redirect:'/house/manage-house',
+    name: 'House',
+    children: [
+      {
+        path: 'manage-house',
+        name: 'manage-house',
+        component: () => import('@/views/house/manage-house'),
+        meta: {
+          title: '房屋管理',
+          icon: 'house'
+        }
+      }
+    ]
+  },
 	
 	{
     path: '/buildingCompany',
@@ -301,8 +315,6 @@ export const constantRoutes = [
 			}
     ]
 	},
-	
-	
 
   {
     path: '/education',
@@ -326,9 +338,6 @@ export const constantRoutes = [
   {
     path: '/public-security',
     component: Layout,
-    // redirect: '/example/table',
-    // name: 'Example',
-    // meta: { title: 'Example', icon: 'example' },
     children: [
       {
         path: 'index',
@@ -343,30 +352,8 @@ export const constantRoutes = [
   },
 
   {
-    path: '/house',
-    component: Layout,
-    // redirect: '/example/table',
-    // name: 'Example',
-    // meta: { title: 'Example', icon: 'example' },
-    children: [
-      {
-        path: 'index',
-        name: '房屋管理',
-        component: () => import('@/views/house/index'),
-        meta: {
-          title: '房屋管理',
-          icon: 'house'
-        }
-      }
-    ]
-  },
-
-  {
     path: '/disabled-association',
     component: Layout,
-    // redirect: '/example/table',
-    // name: 'Example',
-    // meta: { title: 'Example', icon: 'example' },
     children: [
       {
         path: 'index',
@@ -383,9 +370,6 @@ export const constantRoutes = [
   {
     path: '/search',
     component: Layout,
-    // redirect: '/example/table',
-    // name: 'Example',
-    // meta: { title: 'Example', icon: 'example' },
     children: [
       {
         path: 'index',
@@ -402,9 +386,6 @@ export const constantRoutes = [
   {
     path: '/statistical-analysis',
     component: Layout,
-    // redirect: '/example/table',
-    // name: 'Example',
-    // meta: { title: 'Example', icon: 'example' },
     children: [
       {
         path: 'index',
@@ -457,7 +438,7 @@ export const constantRoutes = [
       }
     ]
   },
-  
+
   // 404 page must be placed at the end !!!
   {
     path: '*',
@@ -477,7 +458,6 @@ const createRouter = () =>
 
 const router = createRouter()
 
-// Detail see: https://github.com/vuejs/vue-router/issues/1234#issuecomment-357941465
 export function resetRouter () {
   const newRouter = createRouter()
   router.matcher = newRouter.matcher // reset router
