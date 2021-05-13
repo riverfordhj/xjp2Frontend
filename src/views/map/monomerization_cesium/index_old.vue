@@ -17,6 +17,7 @@
     <dialog-drag 
         v-show="dialogVisible"
         id="dialog-2"
+        class="dialog-2"
         title="检索"
         pinned="false"
         :options="{ top: 60, width: 330, buttonPin: false }"
@@ -32,14 +33,22 @@
 
     <dialog-drag 
       v-show="dialogVisible2"
-      id="dialog-1"
-      class="dialog-3"
+      id="dialog-2"
+      class="dialog-2"
       title="特殊人群"
       pinned="false"
-      :options="{ top: 60, width: 330, buttonPin: false }"
+      :options="{ top: 60, width: 240, buttonPin: false }"
       @close="closeLayerPanel2"
     >
-       <el-tree  
+         <el-select v-model="typeoption" placeholder="请选择" @change="getSpecialType">
+          <el-option
+            v-for="item in typeData"
+            :key="item.id"
+            :label="item.label"
+            :value="item.label">
+          </el-option>
+        </el-select>
+       <!-- <el-tree  
          show-checkbox 
          :data="typeData" 
          :props="defaultProps" 
@@ -48,7 +57,7 @@
           node-key="id"
          @check-change="handleCheckChange">
 
-       </el-tree>
+       </el-tree> -->
     
     </dialog-drag>
 
@@ -123,27 +132,47 @@ export default {
       },
       typeData:[
         {
-            id: 1,
-            label:"特殊人群类别",
-            children:[
-            {
-              id:11,
-              label:"精神病人"
-            },
-            {
-              id:12,
-              label:"信访维稳人员"
-            },
-              {
-              id:13,
-              label:"邪教人员"
-            },
-            {
-              id:14,
-              label:"吸毒人员"
-            }
-            ],
-        }],
+          id:1,
+          label:"精神病人"
+        },
+        {
+          id:2,
+          label:"信访维稳人员"
+        },
+          {
+          id:3,
+          label:"邪教人员"
+        },
+        {
+          id:4,
+          label:"吸毒人员"
+        }
+
+      ],
+      typeoption:'',
+      // typeData:[
+      //   {
+      //       id: 1,
+      //       label:"特殊人群类别",
+      //       children:[
+      //       {
+      //         id:11,
+      //         label:"精神病人"
+      //       },
+      //       {
+      //         id:12,
+      //         label:"信访维稳人员"
+      //       },
+      //         {
+      //         id:13,
+      //         label:"邪教人员"
+      //       },
+      //       {
+      //         id:14,
+      //         label:"吸毒人员"
+      //       }
+      //       ],
+      //   }],
       dialogVisible: false,
       dialogVisible2: false,
       dtfFeatures: null,
@@ -193,34 +222,27 @@ export default {
       this.dialogVisible = false
     },
     closeLayerPanel2() {
-      this.dialogVisible2 = false
+      this.dialogVisible2 = false;
+      this.typeoption = '';
     },
     //树形菜单checkbox
-    handleCheckChange(data, checked, indeterminate) {
-      debugger
-          if(data.id == "11" ){
-            this.getMental();
-            viewer.entities.show = checked;
-            if(!checked){
-              this.getComplaint();
-              this.getHeresy();
-              this.getDrug();
-            }
+    // handleCheckChange(data, checked, indeterminate) {
+    //   debugger
+    //       if(data.id == "11" ){
+    //         this.getMental();
+    //         viewer.entities.show = checked;
             
-          }else if(data.id == "12" ){
-            this.getComplaint();
-            viewer.entities.show = checked;
-          }else if(data.id == "13" ){
-            this.getHeresy();
-            viewer.entities.show = checked;
-          }else if(data.id == "14" ){
-            this.getDrug();
-            viewer.entities.show = checked;
-          }
-    
-      console.log(data.label)
-      console.log(data, checked, indeterminate);
-    },
+    //       }else if(data.id == "12" ){
+    //         this.getComplaint();
+    //         viewer.entities.show = checked;
+    //       }else if(data.id == "13" ){
+    //         this.getHeresy();
+    //         viewer.entities.show = checked;
+    //       }else if(data.id == "14" ){
+    //         this.getDrug();
+    //         viewer.entities.show = checked;
+    //       }
+    // },
     FlyTo(feature) {
       if (!feature) {
         feature = this.theFeature;
@@ -298,8 +320,6 @@ export default {
       var _this = this;
       window.setTimeout(function () {
         _this.add3DtilesDyt(viewer);
-        console.log(1);
-          console.log(viewer)
           // _this.getMental();
           // _this.getComplaint();
           //_this.getHeresy();
@@ -397,14 +417,25 @@ export default {
           console.log(err);
         });
     },
-    getSpecialType(value){
-      console.log(value);
+    getSpecialType(typeoption){
       debugger
-      if(value == "精神病人"){
+      viewer.entities.values.length = 0;
+      console.log(viewer.entities.values);
+      if(typeoption == "精神病人"){
+        
         this.getMental();
         // this.getComplaint();
         // this.getHeresy();
         // this.getDrug();
+      }else
+       if(typeoption == "信访维稳人员"){
+          this.getComplaint();
+      }else
+       if(typeoption == "邪教人员"){
+          this.getHeresy();
+      }else
+       if(typeoption == "吸毒人员"){
+          this.getDrug();
       }
 
     },
