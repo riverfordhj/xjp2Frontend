@@ -92,12 +92,12 @@
       {
         "id": 201,
         "label": "惠誉花园",
-        "url": "http://202.114.148.160:9000/model/a6b24b60107611ebbb4c23b7c961e103/tileset.json"
+        "url": "http://202.114.148.160:9000/model/a6b24b60107611ebbb4c23b7c961e103/tileset.json"  
       },
       {
         "id": 202,
         "label": "长轮",
-        "url": "http://202.114.148.160:9000/model/3264892087d711eba112f7140c5c1bbb/tileset.json"
+        "url": "http://202.114.148.160:9000/model/48553070b3e411eba112f7140c5c1bbb/tileset.json"
       },
       {
         "id": 203,
