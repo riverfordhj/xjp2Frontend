@@ -12,12 +12,12 @@
 			</el-button>
 
 			<!-- 批处理新建人房数据 -->
-			<upload-excel 
+			<batching-create-person
 				v-if="checkPermission('网格员')"
 				:standard-header="tableHeaderForXlsx" 
 				:standard-header-en="filterValForXlsx" 
 				label-name="批量新建">
-			</upload-excel>
+			</batching-create-person>
 
 			<el-radio-group  class="radio-exchange" v-model="exchangeValue" @change="radioExchange">
 				<el-radio-button label="人房数据"></el-radio-button>
@@ -237,7 +237,7 @@
 		
 			<el-table-column  v-if="checkPermission('网格员')" align="center" label="编辑" width="170" fixed="right">
 				<template slot-scope="{row}">
-					<el-button-group v-if="row.edit === false && row.status === null">
+					<el-button-group v-if="row.edit === false && row.status === null" :key="row.id">
 						<el-button
 							type="warning"
 							size="small"
@@ -329,7 +329,6 @@
 							驳回
 						</el-button>
 					</el-button-group>
-					
 				</template>
 			</el-table-column>
 
@@ -411,7 +410,7 @@ import historyFilterPanel from './components/historyFilterPanel.vue';
 import pagination from '../../components/pagination.vue';
 import exportToXlsx from './components/exportToXlsx';
 import filterPanel from './components/filterPanel.vue';
-import uploadExcel from './components/uploadExcel.vue';
+import batchingCreatePerson from './components/batchingCreatePerson.vue';
 
 import personRoomDataOptions from '@/assets/json/personRoomDataOptions.json';
 
@@ -423,7 +422,6 @@ export default {
 		return {
 			personHouseInfo: [],
 			tempPersonHouseInfo: [],//人房数据的副本，用作人房数据过滤。
-			// rolesObj: ['网格员', '水岸星城', 'Administrator'],
 			
 			exchangeValue: '人房数据',
 			
@@ -460,7 +458,7 @@ export default {
 		pagination,
 		exportToXlsx,
 		filterPanel,
-		uploadExcel
+		batchingCreatePerson
 	},
 	created(){
 		this.getPersonHouseInfo();
@@ -540,7 +538,7 @@ export default {
 			}
 			this.resetPaginationSetting();
 		},
-		//为每条信息（对象）添加新属性
+		//为每条信息（对象）添加新属性edit
 		handlePersonHouseInfo (data){
 			this.personHouseInfo = data.map(item => {
 				if(this.checkPermission('网格员')){
@@ -670,6 +668,7 @@ export default {
 				personId : row.personId,
 				status : row.status,
 				RoomName : row.roomName,
+				Address: row.address,
 				BuildingName : row.buildingName,
 				NetGrid : row.netGrid,
 				CommunityName : row.communityName
