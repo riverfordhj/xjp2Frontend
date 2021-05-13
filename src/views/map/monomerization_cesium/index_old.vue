@@ -422,11 +422,7 @@ export default {
       viewer.entities.values.length = 0;
       console.log(viewer.entities.values);
       if(typeoption == "精神病人"){
-        
         this.getMental();
-        // this.getComplaint();
-        // this.getHeresy();
-        // this.getDrug();
       }else
        if(typeoption == "信访维稳人员"){
           this.getComplaint();
