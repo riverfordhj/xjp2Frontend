@@ -9,6 +9,7 @@
         </el-button>
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item command="showLayer">检索</el-dropdown-item>
+          <el-dropdown-item command="showLayer2">类别</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
     </div>
@@ -23,10 +24,32 @@
     >
       <el-form  :rules="rules">
          <el-form-item  prop="entityName">
-            <el-input type="text" v-model="entityName"  placeholder="请输入姓名/电话/身份证" style="width: 200px; height:30px;"   clearable />
+            <el-input type="text" v-model="entityName"  placeholder="请输入姓名/电话/身份证" style="width: 200px; height:30px;"  clearable @keyup.enter.native="asComfirm" />
             <el-button type="primary"  icon="el-icon-search" @click="asComfirm">查询</el-button>
          </el-form-item>
       </el-form>
+    </dialog-drag>
+
+    <dialog-drag 
+      v-show="dialogVisible2"
+      id="dialog-1"
+      class="dialog-3"
+      title="特殊人群"
+      pinned="false"
+      :options="{ top: 60, width: 330, buttonPin: false }"
+      @close="closeLayerPanel2"
+    >
+       <el-tree  
+         show-checkbox 
+         :data="typeData" 
+         :props="defaultProps" 
+         :default-expanded-keys="[1]"
+         :default-checked-keys="defaultChecked"
+          node-key="id"
+         @check-change="handleCheckChange">
+
+       </el-tree>
+    
     </dialog-drag>
 
     <OldMen-Dialog :opened="opened" :locationinfo="filterLoctionInfo" />
@@ -61,7 +84,6 @@ import { getSpecialPersonLoction_ZH } from '@/api/person.js';
 
 
 import fire from "../../../assets/cesium_images/fire.png";
-import keyPeople from "../../../assets/cesium_images/重点人员.png";
 
 import addictsPeople from "../../../assets/cesium_images/吸毒人员.svg"
 import cultPeople from "../../../assets/cesium_images/邪教人员.svg"
@@ -94,16 +116,43 @@ export default {
         ]
 
       },
+      defaultChecked: [], // 模型树check状态
+      defaultProps: {
+        children: 'children',
+        label: 'label'
+      },
+      typeData:[
+        {
+            id: 1,
+            label:"特殊人群类别",
+            children:[
+            {
+              id:11,
+              label:"精神病人"
+            },
+            {
+              id:12,
+              label:"信访维稳人员"
+            },
+              {
+              id:13,
+              label:"邪教人员"
+            },
+            {
+              id:14,
+              label:"吸毒人员"
+            }
+            ],
+        }],
       dialogVisible: false,
+      dialogVisible2: false,
       dtfFeatures: null,
       dftTileset: null,
       theFeature: null,
       entityName:'',
 
-      SpecialPersonLoctionInfo: [],
       filterLoctionInfo:{},
 
-      selectOptions: [],
       value: "",
       tiltTileset: null,
       infoWindowPosition: null,
@@ -135,10 +184,42 @@ export default {
       if (command === 'showLayer') {
         this.dialogVisible = true
       }
+       if (command === 'showLayer2') {
+        this.dialogVisible2 = true
+      }
     },
     // 关闭图层面板
     closeLayerPanel() {
       this.dialogVisible = false
+    },
+    closeLayerPanel2() {
+      this.dialogVisible2 = false
+    },
+    //树形菜单checkbox
+    handleCheckChange(data, checked, indeterminate) {
+      debugger
+          if(data.id == "11" ){
+            this.getMental();
+            viewer.entities.show = checked;
+            if(!checked){
+              this.getComplaint();
+              this.getHeresy();
+              this.getDrug();
+            }
+            
+          }else if(data.id == "12" ){
+            this.getComplaint();
+            viewer.entities.show = checked;
+          }else if(data.id == "13" ){
+            this.getHeresy();
+            viewer.entities.show = checked;
+          }else if(data.id == "14" ){
+            this.getDrug();
+            viewer.entities.show = checked;
+          }
+    
+      console.log(data.label)
+      console.log(data, checked, indeterminate);
     },
     FlyTo(feature) {
       if (!feature) {
@@ -180,40 +261,6 @@ export default {
       Cesium.Cartesian3.multiplyByScalar(offset, range, offset);
       return offset;
     },
-
-    // handleMenuCommand(command) {
-    //   if (this.dtfFeatures) {
-    //     this.SelectHouseBySearchProperty();
-    //   }
-    // },
-    SelectHouseBySearchProperty() {
-      console.log("in SelectHouseBySearchProperty()");
-
-      const gidName = "H15-2-1-1"; //"G2-1-204"
-      if (this.theFeature) {
-        this.theFeature.color = Cesium.Color.RED;
-        // viewer.selectedEntity = this.theFeature;
-        // viewer.flyTo(this.theFeature.tileset)
-        this.FlyTo();
-      }
-    },
-    initSeletion() {
-      var _this = this;
-      
-      getSpecialPersonLoction_ZH().then(response =>{
-        
-        _this.SpecialPersonLoctionInfo = response;
-        console.log(_this.SpecialPersonLoctionInfo);
-        response.map((man)  => {
-          
-          //oldMenJson.map((man) => {
-          _this.selectOptions.push({
-            value: man["姓名"],
-            label: man["姓名"],
-          });
-        });
-      });
-    },
     init() {
 			Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI5MjMyYjZiMC1lZmY1LTQzNmEtODg1NS01NmQzMmE2NWY2ZjMiLCJpZCI6NDQ1MSwic2NvcGVzIjpbImFzciIsImdjIl0sImlhdCI6MTU0MDg4NTM2Mn0.7OzWWlmUmJv_EJo0RFpuiL2G_KLgZBENAAXOgU1O1qM';
 			
@@ -251,7 +298,20 @@ export default {
       var _this = this;
       window.setTimeout(function () {
         _this.add3DtilesDyt(viewer);
-        getSpecialPersonLoction_ZH().then(response =>{
+        console.log(1);
+          console.log(viewer)
+          // _this.getMental();
+          // _this.getComplaint();
+          //_this.getHeresy();
+          // _this.getDrug();
+          console.log(viewer.entities.values);
+
+      }, 1000);
+    },
+    //获取后台数据，过滤精神病并渲染到页面上
+    getMental(){
+      var _this = this;
+      getSpecialPersonLoction_ZH().then(response =>{
           response.filter(item => item["类型"] === "精神病人").forEach(item => {
             _this.addEntity(
               item["身份证号码"],
@@ -266,9 +326,15 @@ export default {
               mentalPatient
             );
           });
+        }).catch(err =>{
+          console.log(err);
         });
-        console.log(viewer.entities.values);
-         getSpecialPersonLoction_ZH().then(response =>{
+        return
+    },
+    //获取后台数据，过滤信访维稳人员并渲染到页面上
+    getComplaint(){
+      var _this = this;
+      getSpecialPersonLoction_ZH().then(response =>{
           response.filter(item => item["类型"] === "信访维稳人员").forEach((item)  => {
             _this.addEntity(
               item["身份证号码"],
@@ -283,8 +349,14 @@ export default {
               lettersPeople
             );
           });
+        }).catch(err =>{
+          console.log(err);
         });
-         getSpecialPersonLoction_ZH().then(response =>{
+    },
+    //获取后台数据，过滤邪教人员并渲染到页面上
+    getHeresy(){
+      var _this = this;
+      getSpecialPersonLoction_ZH().then(response =>{
           response.filter(item => item["类型"] === "邪教人员").forEach((item)  => {
             _this.addEntity(
               item["身份证号码"],
@@ -302,7 +374,11 @@ export default {
         }).catch(err =>{
           console.log(err);
         });
-        getSpecialPersonLoction_ZH().then(response =>{
+    },
+    //获取后台数据，过滤吸毒人员并渲染到页面上
+    getDrug(){
+      var _this = this;
+      getSpecialPersonLoction_ZH().then(response =>{
           response.filter(item => item["类型"] === "吸毒人员").forEach((item)  => {
             _this.addEntity(
               item["身份证号码"],
@@ -317,38 +393,50 @@ export default {
               addictsPeople
             );
           });
+        }).catch(err =>{
+          console.log(err);
         });
-      }, 1000);
     },
-    addPosition(viewer, xyJson, tJson, tKey) {
-      var _this = this;
-      tJson.map((jz) => {
-        const aPosition = xyJson.filter((h) => {
-          return h["GID"] === jz[tKey];
-        });
-        if (aPosition.length === 0) {
-          return;
-        }
-        const position = aPosition[0];
-        const arr = position["GID"].split("-");
-        var height = 0;
-        if (arr[arr.length - 1].length === 3) {
-          height = arr[arr.length - 1].substring(0, 1) * 3 + 10;
-        } else {
-          height = arr[arr.length - 1].substring(0, 2) * 3 + 10;
-        }
-        _this.addEntity(
-          viewer,
-          Cesium.Cartesian3.fromDegrees(
-            parseFloat(position["x"]),
-            parseFloat(position["y"]),
-            height
-          ),
-          "矫正人员",
-          keyPeople
-        );
-      });
+    getSpecialType(value){
+      console.log(value);
+      debugger
+      if(value == "精神病人"){
+        this.getMental();
+        // this.getComplaint();
+        // this.getHeresy();
+        // this.getDrug();
+      }
+
     },
+    // addPosition(viewer, xyJson, tJson, tKey) {
+    //   var _this = this;
+    //   tJson.map((jz) => {
+    //     const aPosition = xyJson.filter((h) => {
+    //       return h["GID"] === jz[tKey];
+    //     });
+    //     if (aPosition.length === 0) {
+    //       return;
+    //     }
+    //     const position = aPosition[0];
+    //     const arr = position["GID"].split("-");
+    //     var height = 0;
+    //     if (arr[arr.length - 1].length === 3) {
+    //       height = arr[arr.length - 1].substring(0, 1) * 3 + 10;
+    //     } else {
+    //       height = arr[arr.length - 1].substring(0, 2) * 3 + 10;
+    //     }
+    //     _this.addEntity(
+    //       viewer,
+    //       Cesium.Cartesian3.fromDegrees(
+    //         parseFloat(position["x"]),
+    //         parseFloat(position["y"]),
+    //         height
+    //       ),
+    //       "矫正人员",
+    //       keyPeople
+    //     );
+    //   });
+    // },
     add3DtilesDyt(viewer) {
 			axios.request({
 				url: '/3DModelsSetting.json', // 读取public目录下3维模型配置文件
