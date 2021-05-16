@@ -320,10 +320,10 @@ export default {
       var _this = this;
       window.setTimeout(function () {
         _this.add3DtilesDyt(viewer);
-          // _this.getMental();
-          // _this.getComplaint();
-          //_this.getHeresy();
-          // _this.getDrug();
+          _this.getMental();
+          _this.getComplaint();
+          _this.getHeresy();
+          _this.getDrug();
           console.log(viewer.entities.values);
 
       }, 1000);
@@ -419,7 +419,7 @@ export default {
     },
     getSpecialType(typeoption){
       debugger
-      viewer.entities.values.length = 0;
+      viewer.entities.removeAll();
       console.log(viewer.entities.values);
       if(typeoption == "精神病人"){
         this.getMental();
