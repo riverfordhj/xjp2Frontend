@@ -511,7 +511,6 @@ export default {
 		//同步勾选项数据
 		handleSelectionChange(rows){
 			selectionRowDatas = rows;
-			console.log(selectionRowDatas);
 		},
 		//请求人房信息
 		getPersonHouseInfo (){

@@ -7,7 +7,7 @@
 		<el-select v-model="netGrid" placeholder="网格" clearable style="width: 110px"  @change="getBuildingsData">
 		<el-option v-for="item in filteredNetGrids" :key="item.id" :label="'网格' + item.name" :value="item.id" />
 		</el-select>
-		<el-select v-model="building" placeholder="楼栋" clearable  style="width: 180px" @change="getRoomNameList">
+		<el-select v-model="building" placeholder="楼栋" clearable  style="width: 190px" @change="getRoomNameList">
 			<el-option v-for="item in filteredBuildings" :key="item.id" :label="item.address + '-' + item.name + '栋'" :value="`${item.name}-${item.address}`" />
 		</el-select>
 		<el-button  type="primary" icon="el-icon-search" @click="getRoomsData">

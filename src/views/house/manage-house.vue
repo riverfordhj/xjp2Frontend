@@ -45,7 +45,7 @@
 			</el-table-column>
 			<el-table-column align="center" label="房屋用途" min-width="140" >
 					<template slot-scope="{row}">
-						<el-select v-if="row.edit" v-model="row.use" size="sm      all" placeholder="请选择">
+						<el-select v-if="row.edit" v-model="row.use" size="small" placeholder="请选择">
 							<el-option v-for="item in personRoomDataOptions.roomUseArray" :key="item" :label="item" :value="item"></el-option>
 						</el-select>
 						<span v-else>{{ row.use }}</span>
@@ -59,19 +59,19 @@
 			</el-table-column>
 			<el-table-column align="center" label="经度" min-width="160" >
 					<template slot-scope="{row}">
-						<el-input v-if="row.edit" v-model="row.longitude" class="edit-input" size="small" clearable/>
+						<el-input v-if="row.edit" v-model.number="row.longitude" class="edit-input" size="small" clearable/>
 						<span v-else>{{ row.longitude }}</span>
 					</template>
 			</el-table-column>
 			<el-table-column align="center" label="纬度" min-width="160" >
 					<template slot-scope="{row}">
-						<el-input v-if="row.edit" v-model="row.latitude" class="edit-input" size="small" clearable/>
+						<el-input v-if="row.edit"  v-model.number="row.latitude" class="edit-input" size="small" clearable/>
 						<span v-else>{{ row.latitude }}</span>
 					</template>
 			</el-table-column>
 			<el-table-column align="center" label="高程" min-width="120" >
 					<template slot-scope="{row}">
-						<el-input v-if="row.edit" v-model="row.height" class="edit-input" size="small" clearable/>
+						<el-input v-if="row.edit" v-model.number="row.height" class="edit-input" size="small" clearable/>
 						<span v-else>{{ row.height }}</span>
 					</template>
 			</el-table-column>
@@ -160,7 +160,7 @@
 	import { batchingRoomsData, deleteRoom, updateRoom } from '@/api/house.js';
 	import personRoomDataOptions from '@/assets/json/personRoomDataOptions.json';
 
-	import { deepClone } from '@/utils/tools.js';
+	import { deepClone, isNumber} from '@/utils/tools.js';
 
   export default {
     name: 'manage-house',
@@ -200,14 +200,14 @@
 				return (this.paginationSetting.curPage - 1) * this.paginationSetting.limit + 1;
 			}
 		},
+		deactivated(){
+			this.$message.closeAll();//组件停用时，关闭所有提示框
+		},
 		methods: {
 			BatchingRooms(formData){
 				batchingRoomsData(formData).then((res) => {
 					if(Array.isArray(res) && res.length === 0){
-						this.$message({
-							message: '该楼栋已存在',
-							type: 'warning'
-						});
+						this.showMessageInfo(false, 3000, '该楼栋已存在', 'warning');
 						return;//返回数据为空数组时，说明该楼栋在后台已创建。
 					}
 					this.roomData = res;
@@ -221,34 +221,52 @@
 				});
 			  this.tempRoomData = deepClone(this.roomData, []);//克隆roomData
 			},
-			//显示导入的房屋数据结果
+			//处理导入的房屋数据
 			handleRoomData_excel(roomDataRes){
+				if(!this.checkRoomRes(roomDataRes)){
+					return;
+				}
 				var errorList = [];
 				//分别收集导入成功、失败的房屋数据
 				this.roomData = roomDataRes.reduce((accumulator, curEle, curIndex) => {
-					if(JSON.stringify(curEle) !== '{}'){
-						this.$set(curEle, 'success', true);//新增响应式属性edit: 控制修改部件的显示
-						accumulator.push(curEle);
+					if(this.judgeInfo(curEle) && curEle.message === '已存在'){
+						errorList.push(curIndex + 2)//收集错误项在excel表中对应的索引
 					}else{
-						errorList.push(curIndex + 2);//收集返回的空结果
+						accumulator.push(curEle);
 					}
 					return accumulator;
 				}, []);
 
 				this.tempRoomData = deepClone(this.roomData, []);//克隆roomData
 				
-				this.createRoomErrorFun(errorList);
+				this.createRoomErrorFun(errorList, {info: '数据已存在，可查询后修改', type: 'warning'});
 			},
-			//数据导入失败提醒
-			createRoomErrorFun(infoList){
+			//检查返回的数据结果
+			checkRoomRes(roomDataRes){
+				var errorList = [];
+				var latch = true;
+        if(Array.isArray(roomDataRes)){
+					roomDataRes.forEach((item) => {
+						if(this.judgeInfo(item) && item.message === '网格不存在'){
+							latch = false;
+							errorList.push(item.index +2);
+						}
+					});
+				}
+				if(!latch){
+					this.createRoomErrorFun(errorList, {info: '网格不存在，请修改后操作', type: 'error'});
+				}	
+				return latch;
+			},
+			//判断参数是否是对象，并拥有‘message’属性
+			judgeInfo(objItem){
+				return Object.prototype.toString(objItem) === '[object Object]' && objItem.hasOwnProperty('message'); 
+			},
+			//第二参数为函数配置项（对象）
+			createRoomErrorFun(infoList, optionObj){
 				if(Array.isArray(infoList) && infoList.length !== 0){
 					const errString = infoList.join();
-					this.$message({
-						showClose: true,
-						duration: 0,
-						message: `Excel表格中第${errString}行数据入库失败（已存在）`,
-						type: 'warning'
-					})
+					this.showMessageInfo(true, 0, `Excel表格中第${errString}行：${optionObj.info}`, optionObj.type);
 				}
 			},
 			cancelEdit(row){
@@ -257,17 +275,16 @@
 			},
 			//修改指定房屋
 			handleUpdate(row){
-				updateRoom(row).then(res => {
-						debugger;
-					this.handleRoomData(res);
-					this.$message({
-					  message: '修改成功',
-          	type: 'success' 
+				if(this.checkRowData(row)){
+					updateRoom(row).then(res => {
+						this.handleRoomData(res);
+						this.showMessageInfo(false, 3000, '修改成功', 'success');
+					}).catch(err => {
+						console.log(err);
 					});
-					debugger;
-				}).catch(err => {
-					console.log(err);
-				})
+				}else{
+					this.showMessageInfo(false, 3000, '输入格式错误','warning')
+				}
 			},
 			//删除指定房屋
 			handleDelete(row){
@@ -278,18 +295,25 @@
 					console.log(err);
 				})
 			},
+			//根据删除前后返回的数据总数，判断删除是否成功
 			compareRoomCount(newDataCount, oldDataCount){
 				if(newDataCount < oldDataCount){
-					this.$message({
-					  message: '删除成功',
-          	type: 'success' 
-					});
+					this.showMessageInfo(false, 3000, '删除成功', 'success');
 				}else if(newDataCount === oldDataCount){
-					this.$message({
-					  message: '该房屋有居民，无法删除',
-						type: 'warning'
-					});
+					this.showMessageInfo(false, 3000, '该房屋有居民，无法删除', 'warning');
 				}
+			},
+			checkRowData(rowData){
+				return isNumber(rowData.longitude) && isNumber(rowData.latitude) && isNumber(rowData.height)
+			},
+			//消息提示函数
+			showMessageInfo(showClose, duration, message,type){
+				this.$message({
+					showClose,
+					duration,
+					message,
+					type
+				});
 			}
 		}
   }

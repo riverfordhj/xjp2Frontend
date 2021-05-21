@@ -419,20 +419,20 @@ export const constantRoutes = [
         }
       },
       {
-        path: 'change-psd',
+        path: 'create-user',
         name: '创建用户',
-        component: () => import('@/views/system/change-psd'),
+        component: () => import('@/views/system/create-user'),
         meta: {
           title: '创建用户',
           icon: 'user'
         }
       },
       {
-        path: 'create-user',
-        name: '修改密码',
-        component: () => import('@/views/system/create-user'),
+        path: 'manage-psd',
+        name: '密码管理',
+        component: () => import('@/views/system/manage-psd'),
         meta: {
-          title: '修改密码',
+          title: '密码管理',
           icon: 'password'
         }
       }
