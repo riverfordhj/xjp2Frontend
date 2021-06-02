@@ -42,7 +42,7 @@
 						重置所选项
 					</el-button>
 				</template>
-				<template  slot-scope="{row}">
+				<template  >
 					<el-button
 						type="success"
 						size="small"
@@ -67,7 +67,7 @@ import { getUsersData, resetUserPassword} from '@/api/user.js'
 var selectionRowDatas = [];
 
 export default {
-  name: '',
+  name: 'reset-psd',
   data() {
     return {
 			userData: [],

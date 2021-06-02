@@ -31,7 +31,8 @@ export default {
       'sidebar'
     ]),
     routes() {
-      return this.$router.options.routes
+      //获取存储在Vuex中的完整路由表
+			return this.$store.getters.routes;
     },
     activeMenu() {
       const route = this.$route
