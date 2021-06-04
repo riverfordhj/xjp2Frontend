@@ -221,24 +221,6 @@ export const constantRoutes = [
 			}
     ]
 	},
-
-	{
-    path: '/house',
-    component: Layout,
-		redirect:'/house/manage-house',
-    name: 'House',
-    children: [
-      {
-        path: 'manage-house',
-        name: 'manage-house',
-        component: () => import('@/views/house/manage-house'),
-        meta: {
-          title: '房屋管理',
-          icon: 'house'
-        }
-      }
-    ]
-  },
 	
 	{
     path: '/buildingCompany',
@@ -402,6 +384,26 @@ export const constantRoutes = [
 
 //动态路由表：权限
 export const asyncRoutes = [
+	{
+    path: '/house',
+    component: Layout,
+		redirect:'/house/manage-house',
+    name: 'House',
+		meta: {
+			roles: ['Administrator']
+		},
+    children: [
+      {
+        path: 'manage-house',
+        name: 'manage-house',
+        component: () => import('@/views/house/manage-house'),
+        meta: {
+          title: '房屋管理',
+          icon: 'house'
+        }
+      }
+    ]
+  },
 	{
     path: '/system',
     component: Layout,

@@ -36,7 +36,20 @@ export default {
 	methods:{
 		//整合后的json数据传递至后端
 		BatchingPersonHouseJsonData(jsonData){
-			BatchingPersonHouseData(jsonData).catch(err => {console.log(err)});
+			BatchingPersonHouseData(jsonData).then(res => {
+				if(!this.checkDataRes(res)){
+					return;
+				}
+				//收集已存在人员的信息，用于提示
+				var errorList = [];
+				res.forEach((curEle, curIndex) => {
+					if(this.judgeInfo(curEle) && curEle.message === '已存在'){
+						errorList.push(curIndex + 3)//收集错误项在excel表中对应的索引
+					}
+				});
+				this.createPersonErrorFun(errorList, {info: '数据已存在，可查询后修改', type: 'warning'});
+				this.$emit('uploadCompeleted');
+			}).catch(err => {console.log(err)});
 		},
 		//修改Json数据结构，作为参数传入后端
 		ModifyJsonData(jsonDataArray){
@@ -85,6 +98,47 @@ export default {
 		errorFun(){
 			this.$message.error('上传文件内容格式不正确');
 		},
+    
+		
+
+		//检查返回的数据结果:收集错误信息
+		checkDataRes(dataRes){
+			var errorList = [];
+			var latch = true;
+			if(Array.isArray(dataRes)){
+				dataRes.forEach((item) => {
+					if(this.judgeInfo(item) && item.message === '房屋地址不正确(填写错误或超出权限)'){
+						latch = false;
+						errorList.push(item.index +3);
+					}
+				});
+			}
+			if(!latch){
+				this.createPersonErrorFun(errorList, {info: '房屋地址不正确，请修改后操作', type: 'error'});
+			}	
+			debugger;
+			return latch;
+		},
+		//判断参数是否是对象，并拥有‘message’属性
+		judgeInfo(objItem){
+			return Object.prototype.toString(objItem) === '[object Object]' && objItem.hasOwnProperty('message'); 
+		},
+		//第二参数为函数配置项（对象）
+		createPersonErrorFun(infoList, optionObj){
+			if(Array.isArray(infoList) && infoList.length !== 0){
+				const errString = infoList.join();
+				this.showMessageInfo(true, 0, `Excel表格中第${errString}行：${optionObj.info}`, optionObj.type);
+			}
+		},
+		//消息提示函数
+		showMessageInfo(showClose, duration, message,type){
+			this.$message({
+				showClose,
+				duration,
+				message,
+				type
+			});
+		}
 	
 	}
 		

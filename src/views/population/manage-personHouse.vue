@@ -16,6 +16,7 @@
 				v-if="checkPermission('网格员')"
 				:standard-header="tableHeaderForXlsx" 
 				:standard-header-en="filterValForXlsx" 
+				@uploadCompeleted="radioExchange(exchangeValue)"
 				label-name="批量新建">
 			</batching-create-person>
 

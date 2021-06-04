@@ -22,7 +22,7 @@
 							<span>{{ row.userName }}</span>
 						</template>
 			</el-table-column>
-			<el-table-column align="center" label="密码" width="170" >
+			<el-table-column align="center" label="密码" width="380" >
 						<template slot-scope="{row}">
 							<span>{{ row.password }}</span>
 						</template>
@@ -42,10 +42,11 @@
 						重置所选项
 					</el-button>
 				</template>
-				<template  >
+				<template  slot-scope="{row}">
 					<el-button
 						type="success"
 						size="small"
+						@click="resetPsd(row)"
 					>
 						重置
 					</el-button>
@@ -131,6 +132,11 @@ export default {
 			resetUserPassword(selectionList).then(res => {
 				this.userData = res;
 			})
+		},
+		resetPsd(row){
+			let tem_arr = [];
+			tem_arr.push(row);
+			this.resetPasswords(tem_arr);
 		}
 	}
 }

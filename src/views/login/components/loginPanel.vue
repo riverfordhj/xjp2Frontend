@@ -101,8 +101,9 @@ export default {
           this.$store.dispatch('user/login', this.loginForm).then(() => {
             this.$router.push({ path: this.redirect || '/' });
             this.loading = false
-          }).catch(() => {
-            this.loading = false
+          }).catch((e) => {
+            this.loading = false;
+						this.$message.error('登录失败');
           })
         } else {
           console.log('error submit!!')

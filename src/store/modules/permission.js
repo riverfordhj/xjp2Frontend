@@ -2,7 +2,6 @@ import {asyncRoutes, constantRoutes} from '@/router/index.js';
 
 function hasPermission(role, route) {
   if (route.meta && route.meta.roles) {
-		debugger;
     return route.meta.roles.includes(role);
   } else {
     return true

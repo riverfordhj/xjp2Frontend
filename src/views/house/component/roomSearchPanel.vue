@@ -7,7 +7,7 @@
 		<el-select v-model="netGrid" placeholder="网格" clearable style="width: 110px"  @change="getBuildingsData">
 		<el-option v-for="item in filteredNetGrids" :key="item.id" :label="'网格' + item.name" :value="item.id" />
 		</el-select>
-		<el-select v-model="building" placeholder="楼栋" clearable  style="width: 190px" @change="getRoomNameList">
+		<el-select v-model="building" placeholder="楼栋" clearable  style="width: 190px" >
 			<el-option v-for="item in filteredBuildings" :key="item.id" :label="item.address + '-' + item.name + '栋'" :value="`${item.name}-${item.address}`" />
 		</el-select>
 		<el-button  type="primary" icon="el-icon-search" @click="getRoomsData">
@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import { getCommunitys, getNetGridInCommunity,getBuildingInNetGrid, getRoomByBuilding, getPersons, getPersonsByBuilding } from '@/api/person.js';
+import { getCommunitys, getNetGridInCommunity,getBuildingInNetGrid } from '@/api/person.js';
 import { GetRoomsByBuildingData } from '@/api/house.js';
 
 export default {
@@ -75,18 +75,26 @@ export default {
 		},
 		//获取对应网格信息
 		getNetGridData(communityId){
+			if(communityId === ''){
+				this.netGrid = '';
+				this.building = '';
+				this.netGridsData = [];
+				return;
+			}
 			getNetGridInCommunity(communityId).then(res => {
 				this.netGridsData = res;
 			})
 		},
 		//获取对应楼栋信息
 		getBuildingsData(netGridId){
+			if(netGridId === ''){
+				this.building = '';
+				this.buildingsData = [];
+				return;
+			}
 			getBuildingInNetGrid(netGridId).then(res => {
 				this.buildingsData = res;
 			})
-		},
-		getRoomNameList(){
-
 		},
 		//获取对应房屋信息
 		getRoomsData(){
