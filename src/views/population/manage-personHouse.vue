@@ -464,6 +464,9 @@ export default {
 	created(){
 		this.getPersonHouseInfo();
 	},
+	deactivated(){
+		this.$message.closeAll();//组件停用时，关闭所有提示框
+	},
 	computed:{
 		total(){
 			return this.personHouseInfo.length;
