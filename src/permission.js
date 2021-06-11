@@ -23,6 +23,7 @@ router.beforeEach(async (to, from, next) => {
   if (hasToken) {
     if (to.path === '/login') {
 			// if is logged in, redirect to the home page
+			debugger;
       next({ path: '/' })
       NProgress.done()
     } else {
@@ -33,9 +34,11 @@ router.beforeEach(async (to, from, next) => {
       } else {
         try {
           // get user info
-          await store.dispatch('user/getInfo')
-
-          next()
+          const role = await store.dispatch('user/getInfo');
+					//获取权限路由
+					const accessRoutes = await store.dispatch('permission/generateRoutes', role);
+					router.addRoutes([...accessRoutes]);//添加权限路由
+					next({ ...to, replace: true });
         } catch (error) {
           // remove token and go to login page to re-login
           await store.dispatch('user/resetToken')
@@ -47,7 +50,6 @@ router.beforeEach(async (to, from, next) => {
     }
   } else {
     /* has no token*/
-
     if (whiteList.indexOf(to.path) !== -1) {
       // in the free login whitelist, go directly
       next()

@@ -69,13 +69,11 @@ const actions = {
         if (!name) {
           reject('Verification failed, please Login again.')
         }
-
-        // const { name, avatar } = name
       
         commit('SET_NAME', name)// name
 				commit('SET_AVATAR', avatar)
 				commit('SET_ROLE', role);
-        resolve(name)
+        resolve(role);
       }).catch(error => {
         reject(error)
       })

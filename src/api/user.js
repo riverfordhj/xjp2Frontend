@@ -23,3 +23,26 @@ export function logout() {
     method: 'post'
   })
 }
+
+export function UpdatePassword(formData){
+	return request({
+    url: '/auth/UpdatePassword', 
+    method: 'post',
+    data: formData
+  })
+}
+
+export function getUsersData() {
+  return request({
+    url: '/auth/getUsersData', 
+    method: 'get'
+  })
+}
+
+export function resetUserPassword(FormList) {
+  return request({
+    url: '/auth/ResetPassword', 
+		method: 'post',
+    data: FormList
+  })
+}

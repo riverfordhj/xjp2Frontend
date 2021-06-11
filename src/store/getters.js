@@ -7,6 +7,7 @@ const getters = {
 	role: state => state.user.role,
   visitedViews: state => state.tagsView.visitedViews,
   cachedViews: state => state.tagsView.cachedViews,
-	cesium_data: state => state.cesium_data.tileSets
+	cesium_data: state => state.cesium_data.tileSets,
+	routes: state => state.permission.routes
 }
 export default getters

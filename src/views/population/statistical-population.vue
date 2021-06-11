@@ -96,8 +96,8 @@ export default {
   },
   methods: {
     SelectedNetGrid(item){
-          this.getBuildingsData(item);
-          this.changeSelectedNetGrid(item);
+			this.getBuildingsData(item);
+			this.changeSelectedNetGrid(item);
     },
     getCommunitysData() {
       getCommunitys().then(response => {
@@ -130,7 +130,6 @@ export default {
     },
     changeSelectedNetGrid(netGridId){
       GetPersonsByNetGrid_ZH(netGridId).then(response =>{
-        debugger
         this.persons = response
       }).catch(error => {
         console.log(error)
@@ -138,7 +137,6 @@ export default {
     },
     changeSelectedBuilding(buildingId) {
       GetPersonsByBuilding_ZH(buildingId).then(response => {
-        debugger
         this.persons = response
       }).catch(error => {
         console.log(error)

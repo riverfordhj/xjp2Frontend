@@ -221,24 +221,6 @@ export const constantRoutes = [
 			}
     ]
 	},
-
-	{
-    path: '/house',
-    component: Layout,
-		redirect:'/house/manage-house',
-    name: 'House',
-    children: [
-      {
-        path: 'manage-house',
-        name: 'manage-house',
-        component: () => import('@/views/house/manage-house'),
-        meta: {
-          title: '房屋管理',
-          icon: 'house'
-        }
-      }
-    ]
-  },
 	
 	{
     path: '/buildingCompany',
@@ -397,49 +379,84 @@ export const constantRoutes = [
         }
       }
     ]
-  },
+  }
+]
 
-  {
+//动态路由表：权限
+export const asyncRoutes = [
+	{
+    path: '/house',
+    component: Layout,
+		redirect:'/house/manage-house',
+    name: 'House',
+		meta: {
+			roles: ['Administrator']
+		},
+    children: [
+      {
+        path: 'manage-house',
+        name: 'manage-house',
+        component: () => import('@/views/house/manage-house'),
+        meta: {
+          title: '房屋管理',
+          icon: 'house'
+        }
+      }
+    ]
+  },
+	{
     path: '/system',
     component: Layout,
     redirect: '/system/assgin-permissions',
     name: '系统管理',
     meta: {
       title: '系统管理',
-      icon: 'systemManager'
+      icon: 'systemManager',
+			roles: ['Administrator', '社区', '网格员']//设置元信息roles：权限
     },
     children: [
+			{
+				path: 'update-psd',
+				name: 'update-psd',
+				component: () => import('@/views/system/update-psd'),
+				meta: {
+					title: '密码修改',
+					icon: 'password',//没有roles，则不需权限，即所有用户均可访问
+				}
+			},
       {
         path: 'assgin-permissions',
         name: '权限分配',
         component: () => import('@/views/system/assgin-permissions'),
         meta: {
           title: '权限分配',
-          icon: 'permission'
-        }
-      },
-      {
-        path: 'change-psd',
-        name: '创建用户',
-        component: () => import('@/views/system/change-psd'),
-        meta: {
-          title: '创建用户',
-          icon: 'user'
+          icon: 'permission',
+					roles: ['Administrator']
         }
       },
       {
         path: 'create-user',
-        name: '修改密码',
+        name: '创建用户',
         component: () => import('@/views/system/create-user'),
         meta: {
-          title: '修改密码',
-          icon: 'password'
+          title: '创建用户',
+          icon: 'user',
+					roles: ['Administrator']
+        }
+      },
+      {
+        path: 'reset-psd',
+        name: 'reset-psd',
+        component: () => import('@/views/system/reset-psd'),
+        meta: {
+          title: '密码重置',
+          icon: 'password',
+					roles: ['Administrator']
         }
       }
     ]
   },
-
-  // 404 page must be placed at the end !!!
+	// 404 page must be placed at the end !!!
   {
     path: '*',
     redirect: '/404',

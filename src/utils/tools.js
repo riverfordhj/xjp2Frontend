@@ -46,7 +46,20 @@ var deepClone = function (origin, target){
 	return target
 }
 
+/**
+ * 
+ * @param {*} value 
+ * @returns boolean
+ */
+function isNumber(value){
+	var reg = /^[0-9]+.?[0-9]*$/;
+	return reg.test(value);
+}
+
 export {
-	flatCompanyInfo, deepClone
+	flatCompanyInfo, deepClone, isNumber
 };
+
+
+
 
