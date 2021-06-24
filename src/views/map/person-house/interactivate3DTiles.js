@@ -333,6 +333,7 @@ var interactOperate = {
   // Set feature infobox description
   setInfobox(pickedFeature) {
     const roomInfo = {}
+    roomInfo.NetGridName = pickedFeature.getProperty('netid')
     roomInfo.AddressName = pickedFeature.getProperty('newid')
     roomInfo.BuildingName = pickedFeature.getProperty('buildingid')
     const unit = pickedFeature.getProperty('unitid')
@@ -348,6 +349,7 @@ var interactOperate = {
   },
   // 获取后台数据
   getPersonInRoom(roomInfo) {
+    debugger
     getPersonByRoom(roomInfo).then(response => { // login{      username: 'hj',      password: 'password'    }
       // debugger
       if (this.personHouseDataForm.show !== true) {
