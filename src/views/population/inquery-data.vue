@@ -406,6 +406,7 @@ export default {
 			this.$router.push({name: 'PersonHouseMap'});
       //debugger
       this.roomInfo = {
+        NetGridName:row.netGridName,
         AddressName:row.bulidingAddress,
         BuildingName:row.bulidingName,
         RoomNO:row.roomNO
