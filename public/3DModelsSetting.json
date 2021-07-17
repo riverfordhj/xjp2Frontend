@@ -107,7 +107,7 @@
       {
         "id": 205,
         "label": "秦园路",
-        "url": "http://202.114.148.160:9000/model/f6b748b0c83911eba112f7140c5c1bbb/tileset.json"
+        "url": "http://202.114.148.160:9000/model/23cb4430e08811eba112f7140c5c1bbb/tileset.json"
       },
       {
         "id": 206,
@@ -142,7 +142,7 @@
       {
         "id": 212,
         "label": "油料所",
-        "url": "http://202.114.148.160:9000/model/1bc7e350c84711eba112f7140c5c1bbb/tileset.json"
+        "url": "http://202.114.148.160:9000/model/861fac70e54c11eba112f7140c5c1bbb/tileset.json"
       },
       {
         "id": 213,
@@ -163,7 +163,7 @@
       {
         "id": 301,
         "label": "福来中心",
-        "url": "http://202.114.148.160:9000/model/6ed6a8c0192811ebbb4c23b7c961e103/tileset.json"
+        "url": "http://202.114.148.160:9000/model/f0e167c0e6c211eba112f7140c5c1bbb/tileset.json"
       }
     ]
    }
