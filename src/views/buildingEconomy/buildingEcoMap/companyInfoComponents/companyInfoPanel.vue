@@ -27,15 +27,15 @@
 				</el-table-column>
 				<el-table-column prop="phone" label="联系电话" width="80">
 				</el-table-column>
-				<el-table-column prop="businessDirection" label="企业主营方向" width="220">
+				<el-table-column prop="mainProducts" label="企业主营方向" width="220">
 				</el-table-column>
 				<el-table-column prop="registeredAddress" label="工商注册登记地" width="180">
 				</el-table-column>
 				<el-table-column prop="taxStatisticsArea" label="税收统计区" width="120">
 				</el-table-column>
 				<el-table-column prop="corporateTax" label="企业税收额（万元)" width="140"/>
-				<el-table-column prop="floor" label="楼层" width="80"/>
-				<el-table-column prop="category" label="租赁/购买" width="100"/>
+				<el-table-column prop="floorNum" label="楼层" width="80"/>
+				<el-table-column prop="officeSpaceType" label="用房类型" width="100"/>
       </el-table>
 
     </dialog-drag>

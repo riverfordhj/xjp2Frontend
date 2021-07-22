@@ -32,10 +32,10 @@
 						</el-form-item>
 
 						<el-form-item label="楼层">
-							<span>{{ props.row.floor }}</span>
+							<span>{{ props.row.floorNum }}</span>
 						</el-form-item>
 						<el-form-item label="租赁/购买">
-							<span>{{ props.row.category }}</span>
+							<span>{{ props.row.officeSpaceType }}</span>
 						</el-form-item>
 						<el-form-item label="入驻时间">
 							<span>{{ props.row.settlingTime }}</span>
@@ -59,7 +59,7 @@
 							<span>{{ props.row.companyName }}</span>
 						</el-form-item>
 						<el-form-item label="注册地址">
-							<span>{{ props.row.registrationPlace }}</span>
+							<span>{{ props.row.registeredAddress }}</span>
 						</el-form-item>
 						<el-form-item label="企业类型">
 							<span>{{ props.row.enterpriseType }}</span>
@@ -71,7 +71,7 @@
 							<span>{{ props.row.note }}</span>
 						</el-form-item>
 						<el-form-item label="企业主营方向" >
-							<span>{{ props.row.businessDirection }}</span>
+							<span>{{ props.row.mainProducts }}</span>
 						</el-form-item>
 					</el-form>
 				</template>
@@ -106,7 +106,7 @@
 </template>
 
 <script>
-import { getCompanyInfo, getBuindingInfoByStatus, getCompanysByBuilding, getInfoByBuildingNameAndFloor } from '@/api/company.js';
+import { getCompanyInfo, getBuildings, getCompanysByBuilding, getInfoByBuildingNameAndFloor } from '@/api/company.js';
 import { flatCompanyInfo } from '@/utils/tools.js'
 
 export default {
@@ -157,20 +157,22 @@ export default {
 		},
 		getBuildingInfo() {
 			//get请求已建的buildings数据
-			getBuindingInfoByStatus().then(res => {
+			getBuildings().then(res => {
 				this.buildingsData = res;
 			})
 		},
 		selectBuilding (curValue){
+			debugger
 			//根据选择的楼栋名，请求入驻该楼栋的所有公司信息
 			let singleBuildingData = this.buildingsData.find(item =>{
 				return item.buildingName === curValue;
 			});
 			this.selectedBuildingId = singleBuildingData.id;
-
+            debugger
 			getCompanysByBuilding(this.selectedBuildingId ).then(res => {
-				this.buildingEconomyData = flatCompanyInfo(res);
-				this.filterData = this.buildingEconomyData;
+				// this.buildingEconomyData = flatCompanyInfo(res);
+				// this.filterData = this.buildingEconomyData;
+				this.filterData = flatCompanyInfo(res);
 			}).catch(err => {
 					this.$message({
 					message: '请求数据失败',
@@ -180,11 +182,12 @@ export default {
 		},
 		handleDoubleClick(row, column, event){
 			this.$router.push({name: 'buildingEcoMap'});
-      this.handleDelivery(row);
+            this.handleDelivery(row);
 		},
 		handleDelivery(row){
-			getInfoByBuildingNameAndFloor(row.buildingName, row.floor).then( (res) => {
-				this.bus.$emit('deliveryPositionInfo', res[0], row.floor)
+			getInfoByBuildingNameAndFloor(row.buildingName, row.roomName).then( (res) => {
+				debugger
+				this.bus.$emit('deliveryPositionInfo', res[0], row.roomName)
 			})
 		}
 	}

@@ -1,5 +1,5 @@
 var Cesium = require('cesium/Cesium');
-import { getInfoByFloor } from '@/api/company.js'
+import { getCompanyInfoByRoom } from '@/api/company.js'
 import { flatCompanyInfo } from '@/utils/tools.js'
 
 // 定义3dTiles模型所选要素的交互形式
@@ -212,7 +212,7 @@ var interactOperate = {
 			return ''
 		};
 		
-		const floor = feature.getProperty('floor');
+		const floor = feature.getProperty('roomid');
 		if(!floor){
 			return '';
 		}else{
@@ -222,6 +222,7 @@ var interactOperate = {
 	},
 
   FlytoFloor(position, targetValue) {
+    debugger
 		this.floorNO = targetValue;
 
     var longitude = Cesium.Math.toRadians(
@@ -264,7 +265,7 @@ var interactOperate = {
   },
   // 飞到room后，根据屏幕中心点选取room
   flytoComplete() {
-    // debugger
+     debugger
     const ow = document.getElementById('cesiumContainer').offsetWidth / 2
     const oh = document.getElementById('cesiumContainer').offsetHeight / 2
 
@@ -274,6 +275,7 @@ var interactOperate = {
     }
 
     // Pick a new feature
+    debugger
     const room = this.pickTargetFeature(position, this.floorNO)
 
     if (room === null) {
@@ -320,9 +322,9 @@ var interactOperate = {
   setInfobox(pickedFeature) {
     const companyInfo = {}
     companyInfo.buildingName = pickedFeature.getProperty('buildingid')
-		companyInfo.floor = pickedFeature.getProperty('floor')
+		companyInfo.roomName = pickedFeature.getProperty('roomid')
 		
-		this.companyDatas.title = `${companyInfo.buildingName} - 第${companyInfo.floor}层`;
+		this.companyDatas.title = `${companyInfo.buildingName} - ${companyInfo.roomName}`;
    
     this.getCompanyFullInfo(companyInfo) // JSON.stringify(
 
@@ -332,7 +334,7 @@ var interactOperate = {
 	
 	//后端获取数据
 	getCompanyFullInfo(companyInfo){
-		getInfoByFloor(companyInfo).then(res => {
+		getCompanyInfoByRoom(companyInfo).then(res => {
 			// debugger;
 			if(this.companyDatas.show !== true){
 				this.companyDatas.show = true;

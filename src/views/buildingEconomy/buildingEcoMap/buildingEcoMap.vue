@@ -47,9 +47,10 @@ export default {
 	mounted() {
 		this.init();
 		this.loadData();
-
-		this.bus.$on('deliveryPositionInfo', (pos, floorNum) =>{
-			this.FloorValue = floorNum;
+		debugger
+		this.bus.$on('deliveryPositionInfo', (pos,floorNum) =>{
+			debugger
+			this.FloorValue = floorNum;	
 			console.log('I get it');
 			debugger;
 			this.positionValue = {
@@ -58,7 +59,8 @@ export default {
 					height: pos.height
 			};
 			// this.$nextTick(this.companyDatas.interactOperate.FlytoFloor(position, floorNum));
-			this.companyDatas.interactOperate.FlytoFloor(this.positionValue, this.FloorValue);
+			debugger
+			this.companyDatas.interactOperate.FlytoFloor(this.positionValue,this.FloorValue);
 		})
 	},
 	methods: {
@@ -86,10 +88,11 @@ export default {
 				url: '/3DModelsSetting.json', // 读取public目录下3维模型配置文件
         method: 'get'
 			}).then((res) =>{
+				debugger
 				this.modelTreeData = res.data;
 				
-				var st_sanjiaolu = this.modelTreeData[0].children[8].url;
-				var dth_V = this.modelTreeData[2].children[0].url;
+				var st_sanjiaolu = this.modelTreeData[0].children[13].url;
+				var dth_V = this.modelTreeData[2].children[1].url;
 
 				this.load3DTiles(this.viewer, st_sanjiaolu, false, null, null); 
 				this.load3DTiles(
@@ -98,7 +101,8 @@ export default {
 					true,
 					Cesium.ClassificationType.CESIUM_3D_TILE,
 					new Cesium.Cesium3DTileStyle({
-						color: 'rgba(255,255,255,0.01)'
+						color: 'rgba(255,55,255,0.1)'
+						//color: 'rgba(255,255,255,0.01)'
 					}
 				));
 			})

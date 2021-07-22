@@ -1,5 +1,44 @@
 import request from '@/utils/request'
 
+
+export function getCompanyInfoByRoom(arrData){
+	return request({
+		url: '/Combasic/GetInfoByRoom',
+		method: 'post',
+		data: arrData
+	})
+}
+
+export function getBuildings(){
+	return request({
+		url: '/Combasic/GetBuildings',
+		method: 'get'
+	})
+}
+
+export function getCompanysByBuilding(id){
+	return request({
+		url: `/Combasic/getCompanysByBuilding/${id}`,
+		method: 'get'
+	})
+}
+
+export function getInfoByBuildingNameAndFloor(buildingNameParam, floorParam){
+	let BuildingName = buildingNameParam;
+	let Floor = floorParam;
+	return request({
+		url: '/Combasic/getInfoByBuildingNameAndFloor',
+		method:'get',
+		params: {
+			BuildingName,
+			Floor
+		}
+	})
+}
+
+
+
+
 export function getCompanyInfo(){
 	return request({
 		url: '/Companies/GetBuildingCompany',
@@ -24,12 +63,7 @@ export function getBuindingInfoByStatus(statusParam){
 	})
 }
 
-export function getCompanysByBuilding(id){
-	return request({
-		url: `/Companies/getCompanysByBuilding/${id}`,
-		method: 'get'
-	})
-}
+
 
 export function getCompanySomeFileds(){
 	return request({
@@ -61,13 +95,7 @@ export function GetCompanysByBuilding_ZH(id){
 	})
 }
 
-export function getInfoByFloor(arrData){
-	return request({
-		url: '/Companies/GetInfoByFloor',
-		method: 'post',
-		data: arrData
-	})
-}
+
 
 export function GetCompanysByFloor_ZH(arrData){
 	return request({
@@ -112,15 +140,3 @@ export function updateBuildingStatus(buildingName, status){
 	})
 }
 
-export function getInfoByBuildingNameAndFloor(buildingNameParam, floorParam){
-	let BuildingName = buildingNameParam;
-	let Floor = floorParam;
-	return request({
-		url: '/CompanyBuildings/getInfoByBuildingNameAndFloor',
-		method:'get',
-		params: {
-			BuildingName,
-			Floor
-		}
-	})
-}
