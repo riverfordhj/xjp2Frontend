@@ -10,7 +10,7 @@
     >
 			<filter-panel ref="filterPanel" @firstSelectChange="getFloorInfos" @secondSelectChange="flyToTarget"></filter-panel>
 
-      <el-table :data="companyDataForms.companiesFullInfo" height="150" border style="width: 100%">
+      <el-table :data="companyDataForms.companiesFullInfo" height="250" border style="width: 100%">
 				<el-table-column prop="buildingName" label="楼宇名称" width="120">
 				</el-table-column>
 				<el-table-column prop="companyName" label="企业名称" width="180">
@@ -64,7 +64,7 @@ export default {
 	},
 	data(){
 		return {
-			option: { top: 250, left: 20, height: 250, width: 800, buttonPin: false },
+			option: { top: 250, left: 20, height: 350, width: 800, buttonPin: false },
 			companyDataForms: this.companyDatas,
 		}
 	},

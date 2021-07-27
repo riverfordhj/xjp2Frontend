@@ -51,9 +51,9 @@
 						<el-form-item label="企业税收额（万元）">
 							<span>{{ props.row.corporateTax }}</span>
 						</el-form-item>
-						<el-form-item label="缴税时长">
+						<!-- <el-form-item label="缴税时长">
 							<span>{{ props.row.duration }}</span>
-						</el-form-item>
+						</el-form-item> -->
 						
 						<el-form-item label="企业名称">
 							<span>{{ props.row.companyName }}</span>
@@ -64,9 +64,9 @@
 						<el-form-item label="企业类型">
 							<span>{{ props.row.enterpriseType }}</span>
 						</el-form-item>
-						<el-form-item label="企业背景">
+						<!-- <el-form-item label="企业背景">
 							<span>{{ props.row.enterpriseBackground }}</span>
-						</el-form-item>
+						</el-form-item> -->
 						<el-form-item label="备注">
 							<span>{{ props.row.note }}</span>
 						</el-form-item>
@@ -100,7 +100,7 @@
 			</el-table-column>
 			<el-table-column prop="workRoomName" label="所属房间" width="120">
 			</el-table-column>
-			<el-table-column prop="companyRoom[0].name" label="精度" width="120">
+			<el-table-column prop="companyRoom[0].name" label="定位房间" width="120">
 			</el-table-column>
 	
 		</el-table>
