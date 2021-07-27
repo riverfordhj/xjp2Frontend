@@ -10,7 +10,7 @@
     >
 			<filter-panel ref="filterPanel" @firstSelectChange="getFloorInfos" @secondSelectChange="flyToTarget"></filter-panel>
 
-      <el-table :data="companyDataForms.companiesFullInfo" height="550" border style="width: 100%">
+      <el-table :data="companyDataForms.companiesFullInfo" height="150" border style="width: 100%">
 				<el-table-column prop="buildingName" label="楼宇名称" width="120">
 				</el-table-column>
 				<el-table-column prop="companyName" label="企业名称" width="180">
@@ -27,8 +27,8 @@
 				</el-table-column>
 				<el-table-column prop="phone" label="联系电话" width="80">
 				</el-table-column>
-				<el-table-column prop="mainProducts" label="企业主营方向" width="220">
-				</el-table-column>
+				<!-- <el-table-column prop="mainProducts" label="企业主营方向" width="220">
+				</el-table-column> -->
 				<el-table-column prop="registeredAddress" label="工商注册登记地" width="180">
 				</el-table-column>
 				<el-table-column prop="taxStatisticsArea" label="税收统计区" width="120">
@@ -64,7 +64,7 @@ export default {
 	},
 	data(){
 		return {
-			option: { top: 250, left: 20, height: 650, width: 1200, buttonPin: false },
+			option: { top: 250, left: 20, height: 250, width: 800, buttonPin: false },
 			companyDataForms: this.companyDatas,
 		}
 	},

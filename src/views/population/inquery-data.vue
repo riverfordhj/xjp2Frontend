@@ -17,16 +17,16 @@
       <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         楼栋查询
       </el-button>
-     
       <el-input v-model="listQuery.sname" placeholder="请输入姓名、身份证号、电话查询" style="width: 280px;" class="filter-item" @keyup.enter.native="searchPerson" />
-      <el-button class="filter-item" type="primary" icon="el-icon-search" @click="searchPerson">
-        人员查询
+      <el-button class="filter-item" type="success" icon="el-icon-search" @click="searchPerson">
+        全区人员查询
       </el-button>
+      <el-button class="filter-item" type="success" icon="el-icon-search" @click="dialogVisible = true">高级检索</el-button> 
+
+
       <el-button class="filter-item" type="primary" icon="el-icon-search" @click="getSpecialGroupsData">
         特殊人群
       </el-button> 
-      <el-button class="filter-item" type="primary" icon="el-icon-search" @click="dialogVisible = true">高级检索</el-button> 
-
 			  <!-- 导出数据为xlsx格式表格 -->
 			<export-to-xlsx :table-header="tableHeaderForXlsx" :filter-fields="filterValForXlsx" :person-house-data="personHouseList"></export-to-xlsx>
     </div>
@@ -73,7 +73,7 @@
       </el-table-column>
     </el-table>
     
-  <el-dialog title="高级检索" :visible.sync="dialogVisible"	width="40%" center>                                        
+  <el-dialog title="高级检索(1000条)" :visible.sync="dialogVisible"	width="40%" center>                                        
 		<el-form  class="advanced-search" label-width="100px">
       <el-form-item  v-for="queryitem in dataForms" :key="queryitem.key">
           <el-select v-model="queryitem.field" placeholder="字段" clearable style="width: 100px;" @change="filteroperato">
@@ -128,7 +128,7 @@ export default {
       options: [],
       listQuery: {
         page: 1,
-        limit: 20,
+        limit: 200,
         name: '',
         community:'',
         netGrid:'',
@@ -151,7 +151,7 @@ export default {
 													,'bulidingName','type'],
 			//分页默认配置
 			paginationSetting: {
-				limit: 20,
+				limit: 200,
 				curPage: 1
 			}
     }
@@ -339,11 +339,12 @@ export default {
       }
     },
     searchPerson() {
-      //debugger
-      var subdivsionsid= this.listQuery.subdivsion.toString()
       var advancedname = this.listQuery.sname 
-      getPersonsBySearch(subdivsionsid,advancedname).then(response => {
+      getPersonsBySearch(advancedname).then(response => {
 				this.filterdPersonHouseInfo = response;
+        if(this.filterdPersonHouseInfo.length < 1){   
+           this.$message.error('查无此人');
+        }
 				this.resetPaginationSetting();
       }).catch(error => {
         console.log(error)
@@ -398,7 +399,7 @@ export default {
 		//重置queryList为默认值
 		resetPaginationSetting(){
 			this.paginationSetting = {
-				limit: 20,
+				limit: 200,
 				curPage: 1
 			}
 		},
@@ -438,4 +439,5 @@ export default {
   .el-table .success-row {
     background: #f0f9eb;
   }
+
 </style>

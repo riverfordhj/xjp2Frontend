@@ -25,7 +25,7 @@ export default {
 		pageSizes: {
 			type: Array,
 			default(){
-				return [10, 20, 30, 50];
+				return [200, 500, 1000, 2000];
 			} 
 		},
 		page: {
@@ -34,7 +34,7 @@ export default {
 		},
 		limit: {
 			type: Number,
-			default: 20
+			default: 200
 		}
 	},
 	data(){

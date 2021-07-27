@@ -73,14 +73,10 @@ export function getPersonsByNetGrid(netId) {
 }
 
 
-export function getPersonsBySearch(subdivsion ,sname) {
+export function getPersonsBySearch(sname) {
   return request({
-    url: '/person/getPersonsBySearch',
-    method: 'post',
-    data: {
-      SubdivisionId: subdivsion,
-      Name: sname
-    }
+    url:`/person/getPersonsBySearch/${sname}`,
+    method: 'get',
   })
 }
 

@@ -98,7 +98,9 @@
 			</el-table-column>
 			<el-table-column prop="registeredAddress" label="工商注册登记地" width="180">
 			</el-table-column>
-			<el-table-column prop="taxStatisticsArea" label="税收统计区" width="120">
+			<el-table-column prop="workRoomName" label="所属房间" width="120">
+			</el-table-column>
+			<el-table-column prop="companyRoom[0].name" label="精度" width="120">
 			</el-table-column>
 	
 		</el-table>
@@ -182,12 +184,13 @@ export default {
 		},
 		handleDoubleClick(row, column, event){
 			this.$router.push({name: 'buildingEcoMap'});
+			debugger
             this.handleDelivery(row);
 		},
 		handleDelivery(row){
-			getInfoByBuildingNameAndFloor(row.buildingName, row.roomName).then( (res) => {
+			getInfoByBuildingNameAndFloor(row.buildingName, row.companyRoom[0].name).then( (res) => {
 				debugger
-				this.bus.$emit('deliveryPositionInfo', res[0], row.roomName)
+				this.bus.$emit('deliveryPositionInfo', res[0], row.companyRoom[0].name)
 			})
 		}
 	}
