@@ -13,7 +13,8 @@
 			<el-option
 				v-for="item in filteredBuildingsData"
 				:key="item.id"
-				:value="item.buildingName">
+				:label="`${item.address}-${item.buildingName}栋`"
+				:value="item.address + '-'+ item.buildingName">
 			</el-option>
 		</el-select>
 		<el-select 
@@ -41,6 +42,10 @@ export default {
 	data(){
 		return {
 			currentInfo: {
+				currentBuildingName:'',
+				currentRoomName: '',
+			},
+			filterInfo: {
 				currentBuildingName:'',
 				currentRoomName: '',
 			},
@@ -74,9 +79,12 @@ export default {
 		},
 	},
 	methods:{
-		buildingSelected(buildingName){
+		buildingSelected(buildingValue){
 			//根据网格、楼栋，请求房间数据
-			GetRoomsByBuildingAndNetgrid(buildingName).then(res => {
+			debugger
+			const buildingName = buildingValue.split('-')[1];
+			const address = buildingValue.split('-')[0];
+			GetRoomsByBuildingAndNetgrid(buildingName,address).then(res => {
 				this.roomsData = res;
 			}).catch(err => {
 				console.log(err);
@@ -88,6 +96,8 @@ export default {
 			this.fliterOptionsChanged();
 		},
 		handleBuildingSelectClear(){
+			debugger
+			this.currentInfo.currentBuildingName = '';
 			this.currentInfo.currentRoomName = '';
 			this.fliterOptionsChanged();
 		},
@@ -95,7 +105,13 @@ export default {
 			this.fliterOptionsChanged();
 		},
 		fliterOptionsChanged(){
-			this.$emit('transferBuildingAndRoom', this.currentInfo);
+			debugger
+			this.filterInfo.currentBuildingName = this.currentInfo.currentBuildingName.split('-')[1];
+			this.filterInfo.currentRoomName = this.currentInfo.currentRoomName;
+			if(this.filterInfo.currentBuildingName == undefined){
+				this.filterInfo.currentBuildingName= '';
+			}
+			this.$emit('transferBuildingAndRoom', this.filterInfo);
 		}
 	}
 }
