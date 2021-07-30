@@ -157,9 +157,9 @@ export function getRoomByBuilding(buildingId) {
 
 /* ***认证、授权*** */
 //根据用户，返回小区数据
-export function GetSubdivsionsByUser() {
+export function getCommunityPersons() {
   return request({
-    url: '/person/GetSubdivsionsByUser',
+    url: '/person/GetCommunityPersons',
     method: 'get'
   })
 }

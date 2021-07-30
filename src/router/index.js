@@ -192,15 +192,24 @@ export const constantRoutes = [
           icon: 'dataManager'
         }
       },
+      // {
+      //   path: 'manage-grid',
+      //   name: '网格管理',
+      //   component: () => import('@/views/population/manage-grid'),
+      //   meta: {
+      //     title: '网格管理',
+      //     icon: 'grid'
+      //   }
+      // },
       {
-        path: 'manage-grid',
-        name: '网格管理',
-        component: () => import('@/views/population/manage-grid'),
+        path: 'manage-personHouse',
+        name: 'manage-personHouse',
+        component: () => import('@/views/population/manage-personHouse'),
         meta: {
-          title: '网格管理',
-          icon: 'grid'
+          title: '人房数据管理',
+          icon: 'dataManager'
         }
-      },
+			},
       {
         path: 'inquery-population',
         name: 'PersonStatistics',
@@ -210,15 +219,7 @@ export const constantRoutes = [
           icon: 'search'
         }
 			},
-			{
-        path: 'manage-personHouse',
-        name: 'manage-personHouse',
-        component: () => import('@/views/population/manage-personHouse'),
-        meta: {
-          title: '人房数据管理',
-          icon: 'dataManager'
-        }
-			}
+			
     ]
 	},
 	
@@ -232,21 +233,30 @@ export const constantRoutes = [
       icon: 'population'
 	  },
     children: [
+      {
+				path: 'company',
+				name: 'CompanyInfo',
+				component: () => import('@/views/buildingEconomy/buildingEcoTable/company'),
+				meta: {
+					title: '公司信息查询',
+					icon: 'table' 
+				}
+			},
+      {
+				path: 'buildingEco',
+				name: 'buildingEcoMap',
+				component: () => import('@/views/buildingEconomy/buildingEcoMap/buildingEcoMap.vue'),
+				meta: {
+					title: '楼宇地图',
+					icon: 'map'
+				}
+			},
 			{
 				path: 'buildingInfoTable',
 				name: 'buildingInfoTable',
 				component: () => import('@/views/buildingEconomy/buildingInfoTable'),
 				meta: {
 					title: '商业体信息表',
-					icon: 'table' 
-				}
-			},
-			{
-				path: 'company',
-				name: 'CompanyInfo',
-				component: () => import('@/views/buildingEconomy/buildingEcoTable/company'),
-				meta: {
-					title: '公司信息查询',
 					icon: 'table' 
 				}
 			},
@@ -266,15 +276,6 @@ export const constantRoutes = [
 				meta: {
 					title: '公司纳税信息',
 					icon: 'dataManager' 
-				}
-			},
-			{
-				path: 'buildingEco',
-				name: 'buildingEcoMap',
-				component: () => import('@/views/buildingEconomy/buildingEcoMap/buildingEcoMap.vue'),
-				meta: {
-					title: '楼宇地图',
-					icon: 'map'
 				}
 			},
 			{

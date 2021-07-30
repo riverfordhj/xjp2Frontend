@@ -100,7 +100,7 @@
 </template>
 
 <script>
-import { getCommunitys, getNetGridInCommunity, getBuildingInNetGrid, getSubdivsions, getPersonsByNetGrid, getPersons, getPersonsByBuilding,getRoomId, getPersonsBySearch, getSpecialGroups,getFields,getDataByQuery } from '@/api/person.js'
+import {getCommunityPersons, getCommunitys, getNetGridInCommunity, getBuildingInNetGrid, getPersonsByNetGrid, getPersons, getPersonsByBuilding,getRoomId, getPersonsBySearch, getSpecialGroups,getFields,getDataByQuery } from '@/api/person.js'
 import exportToXlsx from './components/exportToXlsx';
 import pagination from '../../components/pagination.vue';
 
@@ -111,7 +111,6 @@ export default {
       roomInfo:{},
       communities:[],
       netGrids:[],
-      subdivsions: [],
       buildings: [],
       personHouseInfo: [],
       filterdPersonHouseInfo: [],
@@ -209,7 +208,7 @@ export default {
 		}
   },
   created() {
-    this.getSubdivsionsData()
+    this.getCommunitysPersonsData()
     this.getFieldsData()
     this.getCommunitysData()
   },
@@ -230,11 +229,21 @@ export default {
 				key: Date.now()
 			});
 		},
+    getCommunitysPersonsData() {
+      getCommunityPersons().then(response => {
+        this.filterdPersonHouseInfo = response
+      }).catch(error => {
+        console.log(error)
+      })
+    },
     getSpecialGroupsData() {  
       getSpecialGroups().then(response => {
-         // debugger
-				this.filterdPersonHouseInfo = response;
-				this.resetPaginationSetting();
+          debugger
+        this.filterdPersonHouseInfo = response;
+        if(this.filterdPersonHouseInfo.length < 1){   
+          this.$message.error('查询完毕，无数据记录');
+        }  
+        this.resetPaginationSetting();				
       }).catch(error => {
         console.log(error)
       })
@@ -249,9 +258,13 @@ export default {
       })
     },
      superQuery() {
-      //debugger         
+      debugger         
       getDataByQuery(this.dataForms).then(response => {
 				this.filterdPersonHouseInfo = response;
+        debugger
+        if(this.filterdPersonHouseInfo.length < 1){
+          this.$message.error('查询完毕，无数据记录，请输入正确检索条件')
+        }
 				this.resetPaginationSetting();
       }).catch(error => {
         console.log(error)
@@ -263,14 +276,6 @@ export default {
       getCommunitys().then(response => {
         // debugger
         this.communities = response
-      }).catch(error => {
-        console.log(error)
-      })
-    },
-    getSubdivsionsData() {
-      getSubdivsions().then(response => {
-        // debugger
-        this.subdivsions = response
       }).catch(error => {
         console.log(error)
       })
@@ -330,7 +335,12 @@ export default {
       })
     },
     handleFilter() {
+      debugger
+     if(this.listQuery.community == "" && this.listQuery.netGrid == "" && this.listQuery.building == ""){
+           this. getCommunitysPersonsData();
+     }else
       if (this.listQuery.netGrid) { // 如果选择网格
+      debugger
         if (this.listQuery.building) { // 如果选取建筑物
           this.getPersonsByBuildingData()
         } else {
@@ -343,7 +353,7 @@ export default {
       getPersonsBySearch(advancedname).then(response => {
 				this.filterdPersonHouseInfo = response;
         if(this.filterdPersonHouseInfo.length < 1){   
-           this.$message.error('查无此人');
+           this.$message.error('查询完毕，无数据记录');
         }
 				this.resetPaginationSetting();
       }).catch(error => {
