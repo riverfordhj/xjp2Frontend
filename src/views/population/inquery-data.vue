@@ -73,7 +73,7 @@
       </el-table-column>
     </el-table>
     
-  <el-dialog title="高级检索(1000条)" :visible.sync="dialogVisible"	width="40%" center>                                        
+  <el-dialog title="高级检索" :visible.sync="dialogVisible"	width="40%" center>                                       
 		<el-form  class="advanced-search" label-width="100px">
       <el-form-item  v-for="queryitem in dataForms" :key="queryitem.key">
           <el-select v-model="queryitem.field" placeholder="字段" clearable style="width: 100px;" @change="filteroperato">
@@ -103,6 +103,7 @@
 import {getCommunityPersons, getCommunitys, getNetGridInCommunity, getBuildingInNetGrid, getPersonsByNetGrid, getPersons, getPersonsByBuilding,getRoomId, getPersonsBySearch, getSpecialGroups,getFields,getDataByQuery } from '@/api/person.js'
 import exportToXlsx from './components/exportToXlsx';
 import pagination from '../../components/pagination.vue';
+import checkPermission from '@/utils/permission.js';//权限判断函数
 
 export default {
   name: 'PersonHouseData',
@@ -208,7 +209,9 @@ export default {
 		}
   },
   created() {
-    this.getCommunitysPersonsData()
+    if(!checkPermission('Administrator')){
+       this.getCommunitysPersonsData()
+    }
     this.getFieldsData()
     this.getCommunitysData()
   },
@@ -230,6 +233,7 @@ export default {
 			});
 		},
     getCommunitysPersonsData() {
+      debugger
       getCommunityPersons().then(response => {
         this.filterdPersonHouseInfo = response
       }).catch(error => {
@@ -336,8 +340,8 @@ export default {
     },
     handleFilter() {
       debugger
-     if(this.listQuery.community == "" && this.listQuery.netGrid == "" && this.listQuery.building == ""){
-           this. getCommunitysPersonsData();
+     if(this.listQuery.community == "" && this.listQuery.netGrid == "" && (this.listQuery.building == "" || this.listQuery.building == undefined)){
+           this.getCommunitysPersonsData();
      }else
       if (this.listQuery.netGrid) { // 如果选择网格
       debugger
@@ -414,29 +418,31 @@ export default {
 			}
 		},
     handleDoubleClick(row){
-			this.$router.push({name: 'PersonHouseMap'});
-      //debugger
-      this.roomInfo = {
-        NetGridName:row.netGridName,
-        AddressName:row.bulidingAddress,
-        BuildingName:row.bulidingName,
-        RoomNO:row.roomNO
-        }
-        //debugger
-        getRoomId(this.roomInfo).then(response => {
-         debugger
-         const position = { // 70-2-1002
-          long: response[0].longitude,
-          lat: response[0].latitude,
-          height: response[0].height
-        }
-        var roomname = response[0].name
-         debugger
-        this.bus.$emit("transferRoomId", position,roomname);
-      }).catch(error => {
-        console.log(error)
-      })
-      
+      debugger
+      if(checkPermission('Administrator')){
+           this.$router.push({name: 'PersonHouseMap'});
+          //debugger
+          this.roomInfo = {
+            NetGridName:row.netGridName,
+            AddressName:row.bulidingAddress,
+            BuildingName:row.bulidingName,
+            RoomNO:row.roomNO
+            }
+            //debugger
+            getRoomId(this.roomInfo).then(response => {
+            debugger
+            const position = { // 70-2-1002
+              long: response[0].longitude,
+              lat: response[0].latitude,
+              height: response[0].height
+            }
+            var roomname = response[0].name
+            debugger
+            this.bus.$emit("transferRoomId", position,roomname);
+          }).catch(error => {
+            console.log(error)
+          })
+      }     
 		},
   }
 }

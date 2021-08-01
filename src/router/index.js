@@ -80,20 +80,11 @@ export const constantRoutes = [
     },
     children: [
       {
-        path: 'person-house-map',
-        name: 'PersonHouseMap',
-        component: () => import('@/views/map/person-house/base-map'), // cesium-test
-        meta: {
-          title: '人房地图',
-          icon: 'map'
-        }
-      },
-      {
         path: 'index',
         name: '地图',
         component: () => import('@/views/map/cesium/index_9_24'), // cesium-test
         meta: {
-          title: '地图',
+          title: '地图(暂无)',
           icon: 'map'
         }
       },
@@ -385,6 +376,26 @@ export const constantRoutes = [
 
 //动态路由表：权限
 export const asyncRoutes = [
+  {
+    path: '/map1',
+    component: Layout,
+    meta: {
+      title: '地图',
+      icon: 'map',
+    },
+    children: [
+      {
+        path: 'person-house-map',
+        name: 'PersonHouseMap',
+        component: () => import('@/views/map/person-house/base-map'), // cesium-test
+        meta: {
+          title: '人房地图',
+          icon: 'map',
+          roles: ['Administrator']
+        }
+      }
+    ]
+  },
 	{
     path: '/house',
     component: Layout,
