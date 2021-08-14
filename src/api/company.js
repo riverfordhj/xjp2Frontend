@@ -15,6 +15,25 @@ export function getBuildings(){
 		method: 'get'
 	})
 }
+// export function getBuindingInfoByStatus(statusParam){
+// 	let status = statusParam || '已建';
+// 	return request({
+// 		url: '/CompanyBuildings/GetBuildingInfoByStatus',
+// 		method:'get',
+// 		params: {
+// 			status
+// 		}
+// 	})
+// }
+export function getBuildingFloors(buildingName){
+	return request({
+		url: '/Combasic/GetBuildingFloor',
+		method: 'get',
+		params: {
+			buildingName:buildingName
+		}
+	})
+}
 
 export function getCompanysByBuilding(id){
 	return request({
@@ -36,7 +55,19 @@ export function getInfoByBuildingNameAndFloor(buildingNameParam, floorParam){
 	})
 }
 
+export function GetWholeCompanys_ZH(){
+	return request({
+		url: '/Combasic/GetWholeCompanys_ZH',
+		method: 'get'
+	})
+}
 
+export function GetCompanysByBuilding_ZH(id){
+	return request({
+		url: `/Combasic/GetCompanysByBuilding_ZH/${id}`,
+		method: 'get'
+	})
+}
 
 
 export function getCompanyInfo(){
@@ -52,16 +83,7 @@ export function getCompanyBuildings(){
 		method: 'get'
 	})
 }
-export function getBuindingInfoByStatus(statusParam){
-	let status = statusParam || '已建';
-	return request({
-		url: '/CompanyBuildings/GetBuildingInfoByStatus',
-		method:'get',
-		params: {
-			status
-		}
-	})
-}
+
 
 
 
@@ -88,12 +110,7 @@ export function deleteCompany(arr){
 	})
 }
 
-export function GetCompanysByBuilding_ZH(id){
-	return request({
-		url: `/Companies/GetCompanysByBuilding_ZH/${id}`,
-		method: 'get'
-	})
-}
+
 
 
 
@@ -105,12 +122,7 @@ export function GetCompanysByFloor_ZH(arrData){
 	})
 }
 
-export function GetWholeCompanys_ZH(){
-	return request({
-		url: '/Companies/GetWholeCompanys_ZH',
-		method: 'get'
-	})
-}
+
 
 export function getFloorInfoByBuilding(id){
 	return request({

@@ -15,6 +15,9 @@
 					:value="item.buildingName">
 				</el-option>
  		 	</el-select>
+			<el-select v-model="lvalue" placeholder="楼层" clearable style="width: 100px" class="filter-item" >
+				<el-option v-for="item in floorData" :key="item.id" :label="'第' + item.floorNum +'层'" :value="item.floorNum" />
+			</el-select>
 			<el-button class="bt-request" :loading="loading" type="primary" icon="el-icon-search" @click="handleCompanyInfo">查询全部</el-button>
 		</div>
 		<el-table
@@ -108,7 +111,7 @@
 </template>
 
 <script>
-import { getCompanyInfo, getBuildings, getCompanysByBuilding, getInfoByBuildingNameAndFloor } from '@/api/company.js';
+import { getCompanyInfo, getBuildings, getBuildingFloors, getCompanysByBuilding, getInfoByBuildingNameAndFloor } from '@/api/company.js';
 import { flatCompanyInfo } from '@/utils/tools.js'
 
 export default {
@@ -119,8 +122,10 @@ export default {
 			inputValue: '',
 			filterData: [],
 			buildingsData: [],
+			floorData:[],
 			loading: false,
 			value: '',
+			lvalue: '',
 
 			selectedBuildingId: -1
 		}
@@ -164,22 +169,36 @@ export default {
 			})
 		},
 		selectBuilding (curValue){
-			debugger
 			//根据选择的楼栋名，请求入驻该楼栋的所有公司信息
 			let singleBuildingData = this.buildingsData.find(item =>{
 				return item.buildingName === curValue;
 			});
 			this.selectedBuildingId = singleBuildingData.id;
-            debugger
+            //debugger
 			getCompanysByBuilding(this.selectedBuildingId ).then(res => {
 				// this.buildingEconomyData = flatCompanyInfo(res);
 				// this.filterData = this.buildingEconomyData;
+				//debugger
 				this.filterData = flatCompanyInfo(res);
 			}).catch(err => {
 					this.$message({
 					message: '请求数据失败',
 					type: 'warning'
-				});
+				    });
+			});
+			debugger
+            this.getBuildingFloordata(curValue);
+		},
+
+		getBuildingFloordata(curValue){
+			debugger
+			getBuildingFloors(curValue).then(res =>{
+				this.floorData = res;
+			}).catch(err =>{
+					this.$message({
+					message: '请求数据失败',
+					type: 'warning'
+					 });
 			});
 		},
 		handleDoubleClick(row, column, event){

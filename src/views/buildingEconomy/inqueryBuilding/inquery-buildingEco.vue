@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import { getFloorInfoByBuilding, getBuindingInfoByStatus, GetCompanysByFloor_ZH, GetCompanysByBuilding_ZH, GetWholeCompanys_ZH } from '@/api/company.js';
+import { getFloorInfoByBuilding,getBuildings, GetCompanysByFloor_ZH, GetCompanysByBuilding_ZH, GetWholeCompanys_ZH } from '@/api/company.js';
 import { flatCompanyInfo } from '@/utils/tools.js'
 
 import pivotTablePanel from '@/components/pivotTablePanel.vue'
@@ -56,7 +56,7 @@ export default {
 			statisticsArray: [],
 			defaultSettingsForPivot: {
 				rows: ['企业名称'],
-				cols: ['工商注册地址'],
+				cols: ['企业类型'],
 				aggregatorName: '求和',
 				vals: ['注册资本'],
 				rendererName: '热图'
@@ -89,14 +89,14 @@ export default {
 	},
 
 	mounted(){		
-		this.getBuildings();
+		this.getBuildingsData();
 		this.getWholeCompanyInfo();
 	},
 
 	methods: {
-		getBuildings() {
+		getBuildingsData() {
 			//请求后端楼栋数据，并统计显示
-			getBuindingInfoByStatus().then(res => {
+			getBuildings().then(res => {
 				this.buildingsData.buildings = res;
 
 				//初始化透视表
