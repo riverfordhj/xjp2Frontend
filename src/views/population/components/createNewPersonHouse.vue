@@ -304,6 +304,8 @@ export default {
 							delete newFormData.buildingValue;
 
 							this.$emit('createPersonHouse', newFormData);
+							this.handleClose();
+							
           } else {
             return false;
           }
@@ -312,6 +314,7 @@ export default {
 		},
 		handleClose(){
 			this.$emit('closeCreatePanel', false);
+			this.resetForm('formData');
 		},
 
 		checkPermission,
