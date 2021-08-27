@@ -446,7 +446,7 @@ export default {
 			
 			//分页默认配置
 			paginationSetting: {
-				limit: 20,
+				limit: 200,
 				curPage: 1
 			},
 
@@ -462,6 +462,7 @@ export default {
 		batchingCreatePerson
 	},
 	created(){
+		debugger
 		this.getPersonHouseInfo();
 	},
 	deactivated(){
@@ -528,13 +529,14 @@ export default {
 		},
 		//根据条件（楼栋、房间）过滤人房数据
 		filterPersonHouseInfo(dataInfo){
+			debugger
 			if(dataInfo.currentRoomName !== '' && dataInfo.currentBuildingName !== ''){
 				this.personHouseInfo = this.tempPersonHouseInfo.filter((item) => {
-					return item.buildingName === dataInfo.currentBuildingName && item.roomName === dataInfo.currentRoomName;
+					return item.address === dataInfo.currentAddress && item.buildingName === dataInfo.currentBuildingName && item.roomName === dataInfo.currentRoomName;
 				})
 			}else if(dataInfo.currentRoomName === '' && dataInfo.currentBuildingName !== ''){
 				this.personHouseInfo = this.tempPersonHouseInfo.filter((item) => {
-					return item.buildingName === dataInfo.currentBuildingName;
+					return item.address === dataInfo.currentAddress && item.buildingName === dataInfo.currentBuildingName;
 				})
 			}else {
 				this.personHouseInfo = this.tempPersonHouseInfo;

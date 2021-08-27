@@ -46,6 +46,7 @@ export default {
 				currentRoomName: '',
 			},
 			filterInfo: {
+				currentAddress:'',
 				currentBuildingName:'',
 				currentRoomName: '',
 			},
@@ -106,6 +107,7 @@ export default {
 		},
 		fliterOptionsChanged(){
 			debugger
+			this.filterInfo.currentAddress = this.currentInfo.currentBuildingName.split('-')[0];
 			this.filterInfo.currentBuildingName = this.currentInfo.currentBuildingName.split('-')[1];
 			this.filterInfo.currentRoomName = this.currentInfo.currentRoomName;
 			if(this.filterInfo.currentBuildingName == undefined){
