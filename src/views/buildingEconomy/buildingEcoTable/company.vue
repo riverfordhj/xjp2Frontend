@@ -1,27 +1,26 @@
 <template>
 	<div class="container">
 	  <div class="toolbar">
-			<el-input
-				class="company-search"
-				placeholder="请输入企业名称，进行检索"
-				v-model="inputValue"
-				clearable
-				@change="searchCompany">
-			</el-input>
-			<el-select v-model="value" placeholder="请选择楼栋" clearable @change="selectBuilding">
+			<el-select v-model="value" placeholder="请选择楼栋" clearable @change="selectBuilding" @clear="handleBuildingSelectClear">
 				<el-option
 					v-for="item in buildingsData"
 					:key="item.id"
 					:value="item.buildingName">
 				</el-option>
  		 	</el-select>
-			<el-select v-model="lvalue" placeholder="楼层" clearable style="width: 100px" class="filter-item" >
-				<el-option v-for="item in floorData" :key="item.id" :label="'第' + item.floorNum +'层'" :value="item.floorNum" />
+			<el-select v-model="lvalue" placeholder="楼层" clearable style="width: 100px" class="filter-item"  @change="floorNumSelected">
+				<el-option v-for="item in floorData" :key="item.floorNum" :label="'第' + item.floorNum +'层'" :value="item.floorNum" />
 			</el-select>
-			<el-button class="bt-request" :loading="loading" type="primary" icon="el-icon-search" @click="handleCompanyInfo">查询全部</el-button>
+			<el-input
+				class="company-search"
+				placeholder="请输入企业名称，进行检索"
+				v-model="inputValue"
+				clearable>
+			</el-input>
+			<el-button class="bt-request" :loading="loading" type="primary" icon="el-icon-search" @click="searchCompany">查询全部</el-button>
 		</div>
 		<el-table
-			:data="filterData" height="920" border 	style="width: 100%"
+			:data="filterDataList" height="835" border 	style="width: 100%"
 			@row-dblclick="handleDoubleClick"
 			>
 			<el-table-column type="expand" style="width: 100%">
@@ -85,11 +84,11 @@
 			</el-table-column>
 			<el-table-column prop="unifiedSocialCreditCode" label="统一社会信用代码" width="180">
 			</el-table-column>
-			<el-table-column prop="buildingName" label="楼宇名称" width="180">
+			<el-table-column prop="buildingName" label="楼宇名称" width="140">
 			</el-table-column>
 			<el-table-column prop="actualOfficeAddress" label="实际办公地址" width="180">
 			</el-table-column>
-			<el-table-column prop="registeredCapital" label="注册资本(万元)" width="180">
+			<el-table-column prop="registeredCapital" label="注册资本(万元)" width="100">
 			</el-table-column>
 			<el-table-column prop="legalRepresentative" label="公司法人代表" width="140">
 			</el-table-column>
@@ -103,16 +102,22 @@
 			</el-table-column>
 			<el-table-column prop="workRoomName" label="所属房间" width="120">
 			</el-table-column>
-			<el-table-column prop="companyRoom[0].name" label="定位房间" width="120">
+			<el-table-column prop="companyRoom[0].name" label="定位房间" width="100">
+			</el-table-column>
+			<el-table-column prop="floorNum" label="楼层" width="100">
 			</el-table-column>
 	
 		</el-table>
+		 <!-- 分页显示 -->
+	<pagination :total-num="total" :page.sync="paginationSetting.curPage" :limit.sync="paginationSetting.limit" ></pagination>
 	</div>
 </template>
 
 <script>
-import { getCompanyInfo, getBuildings, getBuildingFloors, getCompanysByBuilding, getInfoByBuildingNameAndFloor } from '@/api/company.js';
+import { getCompanyInfo,getCompanyBySearch, getBuildings, getBuildingFloors, getCompanysByBuilding, getInfoByBuildingNameAndFloor } from '@/api/company.js';
 import { flatCompanyInfo } from '@/utils/tools.js'
+import { deepClone } from '@/utils/tools.js';
+import pagination from '../../../components/pagination.vue'
 
 export default {
 	name: 'CompanyInfo',
@@ -121,23 +126,47 @@ export default {
 			buildingEconomyData: [],
 			inputValue: '',
 			filterData: [],
+			tempfilterData: [],
 			buildingsData: [],
 			floorData:[],
 			loading: false,
 			value: '',
 			lvalue: '',
-
+			filterInfo: {
+				currentBuildingName:'',
+				currentFloorNum: '',
+			},
+			paginationSetting: {
+				limit: 200,
+				curPage: 1
+			},
 			selectedBuildingId: -1
 		}
 	},
+	components: {
+		pagination
+	},
 	mounted (){
 		this.getBuildingInfo();
+	},
+	computed:{
+		total(){
+			return this.filterData.length;
+		},
+		filterDataList(){
+			return this.filterData.filter((item, index) => {
+				return index >= (this.paginationSetting.curPage - 1) * this.paginationSetting.limit && index < this.paginationSetting.curPage * this.paginationSetting.limit;
+			})
+		},
+		customizeIndex(){
+			return (this.paginationSetting.curPage - 1) * this.paginationSetting.limit + 1;
+		}
 	},
 	methods: {
 		handleCompanyInfo () {
 			this.loading = true;
 			getCompanyInfo().then(res => {
-				//debugger;
+				debugger;
 				this.buildingEconomyData = flatCompanyInfo(res);
 				this.filterData = this.buildingEconomyData;
 
@@ -147,20 +176,31 @@ export default {
 				this.loading = false;
 			});
 		},
-		searchCompany (value){
+		getComBysearch(){
+                getCompanyBySearch(this.inputValue).then(res =>{
+					this.filterData = flatCompanyInfo(res);
+				})
+		},
+		searchCompany (){
 			//检索指定公司信息
-			if(this.buildingEconomyData.length === 0){
+			if(this.filterData.length > 0){
+				 this.filterData = [];
+				 this.buildingEconomyData.forEach((item) => {
+					if(!!~item.companyName.indexOf(this.inputValue)){
+							this.filterData.push(item);
+					} 
+				})
 				this.$message({
-					message: '请先进行查询操作',
-					type: 'warning'
+					message: '查询完毕',
+					type: 'success'
+				}); 
+			}else{
+				this.getComBysearch();
+				this.$message({
+					message: '查询完毕',
+					type: 'success'
 				});
 			}
-			this.filterData = [];
-			this.buildingEconomyData.forEach((item) => {
-				if(!!~item.companyName.indexOf(value)){
-					this.filterData.push(item);
-				}
-			});
 		},
 		getBuildingInfo() {
 			//get请求已建的buildings数据
@@ -175,32 +215,91 @@ export default {
 			});
 			this.selectedBuildingId = singleBuildingData.id;
             //debugger
-			getCompanysByBuilding(this.selectedBuildingId ).then(res => {
-				// this.buildingEconomyData = flatCompanyInfo(res);
-				// this.filterData = this.buildingEconomyData;
+			getCompanysByBuilding(this.selectedBuildingId).then(res => {
 				//debugger
-				this.filterData = flatCompanyInfo(res);
+				this.buildingEconomyData = flatCompanyInfo(res);
+				this.filterData = this.buildingEconomyData;
+				//this.filterData = flatCompanyInfo(res);
+				this.tempfilterData = deepClone(this.filterData, []);//返回一个深度克隆的副本
 			}).catch(err => {
 					this.$message({
 					message: '请求数据失败',
 					type: 'warning'
 				    });
 			});
-			debugger
-            this.getBuildingFloordata(curValue);
+			if(!curValue){
+				this.floorData = [];
+				return
+			}else{
+                this.getBuildingFloordata(curValue);
+			}          
 		},
 
 		getBuildingFloordata(curValue){
 			debugger
 			getBuildingFloors(curValue).then(res =>{
+				debugger
 				this.floorData = res;
+				var hash = {};
+				this.floorData = this.floorData.reduce(function(item, next) {
+					hash[next.floorNum] ? '' : hash[next.floorNum] = true && item.push(next);
+					return item
+				}, [])
+				console.log(this.floorData);
 			}).catch(err =>{
 					this.$message({
 					message: '请求数据失败',
 					type: 'warning'
-					 });
-			});
+					});
+			});		
 		},
+
+		floorNumSelected(item){
+			debugger
+			this.fliterOptionsChanged();
+		},
+		handleBuildingSelectClear(){
+			debugger
+			this.value = '';
+			this.lvalue = '';
+			this.floorData = [];
+			this.fliterOptionsChanged();
+		},
+		handleFloorNumSelectClear(){
+			this.fliterOptionsChanged();
+		},
+		fliterOptionsChanged(){
+			debugger
+			this.filterInfo.currentBuildingName = this.value;
+			this.filterInfo.currentFloorNum = this.lvalue;			
+			if(this.filterInfo.currentBuildingName == undefined){
+				this.filterInfo.currentBuildingName= '';
+			}
+			this.filterCompanyInfo(this.filterInfo);
+		},
+				//根据条件（楼栋、房间）过滤人房数据
+		filterCompanyInfo(dataInfo){
+			debugger
+			if(dataInfo.currentBuildingName !== '' && dataInfo.currentFloorNum !== ''){
+				this.filterData = this.tempfilterData.filter((item) => {
+					return item.buildingName === dataInfo.currentBuildingName && item.floorNum === dataInfo.currentFloorNum ;
+				})
+			}else if(dataInfo.currentFloorNum === '' && dataInfo.currentBuildingName !== ''){
+				this.filterData = this.tempfilterData.filter((item) => {
+					return  item.buildingName === dataInfo.currentBuildingName;
+				})
+			}else {
+				this.filterData = this.tempfilterData;
+			}
+			this.resetPaginationSetting();
+		},
+		resetPaginationSetting(){
+			this.paginationSetting = {
+				limit: 200,
+				curPage: 1
+			}
+		},
+
 		handleDoubleClick(row, column, event){
 			this.$router.push({name: 'buildingEcoMap'});
 			debugger

@@ -242,6 +242,15 @@ export const constantRoutes = [
 					icon: 'map'
 				}
 			},
+      {
+				path: 'inquery-buildingEco',
+				name: 'IqueryBuildingEco',
+				component: () => import('@/views/buildingEconomy/inqueryBuilding/inquery-buildingEco.vue'),
+				meta: {
+					title: '楼宇统计分析',
+					icon: 'search'
+				}
+			},
 			{
 				path: 'buildingInfoTable',
 				name: 'buildingInfoTable',
@@ -268,16 +277,7 @@ export const constantRoutes = [
 					title: '公司纳税信息',
 					icon: 'dataManager' 
 				}
-			},
-			{
-				path: 'inquery-buildingEco',
-				name: 'IqueryBuildingEco',
-				component: () => import('@/views/buildingEconomy/inqueryBuilding/inquery-buildingEco.vue'),
-				meta: {
-					title: '楼宇统计分析',
-					icon: 'search'
-				}
-			},
+			},		
 			{
 				path: 'inqueryBuildingTax',
 				name: 'inqueryBuildingTax',

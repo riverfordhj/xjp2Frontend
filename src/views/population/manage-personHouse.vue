@@ -608,7 +608,7 @@ export default {
 		//重置queryList为默认值
 		resetPaginationSetting(){
 			this.paginationSetting = {
-				limit: 20,
+				limit: 200,
 				curPage: 1
 			}
 		},

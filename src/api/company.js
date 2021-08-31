@@ -69,6 +69,14 @@ export function GetCompanysByBuilding_ZH(id){
 	})
 }
 
+export function getCompanyBySearch(sname) {
+	return request({
+	  url:`/Combasic/GetCompanyBySearch/${sname}`,
+	  method: 'get',
+	})
+}
+
+
 
 export function getCompanyInfo(){
 	return request({
