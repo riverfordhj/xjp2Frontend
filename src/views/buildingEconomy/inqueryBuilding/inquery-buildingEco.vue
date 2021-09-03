@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import { getFloorInfoByBuilding,getBuildings, GetCompanysByFloor_ZH, GetCompanysByBuilding_ZH, GetWholeCompanys_ZH } from '@/api/company.js';
+import { getBuildingFloors,getBuildings, GetCompanysByFloor_ZH, GetCompanysByBuilding_ZH, GetWholeCompanys_ZH } from '@/api/company.js';
 import { flatCompanyInfo } from '@/utils/tools.js'
 
 import pivotTablePanel from '@/components/pivotTablePanel.vue'
@@ -119,19 +119,51 @@ export default {
 				console.log(err);
 			})
 		},
+		// getFloorInfos(curValue){
+		// 	debugger
+		// 	getBuildingFloors(curValue).then(res =>{
+		// 		debugger
+		// 		this.buildingFloorData.FloorInfos = res;
+		// 		var hash = {};
+		// 		this.buildingFloorData.FloorInfos = this.buildingFloorData.FloorInfos.reduce(function(item, next) {
+		// 			hash[next.floorNum] ? '' : hash[next.floorNum] = true && item.push(next);
+		// 			return item
+		// 		}, [])
+		// 		console.log(this.buildingFloorData.FloorInfos);
+		// 	}).catch(err =>{
+		// 			this.$message({
+		// 			message: '请求数据失败',
+		// 			type: 'warning'
+		// 			});
+		// 	});		
+		// },
 		getFloorInfos (curBuildingName){
 			//当前楼栋名与上一个选择的楼栋名不同时，再发送请求
 			if(curBuildingName !== this.selectedValues.buildingName ){
 				this.selectedValues.buildingName = curBuildingName;
-        // this.notify(curBuildingName);
 				const targetBuilding = this.buildingsData.buildings.find(item => item.buildingName === curBuildingName);
 				//向后端请求目标楼栋的楼层信息
-				getFloorInfoByBuilding(targetBuilding.id).then(res => {
-					this.buildingFloorData.FloorInfos = res[0].floor;
-					this.buildingFloorData.FloorValue = '';
-				}).catch(err => {
-					console.log(err);
-				});
+				getBuildingFloors(curBuildingName).then(res =>{
+				debugger
+				this.buildingFloorData.FloorInfos = res;
+				var hash = {};
+				this.buildingFloorData.FloorInfos = this.buildingFloorData.FloorInfos.reduce(function(item, next) {
+					hash[next.floorNum] ? '' : hash[next.floorNum] = true && item.push(next);
+					return item
+				}, [])
+				console.log(this.buildingFloorData.FloorInfos);
+			}).catch(err =>{
+					this.$message({
+					message: '请求数据失败',
+					type: 'warning'
+					});
+			});		
+				// getFloorInfoByBuilding(targetBuilding.id).then(res => {
+				// 	this.buildingFloorData.FloorInfos = res[0].floor;
+				// 	this.buildingFloorData.FloorValue = '';
+				// }).catch(err => {
+				// 	console.log(err);
+				// });
 				
 				this.getCompanyInfoByBuilding(targetBuilding.id);	
 			}else{
