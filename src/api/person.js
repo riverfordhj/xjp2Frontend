@@ -222,6 +222,13 @@ export function GetBuildingsByNetGrid() {
     method: 'get'
   })
 }
+//返回指定网格内的小区
+export function GetSubdivisionByNetGrid() {
+  return request({
+    url: '/person/GetSubdivisionByNetGrid',
+    method: 'get'
+  })
+}
 //返回指定楼栋内的房间
 export function GetRoomsByBuildingAndNetgrid(buildingName, address) {
   return request({

@@ -141,6 +141,17 @@
 				</el-row>
 				<el-row :gutter="20">
 					<el-col :span="12">
+						<el-form-item label="所属小区" prop="subdivisionName" >
+							<el-select v-model="formData.subdivisionName" placeholder="请选择"  >
+								<el-option
+									v-for="item in subdivisionData"
+									:key="item.id"
+									:value="item.subdivisionName">
+								</el-option>
+							</el-select>
+						</el-form-item>
+					</el-col>
+					<el-col :span="12">
 						<el-form-item label="楼栋名" prop="buildingValue" >
 							<el-select v-model="formData.buildingValue" placeholder="请选择"  @change="buildingSelected">
 								<el-option
@@ -178,7 +189,7 @@
 </template>
 
 <script>
-import { GetBuildingsByNetGrid, GetRoomsByBuildingAndNetgrid } from '@/api/person.js';
+import { GetSubdivisionByNetGrid,GetBuildingsByNetGrid, GetRoomsByBuildingAndNetgrid } from '@/api/person.js';
 import checkPermission from '@/utils/permission.js';//权限判断函数
 import personRoomDataOptions from '@/assets/json/personRoomDataOptions.json';
 
@@ -226,12 +237,15 @@ export default {
 				roomUse: '',
 				buildingValue: '',
 				address: '',
+				subdivisionName:'',
 				netGrid: '',
+
 				communityName: '',
 				operation: '',
 			},
 			buildingsData: [],
 			roomsData: [],
+			subdivisionData:[],
 			
 			personRoomDataOptions,
 			rules: {
@@ -260,6 +274,7 @@ export default {
 	created(){
 		if(checkPermission('网格员')){
 			this.getBuildingsData();
+			this.getSubdivisionData();
 		}
 	},
 	watch: {
@@ -268,6 +283,19 @@ export default {
 		}
 	},
   methods:{
+	  	getSubdivisionData(){
+			//根据网格员，请求楼栋数据
+			GetSubdivisionByNetGrid().then(res => {				
+				var hash = {};
+				debugger
+				this.subdivisionData = res.reduce(function(item, next) {
+					debugger
+					hash[next.id] ? '' : hash[next.id] = true && item.push(next);
+					return item
+				}, [])
+				console.log(this.subdivisionData);
+			});
+		},
 		getBuildingsData(){
 			//根据网格员，请求楼栋数据
 			GetBuildingsByNetGrid().then(res => {
