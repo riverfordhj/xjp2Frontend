@@ -250,6 +250,7 @@ export function SearchPersonHouseByNetGrid() {
 
 //批处理新建personHouseData
 export function BatchingPersonHouseData(tableList) {
+  debugger
   return request({
     url: '/person/BatchingPersonHouseData',
 		method: 'post',
