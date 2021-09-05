@@ -67,7 +67,7 @@ export default {
 			const modifiedJsonData = mainBody.map((dataItem,index) => {
 				if(dataItem[0] == "" || dataItem[1] == "" || dataItem[2] == ""|| dataItem[4] == ""|| dataItem[20] == ""){
 					isNull = true;				
-					errlist.push(index +2);
+					errlist.push(index +3);
 				}else{
                    return this.fieldsMap(dataItem);
 				}				
@@ -125,7 +125,7 @@ export default {
 				});
 			}
 			if(!latch){
-				this.createPersonErrorFun(errorList, {info: '房屋地址不正确，请修改后操作', type: 'error'});
+				this.createPersonErrorFun(errorList, {info: '房屋楼栋、单元号、房间号不正确，请修改后操作', type: 'error'});
 			}	
 			debugger;
 			return latch;

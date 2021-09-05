@@ -141,17 +141,6 @@
 				</el-row>
 				<el-row :gutter="20">
 					<el-col :span="12">
-						<el-form-item label="所属小区" prop="subdivisionName" >
-							<el-select v-model="formData.subdivisionName" placeholder="请选择"  >
-								<el-option
-									v-for="item in subdivisionData"
-									:key="item.id"
-									:value="item.subdivisionName">
-								</el-option>
-							</el-select>
-						</el-form-item>
-					</el-col>
-					<el-col :span="12">
 						<el-form-item label="楼栋名" prop="buildingValue" >
 							<el-select v-model="formData.buildingValue" placeholder="请选择"  @change="buildingSelected">
 								<el-option
@@ -159,6 +148,17 @@
 									:key="item.id"
 									:label="`${item.address}-${item.buildingName}栋`"
 									:value="`${item.buildingName}-${item.address}`">
+								</el-option>
+							</el-select>
+						</el-form-item>
+					</el-col>
+					<el-col :span="12">
+						<el-form-item label="所属小区" prop="subdivisionName" >
+							<el-select v-model="formData.subdivisionName" placeholder="请选择"  >
+								<el-option
+									v-for="item in subdivisionData"
+									:key="item.id"
+									:value="item.subdivisionName">
 								</el-option>
 							</el-select>
 						</el-form-item>
