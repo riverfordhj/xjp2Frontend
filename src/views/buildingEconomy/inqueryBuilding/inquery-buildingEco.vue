@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<div class="selectForm">
-			<el-input v-model="filter" placeholder="过滤条件(楼栋，楼层)" style="width: 200px;" />
+			<el-input v-model="filter" placeholder="过滤条件(楼栋)" style="width: 200px;" />
 			<el-select v-model="buildingsData.buildingValue" placeholder="请选择楼栋" clearable @change="getFloorInfos" @clear="removeBuildingCondition">
 				<el-option
 					v-for="item in filteredBuildingsData"
@@ -9,13 +9,13 @@
 					:value="item.buildingName">
 				</el-option>
 			</el-select>
-			<el-select v-model="buildingFloorData.FloorValue" placeholder="请选择楼层" clearable @change="getCompanyInfoByFloor" @clear="removeFloorCondition">
+			<!-- <el-select v-model="buildingFloorData.FloorValue" placeholder="请选择楼层" clearable @change="getCompanyInfoByFloor" @clear="removeFloorCondition">
 				<el-option
 					v-for="item in filteredFloorsInfo"
 					:key="item.id"
 					:value="item.floorNum">
 				</el-option>
-			</el-select>
+			</el-select> -->
 			<el-button id="search_all" class="bt-request"  type="primary" icon="el-icon-search" @click="showWholeCompanyInfo">统计全部公司信息</el-button>
 		</div>
 	  <!-- <h3>{{notice}}</h3> -->
@@ -55,11 +55,11 @@ export default {
 
 			statisticsArray: [],
 			defaultSettingsForPivot: {
-				rows: ['企业名称'],
+				rows: ['年份'],
 				cols: ['企业类型'],
 				aggregatorName: '求和',
-				vals: ['注册资本'],
-				rendererName: '热图'
+				vals: ['税收'],
+				rendererName: '柱形图'
 			}
 
 			// notice: ''
@@ -76,16 +76,16 @@ export default {
 				return this.buildingsData.buildings;
 			}
 		},
-		filteredFloorsInfo(){
-			if(this.filter){
-				//debugger;
-				let filterArr = this.filter.split(/[，,]/gim);
-				return this.buildingFloorData.FloorInfos.filter(item => item.floorNum.indexOf(filterArr[1])!== -1);
-			}else{
-				return this.buildingFloorData.FloorInfos;
-			}
+		// filteredFloorsInfo(){
+		// 	if(this.filter){
+		// 		//debugger;
+		// 		let filterArr = this.filter.split(/[，,]/gim);
+		// 		return this.buildingFloorData.FloorInfos.filter(item => item.floorNum.indexOf(filterArr[1])!== -1);
+		// 	}else{
+		// 		return this.buildingFloorData.FloorInfos;
+		// 	}
 			
-		}
+		// }
 	},
 
 	mounted(){		
@@ -119,24 +119,6 @@ export default {
 				console.log(err);
 			})
 		},
-		// getFloorInfos(curValue){
-		// 	debugger
-		// 	getBuildingFloors(curValue).then(res =>{
-		// 		debugger
-		// 		this.buildingFloorData.FloorInfos = res;
-		// 		var hash = {};
-		// 		this.buildingFloorData.FloorInfos = this.buildingFloorData.FloorInfos.reduce(function(item, next) {
-		// 			hash[next.floorNum] ? '' : hash[next.floorNum] = true && item.push(next);
-		// 			return item
-		// 		}, [])
-		// 		console.log(this.buildingFloorData.FloorInfos);
-		// 	}).catch(err =>{
-		// 			this.$message({
-		// 			message: '请求数据失败',
-		// 			type: 'warning'
-		// 			});
-		// 	});		
-		// },
 		getFloorInfos (curBuildingName){
 			//当前楼栋名与上一个选择的楼栋名不同时，再发送请求
 			if(curBuildingName !== this.selectedValues.buildingName ){
@@ -179,16 +161,6 @@ export default {
 			}).catch(err => {
 				console.log(err);
 			})
-		},
-		getCompanyInfoByFloor (curFloorNum){
-			if(curFloorNum !== this.selectedValues.floor && curFloorNum !== ''){
-				this.selectedValues.floor = curFloorNum;
-				//请求指定楼层中的公司信息，并统计显示
-				GetCompanysByFloor_ZH(this.selectedValues).then(res =>{
-					this.companyInfoInFloor = res;
-					this.statisticsArray = this.companyInfoInFloor;
-				})
-			}
 		},
 		removeBuildingCondition(){
 			//重置buildingFloorData对象属性

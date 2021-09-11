@@ -216,7 +216,7 @@ export default {
 			this.selectedBuildingId = singleBuildingData.id;
             //debugger
 			getCompanysByBuilding(this.selectedBuildingId).then(res => {
-				//debugger
+				debugger
 				this.buildingEconomyData = flatCompanyInfo(res);
 				this.filterData = this.buildingEconomyData;
 				//this.filterData = flatCompanyInfo(res);
@@ -236,9 +236,7 @@ export default {
 		},
 
 		getBuildingFloordata(curValue){
-			debugger
 			getBuildingFloors(curValue).then(res =>{
-				debugger
 				this.floorData = res;
 				var hash = {};
 				this.floorData = this.floorData.reduce(function(item, next) {
@@ -248,7 +246,7 @@ export default {
 				console.log(this.floorData);
 			}).catch(err =>{
 					this.$message({
-					message: '请求数据失败',
+					message: '请求数据失败楼层',
 					type: 'warning'
 					});
 			});		
