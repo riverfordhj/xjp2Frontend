@@ -1,10 +1,10 @@
 <template>
     <div class="app-container">
         <div class="filter-container">
-            <el-select v-model="typevalue" placeholder="特殊人群类型" clearable style="width: 150px" class="filter-item" @change="filterType" @clear = "getSpecialGroupsData">
+            <el-select v-model="typevalue" placeholder="退伍人群类型" clearable style="width: 150px" class="filter-item" @change="filterType" @clear = "getSpecialGroupsData">
                 <el-option v-for="item in this.specialType" :key="item.type" :label="item.type" :value="item.type" />
             </el-select>
-            <el-button class="filter-item" type="primary" icon="el-icon-search" @click="getSpecialGroupsData">特殊人群</el-button> 
+            <el-button class="filter-item" type="primary" icon="el-icon-search" @click="getSpecialGroupsData">退伍人群</el-button> 
 			  <!-- 导出数据为xlsx格式表格 -->
 			<export-to-xlsx :table-header="tableHeaderForXlsx" :filter-fields="filterValForXlsx" :person-house-data="personHouseList"></export-to-xlsx>
         </div>   
@@ -55,7 +55,7 @@
     </div>
 </template>
 <script>
-import {getSpecialGroups,getRoomId,getSpecialType } from '@/api/person.js';
+import {getRoomId ,getMilitaryType,getMilitaryService} from '@/api/person.js';
 import exportToXlsx from '../population/components/exportToXlsx.vue';
 import pagination from '../../components/pagination.vue';
 import { deepClone } from '@/utils/tools.js';
@@ -105,14 +105,14 @@ export default {
     },
     methods:{
      getTypeData() {
-            getSpecialType().then(response => {
+            getMilitaryType().then(response => {
                 this.specialType = response
             }).catch(error => {
                 console.log(error)
             })
      },
     getSpecialGroupsData() {  
-        getSpecialGroups().then(response => {
+        getMilitaryService().then(response => {
             debugger
             this.filterdPersonHouseInfo = response;
             this.tempfilterData = deepClone(this.filterdPersonHouseInfo, []);

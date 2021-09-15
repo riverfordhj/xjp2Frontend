@@ -80,9 +80,69 @@ export function getPersonsBySearch(sname) {
   })
 }
 
+//公共服务 ----特殊人群
+export function getSpecialType() {
+  debugger
+  return request({
+    url:  '/person/GetSpecialGroupsType',
+    method: 'get'
+  })
+}
 export function getSpecialGroups() {
   return request({
     url:  '/person/GetSpecialGroups',
+    method: 'get'
+  })
+}
+
+//公共服务 ----低保户
+export function getPoorType() {
+  debugger
+  return request({
+    url:  '/person/GetPoorType',
+    method: 'get'
+  })
+}
+export function getPoorpeople() {
+  return request({
+    url:  '/person/GetPoorpeople',
+    method: 'get'
+  })
+}
+
+//公共服务 ----残疾人
+export function getDisabilityType() {
+  return request({
+    url:  '/person/GetDisabilityType',
+    method: 'get'
+  })
+}
+
+export function getDisabilitylevel() {
+  return request({
+    url:  '/person/GetDisabilitylevel',
+    method: 'get'
+  })
+}
+export function getDisability() {
+  return request({
+    url:  '/person/GetDisability',
+    method: 'get'
+  })
+}
+
+
+//公共服务 ----军人服务
+export function getMilitaryType() {
+  debugger
+  return request({
+    url:  '/person/GetMilitaryType',
+    method: 'get'
+  })
+}
+export function getMilitaryService() {
+  return request({
+    url:  '/person/GetMilitaryService',
     method: 'get'
   })
 }
