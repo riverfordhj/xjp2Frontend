@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import { getBuildingFloors,getBuildings, GetCompanysByFloor_ZH, GetCompanysByBuilding_ZH, GetWholeCompanys_ZH } from '@/api/company.js';
+import { getBuildingFloors,getBuildings, GetCompanysByBuilding_ZH, GetWholeCompanys_ZH } from '@/api/company.js';
 import { flatCompanyInfo } from '@/utils/tools.js'
 
 import pivotTablePanel from '@/components/pivotTablePanel.vue'
