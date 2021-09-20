@@ -55,8 +55,8 @@ export default {
 
 			statisticsArray: [],
 			defaultSettingsForPivot: {
-				rows: ['年份'],
-				cols: ['企业类型'],
+				rows: ['楼宇名称'],
+				cols: ['年份'],
 				aggregatorName: '求和',
 				vals: ['税收'],
 				rendererName: '柱形图'
@@ -69,7 +69,6 @@ export default {
 	computed: {
 		filteredBuildingsData(){
 			if(this.filter){
-				//debugger;
 				let filterArr = this.filter.split(/[，,]/gim);
 				return this.buildingsData.buildings.filter(item => item.buildingName.indexOf(filterArr[0]) !== -1);
 			}else{
@@ -78,7 +77,6 @@ export default {
 		},
 		// filteredFloorsInfo(){
 		// 	if(this.filter){
-		// 		//debugger;
 		// 		let filterArr = this.filter.split(/[，,]/gim);
 		// 		return this.buildingFloorData.FloorInfos.filter(item => item.floorNum.indexOf(filterArr[1])!== -1);
 		// 	}else{
@@ -89,8 +87,10 @@ export default {
 	},
 
 	mounted(){		
-		this.getBuildingsData();
-		this.getWholeCompanyInfo();
+		 this.getBuildingsData();
+		 this.getWholeCompanyInfo();
+		// this.showWholeCompanyInfo();
+		
 	},
 
 	methods: {
@@ -100,11 +100,11 @@ export default {
 				this.buildingsData.buildings = res;
 
 				//初始化透视表
-				this.buildingsData.buildingValue = res[0].buildingName;
-				this.getFloorInfos(this.buildingsData.buildingValue);
+				// this.buildingsData.buildingValue = res[0].buildingName;
+				// this.getFloorInfos(this.buildingsData.buildingValue);
       
-				this.selectedValues.buildingName = this.buildingsData.buildingValue;
-				this.notify(this.buildingsData.buildingValue);
+				// this.selectedValues.buildingName = this.buildingsData.buildingValue;
+				// this.notify(this.buildingsData.buildingValue);
 			}).catch(err =>{
 				console.log(err);
 			});
@@ -114,7 +114,7 @@ export default {
 			GetWholeCompanys_ZH().then(res =>{
 				//debugger;
 				this.wholeCompanyInfo = res;
-				
+				this.statisticsArray = this.wholeCompanyInfo; 
 			}).catch(err =>{
 				console.log(err);
 			})
@@ -125,8 +125,7 @@ export default {
 				this.selectedValues.buildingName = curBuildingName;
 				const targetBuilding = this.buildingsData.buildings.find(item => item.buildingName === curBuildingName);
 				//向后端请求目标楼栋的楼层信息
-				getBuildingFloors(curBuildingName).then(res =>{
-				debugger
+				getBuildingFloors(curBuildingName).then(res =>{				
 				this.buildingFloorData.FloorInfos = res;
 				var hash = {};
 				this.buildingFloorData.FloorInfos = this.buildingFloorData.FloorInfos.reduce(function(item, next) {
@@ -157,7 +156,6 @@ export default {
 			GetCompanysByBuilding_ZH(buildingId).then(res => {
 				this.companyInfoInBuilding = flatCompanyInfo(res);
 				this.statisticsArray = this.companyInfoInBuilding;
-				// debugger;
 			}).catch(err => {
 				console.log(err);
 			})
@@ -173,10 +171,13 @@ export default {
 		},
 		//查询所有公司信息
 		showWholeCompanyInfo() {
+			debugger
 			if(this.wholeCompanyInfo){
+				debugger
 				this.statisticsArray = this.wholeCompanyInfo;
 				this.buildingsData.buildingValue = '';
 			}else{
+				debugger
 				this.getWholeCompanyInfo();
 			}
 		},
