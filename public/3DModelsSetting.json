@@ -153,18 +153,24 @@
   },
   {
     "id": 3,
-    "label": "单体大厦模型",
+    "label": "实体大厦模型",
     "children": [
       {
         "id": 300,
-        "label": "V+大厦",
-        "url": "http://202.114.148.160:9000/model/77101120192811ebbb4c23b7c961e103/tileset.json"
-      },
-      {
-        "id": 301,
-        "label": "福来中心",
-        "url": "http://202.114.148.160:9000/model/f0e167c0e6c211eba112f7140c5c1bbb/tileset.json"
+        "label": "楼宇",
+        "url": "http://202.114.148.160:9000/model/c93d5a2032ea11ec88b6eba5c9337375/tileset.json"
       }
     ]
-   }
+   },
+   {
+     "id": 4,
+     "label": "单体大厦模型",
+     "children": [
+       {
+         "id": 400,
+         "label": "楼宇",
+         "url": "http://202.114.148.160:9000/model/c3424d3032e311ec88b6eba5c9337375/tileset.json"
+       }
+     ]
+    }
 ]

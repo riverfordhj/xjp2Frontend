@@ -91,8 +91,8 @@ export default {
 				debugger
 				this.modelTreeData = res.data;
 				
-				var st_sanjiaolu = this.modelTreeData[0].children[13].url;
-				var dth_V = this.modelTreeData[2].children[1].url;
+				var st_sanjiaolu = this.modelTreeData[2].children[0].url;
+				var dth_V = this.modelTreeData[3].children[0].url;
 
 				this.load3DTiles(this.viewer, st_sanjiaolu, false, null, null); 
 				this.load3DTiles(
@@ -101,8 +101,8 @@ export default {
 					true,
 					Cesium.ClassificationType.CESIUM_3D_TILE,
 					new Cesium.Cesium3DTileStyle({
-						color: 'rgba(255,55,255,0.1)'
-						//color: 'rgba(255,255,255,0.01)'
+						// color: 'rgba(255,55,255,0.1)'
+						color: 'rgba(255,255,255,0.01)'
 					}
 				));
 			})

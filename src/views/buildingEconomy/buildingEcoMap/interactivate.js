@@ -107,7 +107,6 @@ var interactOperate = {
       this.nameOverlay.style.display = 'none'
       return
     }
-		
 		const buildingFloor = this.getBuildingFloor(pickedFeature);
 		if(!buildingFloor){
 			this.nameOverlay.style.display = 'none';
@@ -131,8 +130,9 @@ var interactOperate = {
 	getBuildingFloor (pickedFeature){
 		const buildingName = pickedFeature.getProperty('buildingid');
 		const floorNum = pickedFeature.getProperty('floor');
+    const roomid = pickedFeature.getProperty('roomid');
 
-		return `${buildingName}-第${floorNum}层`;
+		return `${buildingName}-${floorNum}-${roomid}`;
 	},
 
   // mouseclick事件处理
