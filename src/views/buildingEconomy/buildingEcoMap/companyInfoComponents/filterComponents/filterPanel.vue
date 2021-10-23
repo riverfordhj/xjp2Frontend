@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import { getBuindingInfoByStatus } from '@/api/company.js';
+// import { getBuindingInfoByStatus } from '@/api/company.js';
 
 export default {
 	name: 'filterPanel',
@@ -39,7 +39,7 @@ export default {
 		}
 	},
 	created(){
-		this.getBuildings();
+		// this.getBuildings();
 	},	
 	computed:{
 		filteredBuildingsData(){
@@ -63,13 +63,13 @@ export default {
 	},
 	methods: {
 		//请求后端楼栋数据
-		getBuildings() {
-			getBuindingInfoByStatus().then(res => {
-				this.buildingsData.buildings = res;
-			}).catch(err =>{
-				console.log(err);
-			})
-		},
+		// getBuildings() {
+		// 	getBuindingInfoByStatus().then(res => {
+		// 		this.buildingsData.buildings = res;
+		// 	}).catch(err =>{
+		// 		console.log(err);
+		// 	})
+		// },
 		handleFirstSelect (curValue){
 			this.buildingFloorData.FloorValue = '';
 			this.$emit('firstSelectChange', curValue, this.buildingsData.buildings, this.buildingFloorData);
