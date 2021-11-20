@@ -26,9 +26,9 @@
 			<el-table-column type="expand" style="width: 100%">
 				<template slot-scope="props">
 					<el-form label-position="left" inline class="table-expand">
-						<el-form-item label="街道">
+						<!-- <el-form-item label="街道">
 							<span>{{ props.row.streetName }}</span>
-						</el-form-item>
+						</el-form-item> -->
 						<el-form-item label="楼宇名称">
 							<span>{{ props.row.buildingName }}</span>
 						</el-form-item>
@@ -39,29 +39,30 @@
 						<el-form-item label="租赁/购买">
 							<span>{{ props.row.officeSpaceType }}</span>
 						</el-form-item>
-						<el-form-item label="入驻时间">
-							<span>{{ props.row.settlingTime }}</span>
+						<el-form-item label="员工">
+							<span>{{ props.row.employeesNum }}</span>
 						</el-form-item>
-						<el-form-item label="搬离时间">
-							<span>{{ props.row.moveAwayTime }}</span>
+						<el-form-item label="本科及以上">
+							<span>{{ props.row.bachelorAboveNum }}</span>
 						</el-form-item>
+
 
 						<el-form-item label="是否独立法人企业">
 							<span>{{ props.row.legalRepresentative }}</span>
 						</el-form-item>
+						<el-form-item label="2020营收（万元）">
+							<span>{{ props.row.companyTax[2].revenue }}</span>
+						</el-form-item>
+						<el-form-item label="2020税收（万元）">
+							<span>{{ props.row.companyTax[2].tax }}</span>
+						</el-form-item>
 
-						<el-form-item label="企业税收额（万元）">
-							<span>{{ props.row.corporateTax }}</span>
-						</el-form-item>
-						<!-- <el-form-item label="缴税时长">
-							<span>{{ props.row.duration }}</span>
-						</el-form-item> -->
 						
-						<el-form-item label="企业名称">
-							<span>{{ props.row.companyName }}</span>
+						<el-form-item label="税收所在地">
+							<span>{{ props.row.companyTax[2].taxAdress }}</span>
 						</el-form-item>
-						<el-form-item label="注册地址">
-							<span>{{ props.row.registeredAddress }}</span>
+						<el-form-item label="行业名称">
+							<span>{{ props.row.industryName }}</span>
 						</el-form-item>
 						<el-form-item label="企业类型">
 							<span>{{ props.row.enterpriseType }}</span>
@@ -69,8 +70,8 @@
 						<!-- <el-form-item label="企业背景">
 							<span>{{ props.row.enterpriseBackground }}</span>
 						</el-form-item> -->
-						<el-form-item label="备注">
-							<span>{{ props.row.note }}</span>
+						<el-form-item label="注册时间">
+							<span>{{ props.row.registeredTime }}</span>
 						</el-form-item>
 						<el-form-item label="企业主营方向" >
 							<span>{{ props.row.mainProducts }}</span>
@@ -96,7 +97,7 @@
 			</el-table-column>
 			<el-table-column prop="phone" label="联系电话" width="120">
 			</el-table-column>
-			<el-table-column prop="area" label="租赁/购买面积" width="180">
+			<el-table-column prop="area" label="租赁/购买面积" width="100">
 			</el-table-column>
 			<el-table-column prop="registeredAddress" label="工商注册登记地" width="180">
 			</el-table-column>
@@ -114,7 +115,7 @@
 </template>
 
 <script>
-import { getCompanyInfo,getCompanyBySearch, getBuildings, getBuildingFloors, getCompanysByBuilding, getInfoByBuildingNameAndFloor } from '@/api/company.js';
+import { getCompanyBySearch, getBuildings, getBuildingFloors, getCompanysByBuilding, getInfoByBuildingNameAndFloor } from '@/api/company.js';
 import { flatCompanyInfo } from '@/utils/tools.js'
 import { deepClone } from '@/utils/tools.js';
 import pagination from '../../../components/pagination.vue'
@@ -163,19 +164,6 @@ export default {
 		}
 	},
 	methods: {
-		handleCompanyInfo () {
-			this.loading = true;
-			getCompanyInfo().then(res => {
-				debugger;
-				this.buildingEconomyData = flatCompanyInfo(res);
-				this.filterData = this.buildingEconomyData;
-
-				this.loading = false;
-			}).catch(err => {
-				console.log(err);
-				this.loading = false;
-			});
-		},
 		getComBysearch(){
                 getCompanyBySearch(this.inputValue).then(res =>{
 					this.filterData = flatCompanyInfo(res);
@@ -214,11 +202,10 @@ export default {
 				return item.buildingName === curValue;
 			});
 			this.selectedBuildingId = singleBuildingData.id;
-            //debugger
 			getCompanysByBuilding(this.selectedBuildingId).then(res => {
-				debugger
 				this.buildingEconomyData = flatCompanyInfo(res);
 				this.filterData = this.buildingEconomyData;
+				console.log(this.filterData);
 				//this.filterData = flatCompanyInfo(res);
 				this.tempfilterData = deepClone(this.filterData, []);//返回一个深度克隆的副本
 			}).catch(err => {
@@ -253,11 +240,11 @@ export default {
 		},
 
 		floorNumSelected(item){
-			debugger
+		
 			this.fliterOptionsChanged();
 		},
 		handleBuildingSelectClear(){
-			debugger
+		
 			this.value = '';
 			this.lvalue = '';
 			this.floorData = [];
@@ -267,7 +254,7 @@ export default {
 			this.fliterOptionsChanged();
 		},
 		fliterOptionsChanged(){
-			debugger
+			
 			this.filterInfo.currentBuildingName = this.value;
 			this.filterInfo.currentFloorNum = this.lvalue;			
 			if(this.filterInfo.currentBuildingName == undefined){
@@ -277,7 +264,7 @@ export default {
 		},
 				//根据条件（楼栋、房间）过滤人房数据
 		filterCompanyInfo(dataInfo){
-			debugger
+	
 			if(dataInfo.currentBuildingName !== '' && dataInfo.currentFloorNum !== ''){
 				this.filterData = this.tempfilterData.filter((item) => {
 					return item.buildingName === dataInfo.currentBuildingName && item.floorNum === dataInfo.currentFloorNum ;
@@ -300,12 +287,10 @@ export default {
 
 		handleDoubleClick(row, column, event){
 			this.$router.push({name: 'buildingEcoMap'});
-			debugger
             this.handleDelivery(row);
 		},
 		handleDelivery(row){
-			getInfoByBuildingNameAndFloor(row.buildingName, row.companyRoom[0].name).then( (res) => {
-				debugger
+			getInfoByBuildingNameAndFloor(row.buildingName, row.companyRoom[0].name).then( (res) => {	
 				this.bus.$emit('deliveryPositionInfo', res[0], row.companyRoom[0].name)
 			})
 		}
