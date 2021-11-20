@@ -27,12 +27,20 @@
 				</el-table-column>
 				<el-table-column prop="phone" label="联系电话" width="80">
 				</el-table-column>
-				<!-- <el-table-column prop="mainProducts" label="企业主营方向" width="220">
+				<el-table-column prop="industryName" label="所属行业" width="180">
+				</el-table-column>
+				<el-table-column prop="registeredTime" label="注册时间" width="120">
+				</el-table-column>
+				<el-table-column prop="employeesNum" label="员工人数" width="80">
+				</el-table-column>
+				<el-table-column prop="bachelorAboveNum" label="本科及以上" width="80">
+				</el-table-column>
+				<el-table-column prop="patentNum" label="专利数" width="80">
+				</el-table-column>
+				<el-table-column prop="officeArea" label="办公室面积/m²" width="80">
+				</el-table-column>
+				<!-- <el-table-column prop="taxStatisticsArea" label="税收统计区" width="120">
 				</el-table-column> -->
-				<el-table-column prop="registeredAddress" label="工商注册登记地" width="180">
-				</el-table-column>
-				<el-table-column prop="taxStatisticsArea" label="税收统计区" width="120">
-				</el-table-column>
 				<el-table-column prop="corporateTax" label="企业税收额（万元)" width="140"/>
 				<el-table-column prop="floorNum" label="楼层" width="80"/>
 				<el-table-column prop="officeSpaceType" label="用房类型" width="100"/>
@@ -44,7 +52,7 @@
 
 <script>
 import DialogDrag from 'vue-dialog-drag';
-import { getFloorInfoByBuilding} from '@/api/company.js';
+import { getBuildingFloors,getInfoByBuildingNameAndFloor,getRoomByBuilding} from '@/api/company.js';
 
 import filterPanel from './filterComponents/filterPanel.vue'
 
@@ -86,30 +94,22 @@ export default {
 			this.$refs.filterPanel.clearFilterPanel();
 		},
 		//获取指定楼栋的楼层信息
-		getFloorInfos (curValue, buildingParam, FloorDataParam){
-			const targetBuilding = buildingParam.find(item => item.buildingName === curValue);
+		getFloorInfos (curValue, FloorDataParam){		
 			//向后端请求目标楼栋的楼层信息
-			getFloorInfoByBuilding(targetBuilding.id).then(res => {
-				FloorDataParam.FloorInfos = res[0].floor;
+			getRoomByBuilding(curValue).then(res =>{
+				FloorDataParam.roomName = res;
+				console.log(FloorDataParam.roomName);
 			}).catch(err => {
 				console.log(err);
 			})
 		},
 		//定位到选定楼层
-		flyToTarget (curFloorNum, arr){
+		flyToTarget (buildingName,curRoom){
 			//定位飞行过程中，信息面板设为不可见
 			this.companyDataForms.show = false;
-
-			const curFloorInfo = arr.find(item => item.floorNum === curFloorNum);
-			debugger
-			if(curFloorInfo){
-				const position = {
-					long: curFloorInfo.long,
-					lat: curFloorInfo.lat,
-					height: curFloorInfo.height
-				};
-				this.companyDatas.interactOperate.FlytoFloor(position, curFloorInfo.floorNum);
-			}
+			getInfoByBuildingNameAndFloor(buildingName,curRoom).then( res =>{
+				this.bus.$emit('deliveryPositionInfo', res[0], curRoom);
+			})
 		}
 	}
 }
