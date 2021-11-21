@@ -31,6 +31,7 @@ export default {
 			companyDatas:{
 				show: false,
 				title: '',
+				buildingName:'',
 				companiesFullInfo: [],
 				interactOperate,
 				clearFilter: false

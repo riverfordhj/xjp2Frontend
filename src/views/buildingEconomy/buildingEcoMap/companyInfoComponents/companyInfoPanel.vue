@@ -8,7 +8,7 @@
 			:options="option"
 			@close="close"
 		>
-			<el-tabs type="border-card">
+			<el-tabs type="border-card" @tab-click="getComInfoByBuildingName">
 				<el-tab-pane label="企业信息">			
 					<filter-panel ref="filterPanel" @firstSelectChange="getFloorInfos" @secondSelectChange="flyToTarget"></filter-panel>
 
@@ -48,7 +48,22 @@
 								<el-table-column prop="officeSpaceType" label="用房类型" width="100"/>
 					</el-table>
 				</el-tab-pane>
-				<el-tab-pane label="楼宇信息">楼宇信息</el-tab-pane>
+				<el-tab-pane label="楼宇信息" >
+					<el-table :data="buildingInfo" height="293" border style="width: 100%">
+								<el-table-column prop="buildingName" label="总体营收(万元)" width="120">
+								</el-table-column>
+								<el-table-column prop="companyName" label="总体税收(万元)" width="180">
+								</el-table-column>
+								<el-table-column prop="unifiedSocialCreditCode" label="总体企业数量" width="180">
+								</el-table-column>
+								<el-table-column prop="actualOfficeAddress" label="产业分布" width="180">
+								</el-table-column>
+								<el-table-column prop="unifiedSocialCreditCode" label="营收排名前10名" width="180">
+								</el-table-column>
+								<el-table-column prop="actualOfficeAddress" label="纳税排名前10名" width="180">
+								</el-table-column>
+					</el-table>
+				</el-tab-pane>
 			</el-tabs>
 		</dialog-drag>
 	</div>
@@ -78,12 +93,13 @@ export default {
 		return {
 			option: { top: 250, left: 20, height: 420, width: 800, buttonPin: false },
 			companyDataForms: this.companyDatas,
+			buildingInfo:[{buildingName: 'dasdad'}],
 		}
 	},
 	computed:{
 		companyInFloorTitle(){
 			return '楼层入驻公司信息： ' + this.companyDataForms.title;
-		}
+		},
 	},
 	watch:{
 		"companyDatas.companiesFullInfo": function(){
@@ -106,6 +122,11 @@ export default {
 			}).catch(err => {
 				console.log(err);
 			})
+		},
+		//获取楼宇信息 总营收 税收 产业分布 楼宇企业数
+		getComInfoByBuildingName( ){
+			console.log(this.companyDataForms.buildingName)
+
 		},
 		//定位到选定楼层
 		flyToTarget (buildingName,curRoom){
