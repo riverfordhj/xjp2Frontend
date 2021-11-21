@@ -8,7 +8,7 @@
 						:value="item.buildingName">
 					</el-option>
 				</el-select>
-				<el-select v-model="buildingFloorData.FloorValue" clearable  placeholder="请选择楼层"  @change="handleSecondSelect" >
+				<el-select v-model="buildingFloorData.FloorValue" clearable  placeholder="请选择层"  @change="handleSecondSelect" >
 					<el-option
 						v-for="item in filteredFloorsInfo"
 						:key="item.id"
