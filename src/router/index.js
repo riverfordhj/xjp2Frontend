@@ -71,6 +71,95 @@ export const constantRoutes = [
     ]
   },
 
+ 
+
+  // {
+  //   path: '/education',
+  //   component: Layout,
+  //   // redirect: '/example/table',
+  //   // name: 'Example',
+  //   // meta: { title: 'Example', icon: 'example' },
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       name: '教育',
+  //       component: () => import('@/views/education/index'),
+  //       meta: {
+  //         title: '教育',
+  //         icon: 'education'
+  //       }
+  //     }
+  //   ]
+  // },
+
+  // {
+  //   path: '/public-security',
+  //   component: Layout,
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       name: '公安',
+  //       component: () => import('@/views/public-security/index'),
+  //       meta: {
+  //         title: '公安',
+  //         icon: 'publicSecurity'
+  //       }
+  //     }
+  //   ]
+  // },
+
+  // {
+  //   path: '/disabled-association',
+  //   component: Layout,
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       name: '残联',
+  //       component: () => import('@/views/disabled-association/index'),
+  //       meta: {
+  //         title: '残联',
+  //         icon: 'disabledPerson'
+  //       }
+  //     }
+  //   ]
+  // },
+
+  // {
+  //   path: '/search',
+  //   component: Layout,
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       name: '检索查询',
+  //       component: () => import('@/views/search/index'),
+  //       meta: {
+  //         title: '检索查询',
+  //         icon: 'search'
+  //       }
+  //     }
+  //   ]
+  // },
+
+  // {
+  //   path: '/statistical-analysis',
+  //   component: Layout,
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       name: '统计分析',
+  //       component: () => import('@/views/statistical-analysis/index'),
+  //       meta: {
+  //         title: '统计分析',
+  //         icon: 'statistical'
+  //       }
+  //     }
+  //   ]
+  // }
+]
+
+//动态路由表：权限
+export const asyncRoutes = [
+  //地图
   {
     path: '/map',
     component: Layout,
@@ -80,14 +169,24 @@ export const constantRoutes = [
     },
     children: [
       {
-        path: 'index',
-        name: '地图',
-        component: () => import('@/views/map/cesium/index_9_24'), // cesium-test
+        path: 'person-house-map',
+        name: 'PersonHouseMap',
+        component: () => import('@/views/map/person-house/base-map'), // cesium-test
         meta: {
-          title: '地图(暂无)',
-          icon: 'map'
+          title: '人房地图',
+          icon: 'map',
+          roles: ['Administrator']
         }
       },
+      // {
+      //   path: 'index',
+      //   name: '地图',
+      //   component: () => import('@/views/map/cesium/index_9_24'), // cesium-test
+      //   meta: {
+      //     title: '地图(暂无)',
+      //     icon: 'map'
+      //   }
+      // },
       {
         path: 'monomerization_cesium',
         name: '倾斜模型',
@@ -124,16 +223,16 @@ export const constantRoutes = [
           icon: 'city'
         }
       },
-      {
-        path: 'public-service',
-        name: '公共服务',
-        component: () =>
-          import('@/views/map/monomerization_cesium/index_service'),
-        meta: {
-          title: '公共服务',
-          icon: 'public-service'
-        }
-      },
+      // {
+      //   path: 'public-service',
+      //   name: '公共服务',
+      //   component: () =>
+      //     import('@/views/map/monomerization_cesium/index_service'),
+      //   meta: {
+      //     title: '公共服务',
+      //     icon: 'public-service'
+      //   }
+      // },
       {
         path: 'economic-development',
         name: '经济发展',
@@ -164,6 +263,7 @@ export const constantRoutes = [
     ]
   },
 
+  //人口信息
   {
     path: '/population',
     component: Layout,
@@ -175,7 +275,7 @@ export const constantRoutes = [
     },
     children: [
       {
-        path: 'manage-data',
+        path: 'inquery-data',
         name: 'PersonHouseData',
         component: () => import('@/views/population/inquery-data'),
         meta: {
@@ -202,7 +302,7 @@ export const constantRoutes = [
         }
 			},
       {
-        path: 'inquery-population',
+        path: 'statistical-population',
         name: 'PersonStatistics',
         component: () => import('@/views/population/statistical-population'),
         meta: {
@@ -213,7 +313,57 @@ export const constantRoutes = [
 			
     ]
 	},
-	
+
+  //公共服务
+  {
+    path: '/public-Service',
+    component: Layout,
+    name: '公共服务',
+    meta: {
+          title: '公共服务',
+          icon: 'public-service'
+    },
+    children: [
+      {
+        path: 'inquery-SpecialGroups',
+        name: 'SpecialGroups',
+        component: () => import('@/views/public-Service/inquery-SpecialGroups'),
+        meta: {
+          title: '特殊人群',
+          icon: 'peoples'
+        }
+      },
+      {
+        path: 'inquery-Poorpeoples',
+        name: 'Poorpeoples',
+        component: () => import('@/views/public-Service/inquery-Poorpeoples'),
+        meta: {
+          title: '低保人群',
+          icon: 'grid'
+        }
+      },
+      {
+        path: 'inquery-Disability',
+        name: 'Disability',
+        component: () => import('@/views/public-Service/inquery-Disability'),
+        meta: {
+          title: '残疾人群',
+          icon: 'disabledPerson'
+        }
+			},
+      {
+        path: 'inquery-Militaryservice',
+        name: 'Militaryservice',
+        component: () => import('@/views/public-Service/inquery-Militaryservice'),
+        meta: {
+          title: '退伍人群',
+          icon: 'nested'
+        }
+			},
+			
+    ]
+	},
+  //楼宇企业
 	{
     path: '/buildingCompany',
 		component: Layout,
@@ -289,113 +439,26 @@ export const constantRoutes = [
 			}
     ]
 	},
-
-  {
-    path: '/education',
-    component: Layout,
-    // redirect: '/example/table',
-    // name: 'Example',
-    // meta: { title: 'Example', icon: 'example' },
-    children: [
-      {
-        path: 'index',
-        name: '教育',
-        component: () => import('@/views/education/index'),
-        meta: {
-          title: '教育',
-          icon: 'education'
-        }
-      }
-    ]
-  },
-
-  {
-    path: '/public-security',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: '公安',
-        component: () => import('@/views/public-security/index'),
-        meta: {
-          title: '公安',
-          icon: 'publicSecurity'
-        }
-      }
-    ]
-  },
-
-  {
-    path: '/disabled-association',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: '残联',
-        component: () => import('@/views/disabled-association/index'),
-        meta: {
-          title: '残联',
-          icon: 'disabledPerson'
-        }
-      }
-    ]
-  },
-
-  {
-    path: '/search',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: '检索查询',
-        component: () => import('@/views/search/index'),
-        meta: {
-          title: '检索查询',
-          icon: 'search'
-        }
-      }
-    ]
-  },
-
-  {
-    path: '/statistical-analysis',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: '统计分析',
-        component: () => import('@/views/statistical-analysis/index'),
-        meta: {
-          title: '统计分析',
-          icon: 'statistical'
-        }
-      }
-    ]
-  }
-]
-
-//动态路由表：权限
-export const asyncRoutes = [
-  {
-    path: '/map1',
-    component: Layout,
-    meta: {
-      title: '地图',
-      icon: 'map',
-    },
-    children: [
-      {
-        path: 'person-house-map',
-        name: 'PersonHouseMap',
-        component: () => import('@/views/map/person-house/base-map'), // cesium-test
-        meta: {
-          title: '人房地图',
-          icon: 'map',
-          roles: ['Administrator']
-        }
-      }
-    ]
-  },
+  // {
+  //   path: '/map1',
+  //   component: Layout,
+  //   meta: {
+  //     title: '地图',
+  //     icon: 'map',
+  //   },
+  //   children: [
+  //     {
+  //       path: 'person-house-map',
+  //       name: 'PersonHouseMap',
+  //       component: () => import('@/views/map/person-house/base-map'), // cesium-test
+  //       meta: {
+  //         title: '人房地图',
+  //         icon: 'map',
+  //         roles: ['Administrator']
+  //       }
+  //     }
+  //   ]
+  // },
 	{
     path: '/house',
     component: Layout,

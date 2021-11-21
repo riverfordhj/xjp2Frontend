@@ -8,18 +8,22 @@
 						:value="item.buildingName">
 					</el-option>
 				</el-select>
+<<<<<<< HEAD
 				<el-select v-model="buildingFloorData.FloorValue" clearable  placeholder="请选择层"  @change="handleSecondSelect" >
+=======
+				<el-select v-model="buildingFloorData.FloorValue" clearable  placeholder="请选择房间"  @change="handleSecondSelect" >
+>>>>>>> NetEnd1
 					<el-option
 						v-for="item in filteredFloorsInfo"
 						:key="item.id"
-						:value="item.floorNum">
+						:value="item.name">
 					</el-option>
 				</el-select>
 			</div>
 </template>
 
 <script>
-import { getBuindingInfoByStatus } from '@/api/company.js';
+import { getBuildings } from '@/api/company.js';
 
 export default {
 	name: 'filterPanel',
@@ -32,14 +36,15 @@ export default {
 			},
 			buildingFloorData: {
 				FloorValue: '',
-				FloorInfos: []
+				FloorInfos: [],
+				roomName:[],
 			},
 			filter:'',
 			
 		}
 	},
 	created(){
-		this.getBuildings();
+		  this.getBuildings();
 	},	
 	computed:{
 		filteredBuildingsData(){
@@ -53,30 +58,31 @@ export default {
 		},
 		filteredFloorsInfo(){
 			if(this.filter){
-				//debugger;
 				let filterArr = this.filter.split(/[，,]/gim);
-				return this.buildingFloorData.FloorInfos.filter(item => item.floorNum.indexOf(filterArr[1])!== -1);
+				return this.buildingFloorData.roomName.filter(item => item.name.indexOf(filterArr[1]) !== -1);
 			}else{
-				return this.buildingFloorData.FloorInfos;
+				return this.buildingFloorData.roomName;
 			}
 		}
 	},
 	methods: {
 		//请求后端楼栋数据
 		getBuildings() {
-			getBuindingInfoByStatus().then(res => {
+			getBuildings().then(res => {
 				this.buildingsData.buildings = res;
+				console.log(this.buildingsData.buildings);
 			}).catch(err =>{
 				console.log(err);
 			})
 		},
 		handleFirstSelect (curValue){
+			debugger
 			this.buildingFloorData.FloorValue = '';
-			this.$emit('firstSelectChange', curValue, this.buildingsData.buildings, this.buildingFloorData);
+			this.$emit('firstSelectChange', curValue,  this.buildingFloorData);
 			
 		},
 		handleSecondSelect (curValue){
-			this.$emit('secondSelectChange', curValue, this.buildingFloorData.FloorInfos);
+			this.$emit('secondSelectChange', this.buildingsData.buildingValue,curValue);
 		},
 		clearFilterPanel (){
 			console.log('this is clearFilterPanel')

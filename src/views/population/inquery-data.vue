@@ -268,6 +268,11 @@ export default {
         debugger
         if(this.filterdPersonHouseInfo.length < 1){
           this.$message.error('查询完毕，无数据记录，请输入正确检索条件')
+        }else{
+          debugger
+          var count  = this.filterdPersonHouseInfo.length;
+           //setTimeout(this.$message.success('查询完毕' + this.filterdPersonHouseInfo.length + '条数据'),5000)
+           this.$message.success('查询完毕' + count + '条数据');
         }
 				this.resetPaginationSetting();
       }).catch(error => {
@@ -351,6 +356,9 @@ export default {
           this.getPersonsByNetGridData()
         }
       }
+          debugger
+          var count  = this.filterdPersonHouseInfo.length;
+          this.$message.success('查询完毕' + count + '条数据');
     },
     searchPerson() {
       var advancedname = this.listQuery.sname 
@@ -358,6 +366,8 @@ export default {
 				this.filterdPersonHouseInfo = response;
         if(this.filterdPersonHouseInfo.length < 1){   
            this.$message.error('查询完毕，无数据记录');
+        }else{
+           this.$message.success('查询完毕');
         }
 				this.resetPaginationSetting();
       }).catch(error => {

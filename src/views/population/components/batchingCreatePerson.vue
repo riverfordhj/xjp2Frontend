@@ -52,7 +52,7 @@ export default {
 			}).catch(err => {console.log(err)});
 		},
 		//修改Json数据结构，作为参数传入后端
-		ModifyJsonData(jsonDataArray){
+		ModifyJsonData(jsonDataArray){		
 			//获取列名数组
 			const excelHeader = jsonDataArray[1];
 			const isPass = this.tableHeaderVerification(excelHeader);
@@ -62,25 +62,36 @@ export default {
 			}
 			//获取数据主体
 			const mainBody = jsonDataArray.slice(2);
-			const modifiedJsonData = mainBody.map((dataItem) => {
-				return this.fieldsMap(dataItem);
+			var isNull = false;
+			var errlist = [];
+			const modifiedJsonData = mainBody.map((dataItem,index) => {
+				if(dataItem[0] == "" || dataItem[1] == "" || dataItem[2] == ""|| dataItem[4] == ""|| dataItem[20] == ""){
+					isNull = true;				
+					errlist.push(index +3);
+				}else{
+                   return this.fieldsMap(dataItem);
+				}				
 			});
-      
-			this.BatchingPersonHouseJsonData(modifiedJsonData);
+			this.createPersonErrorFun(errlist, {info: '社区、网格、地址、楼栋、身份证不能为空', type: 'error'});
+			if(!isNull){
+               this.BatchingPersonHouseJsonData(modifiedJsonData);
+			}
+			
 		},
 		fieldsMap(dataItem){
 			const newDataItem = {};
 			this.standardHeaderEn.forEach((headerItem, index) => {
 				//合并"单元号"和"房号"为"roomName"
-				if(headerItem === '单元号'){
+			    if(headerItem === '单元号'){
 					newDataItem["roomName"] = `${dataItem[index]}-${dataItem[index + 1]}`;
 				}else if(headerItem === '房号' || headerItem === ''){
 					return false;
 				}else if(index === (this.standardHeaderEn.length - 1)){
 					newDataItem['operation'] = 'creating';
 					newDataItem['status'] = 'committed';
-				}else{
-					newDataItem[headerItem] = dataItem[index];
+				}else
+				{
+                     newDataItem[headerItem] = dataItem[index];		
 				}
 			})
 			return newDataItem;
@@ -114,7 +125,7 @@ export default {
 				});
 			}
 			if(!latch){
-				this.createPersonErrorFun(errorList, {info: '房屋地址不正确，请修改后操作', type: 'error'});
+				this.createPersonErrorFun(errorList, {info: '房屋楼栋、单元号、房间号不正确，请修改后操作', type: 'error'});
 			}	
 			debugger;
 			return latch;

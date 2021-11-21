@@ -121,7 +121,7 @@
 </template>
 
 <script>
-import {getCompanySomeFileds, updateCompanyFields, getBuindingInfoByStatus, deleteCompany} from '@/api/company.js'
+import {getCompanySomeFileds, updateCompanyFields, deleteCompany} from '@/api/company.js'
 
 export default {
 	name: 'buildingEcoTable',
@@ -148,11 +148,11 @@ export default {
 	},
 	methods: {
 		//请求楼栋数据
-		getBuildingInfo() {
-			getBuindingInfoByStatus().then(res => {
-				this.buildingsData = res;
-			})
-		},
+		// getBuildingInfo() {
+		// 	getBuindingInfoByStatus().then(res => {
+		// 		this.buildingsData = res;
+		// 	})
+		// },
 		//为每条信息（对象）添加新属性
 		handleCompanyFields(res) {
 			this.companyFiledsData = res.map(item => {

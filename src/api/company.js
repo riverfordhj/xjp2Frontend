@@ -15,16 +15,7 @@ export function getBuildings(){
 		method: 'get'
 	})
 }
-// export function getBuindingInfoByStatus(statusParam){
-// 	let status = statusParam || '已建';
-// 	return request({
-// 		url: '/CompanyBuildings/GetBuildingInfoByStatus',
-// 		method:'get',
-// 		params: {
-// 			status
-// 		}
-// 	})
-// }
+
 export function getBuildingFloors(buildingName){
 	return request({
 		url: '/Combasic/GetBuildingFloor',
@@ -55,6 +46,15 @@ export function getInfoByBuildingNameAndFloor(buildingNameParam, floorParam){
 	})
 }
 
+export function getRoomByBuilding(BuildingName){
+	return request({
+		url: `/Combasic/GetRoomByBuilding`,
+		method: 'get',
+		params: {
+			BuildingName,
+		}
+	})
+}
 export function GetWholeCompanys_ZH(){
 	return request({
 		url: '/Combasic/GetWholeCompanys_ZH',
@@ -75,6 +75,11 @@ export function getCompanyBySearch(sname) {
 	  method: 'get',
 	})
 }
+
+
+
+
+
 
 
 
@@ -132,12 +137,7 @@ export function GetCompanysByFloor_ZH(arrData){
 
 
 
-export function getFloorInfoByBuilding(id){
-	return request({
-		url: `/CompanyBuildings/GetFloorInfoByBuilding/${id}`,
-		method: 'get'
-	})
-}
+
 
 export function getCompanyTaxInfo(){
 	return request({
