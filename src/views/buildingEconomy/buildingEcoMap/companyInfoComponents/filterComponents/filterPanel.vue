@@ -8,11 +8,8 @@
 						:value="item.buildingName">
 					</el-option>
 				</el-select>
-<<<<<<< HEAD
-				<el-select v-model="buildingFloorData.FloorValue" clearable  placeholder="请选择层"  @change="handleSecondSelect" >
-=======
 				<el-select v-model="buildingFloorData.FloorValue" clearable  placeholder="请选择房间"  @change="handleSecondSelect" >
->>>>>>> NetEnd1
+
 					<el-option
 						v-for="item in filteredFloorsInfo"
 						:key="item.id"
