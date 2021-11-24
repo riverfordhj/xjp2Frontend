@@ -49,18 +49,38 @@
 					</el-table>
 				</el-tab-pane>
 				<el-tab-pane label="楼宇信息" >
-					<el-table :data="buildingInfo" height="293" border style="width: 100%">
-								<el-table-column prop="buildingName" label="总体营收(万元)" width="120">
+					<el-table :data="totalTaR" height="293" border style="width: 100%">
+								<el-table-column prop="tTax" label="总体营收(万元)" width="120">
 								</el-table-column>
-								<el-table-column prop="companyName" label="总体税收(万元)" width="180">
+								<el-table-column prop="tRevenue" label="总体税收(万元)" width="180">
 								</el-table-column>
-								<el-table-column prop="unifiedSocialCreditCode" label="总体企业数量" width="180">
+								<el-table-column prop="comCount" label="总体企业数量" width="180">
 								</el-table-column>
-								<el-table-column prop="actualOfficeAddress" label="产业分布" width="180">
+					</el-table>
+				</el-tab-pane>
+				<el-tab-pane label="营收排名前10名" >
+					<el-table :data="countRevenue" height="293" border style="width: 100%">
+								<el-table-column prop="companyName" label="企业名称" width="180">
 								</el-table-column>
-								<el-table-column prop="unifiedSocialCreditCode" label="营收排名前10名" width="180">
+								<el-table-column prop="revenue" label="营收" width="180">
 								</el-table-column>
-								<el-table-column prop="actualOfficeAddress" label="纳税排名前10名" width="180">
+					</el-table>
+				</el-tab-pane>
+				  <el-tab-pane label="纳税排名前10名" >
+					<el-table :data="countTax" height="293" border style="width: 100%">
+								<el-table-column prop="companyName" label="企业名称" width="180">
+								</el-table-column>
+								<el-table-column prop="tax" label="税收" width="180">
+								</el-table-column>
+					</el-table>
+				</el-tab-pane>
+				<el-tab-pane label="产业分布" >
+					<el-table :data="industryType" height="293" border style="width: 100%">
+								<el-table-column prop="fdss" label="产业类型" width="180">
+								</el-table-column>
+								<el-table-column prop="industryRevenue" label="产业营收" width="180">
+								</el-table-column>
+								<el-table-column prop="industryTax" label="产业税收" width="180">
 								</el-table-column>
 					</el-table>
 				</el-tab-pane>
@@ -71,8 +91,8 @@
 
 <script>
 import DialogDrag from 'vue-dialog-drag';
-import { getInfoByBuildingNameAndFloor,getRoomByBuilding} from '@/api/company.js';
-
+import { getInfoByBuildingNameAndFloor,getRoomByBuilding,getCountTaxByBuilding,getCountRevenueByBuilding,
+         getTotalTaRByBuilding,getIndustryTypeByBuilding} from '@/api/company.js';
 import filterPanel from './filterComponents/filterPanel.vue'
 
 export default {
@@ -93,7 +113,12 @@ export default {
 		return {
 			option: { top: 250, left: 20, height: 420, width: 800, buttonPin: false },
 			companyDataForms: this.companyDatas,
-			buildingInfo:[{buildingName: 'dasdad'}],
+			 buildingInfo:[],
+			 countTax:null,
+			 countRevenue:null,
+			 industryType:null,
+			 totalTaR:null,
+			 companyCount:null,
 		}
 	},
 	computed:{
@@ -123,9 +148,41 @@ export default {
 				console.log(err);
 			})
 		},
+
 		//获取楼宇信息 总营收 税收 产业分布 楼宇企业数
 		getComInfoByBuildingName( ){
-			console.log(this.companyDataForms.buildingName)
+			debugger
+			const buildingName = this.companyDataForms.buildingName;
+			console.log(buildingName);
+		    //向后端请求 返回指定楼栋税收前十
+			getCountTaxByBuilding(buildingName).then(res =>{
+				this.countTax = res;
+			}).catch(err => {
+				console.log(err);
+			});
+
+			// //向后端请求 楼栋营收前十
+			getCountRevenueByBuilding(buildingName).then(res =>{
+				this.countRevenue = res;
+			}).catch(err => {
+				console.log(err);
+			});
+
+			// //向后端请求楼栋总税收、总营收
+			getTotalTaRByBuilding(buildingName).then(res =>{
+				this.totalTaR = res;
+				console.log(this.totalTaR);
+			}).catch(err => {
+				console.log(err);
+			});
+
+			// //向后端请求产业分类及产业总营收、税收
+			getIndustryTypeByBuilding(buildingName).then(res =>{
+				this.industryType = res;
+				console.log(this.industryType);
+			}).catch(err => {
+				console.log(err);
+			});
 
 		},
 		//定位到选定楼层
