@@ -50,11 +50,11 @@
 				</el-tab-pane>
 				<el-tab-pane label="楼宇信息" >
 					<el-table :data="totalTaR" height="293" border style="width: 100%">
-								<el-table-column prop="tTax" label="总体营收(万元)" width="120">
+								<el-table-column prop="tRevenue" label="总体营收(万元)" width="120">
 								</el-table-column>
-								<el-table-column prop="tRevenue" label="总体税收(万元)" width="180">
+								<el-table-column prop="tTax" label="总体税收(万元)" width="180">
 								</el-table-column>
-								<el-table-column prop="comCount" label="总体企业数量" width="180">
+								<el-table-column prop="companyCount" label="总体企业数量" width="180">
 								</el-table-column>
 					</el-table>
 				</el-tab-pane>
@@ -62,7 +62,7 @@
 					<el-table :data="countRevenue" height="293" border style="width: 100%">
 								<el-table-column prop="companyName" label="企业名称" width="180">
 								</el-table-column>
-								<el-table-column prop="revenue" label="营收" width="180">
+								<el-table-column prop="cRevenue" label="营收(万元)" width="180">
 								</el-table-column>
 					</el-table>
 				</el-tab-pane>
@@ -70,17 +70,19 @@
 					<el-table :data="countTax" height="293" border style="width: 100%">
 								<el-table-column prop="companyName" label="企业名称" width="180">
 								</el-table-column>
-								<el-table-column prop="tax" label="税收" width="180">
+								<el-table-column prop="cTax" label="税收(万元)" width="180">
 								</el-table-column>
 					</el-table>
 				</el-tab-pane>
 				<el-tab-pane label="产业分布" >
 					<el-table :data="industryType" height="293" border style="width: 100%">
-								<el-table-column prop="fdss" label="产业类型" width="180">
+								<el-table-column prop="industryName" label="产业类型" width="180">
 								</el-table-column>
-								<el-table-column prop="industryRevenue" label="产业营收" width="180">
+								<el-table-column prop="industryCompanyCount" label="所属产业企业数" width="180">
 								</el-table-column>
-								<el-table-column prop="industryTax" label="产业税收" width="180">
+								<el-table-column prop="industryRevenue" label="产业营收(万元)" width="180">
+								</el-table-column>
+								<el-table-column prop="industryTax" label="产业税收(万元)" width="180">
 								</el-table-column>
 					</el-table>
 				</el-tab-pane>
