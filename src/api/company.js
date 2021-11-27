@@ -121,6 +121,27 @@ export function getIndustryTypeByBuilding(BuildingName){
 	})
 }
 
+  //返回指定楼栋营收分布
+  export function getRevenueRoundByBuilding(BuildingName){
+	return request({
+		url: `/Combasic/GetRevenueRoundByBuilding`,
+		method: 'get',
+		params: {
+			BuildingName,
+		}
+	})
+}
+
+  //返回指定楼栋税收分布
+  export function getTaxRoundByBuilding(BuildingName){
+	return request({
+		url: `/Combasic/GetTaxRoundByBuilding`,
+		method: 'get',
+		params: {
+			BuildingName,
+		}
+	})
+}
 
 
 

@@ -8,8 +8,8 @@
 			:options="option"
 			@close="close"
 		>
-			<el-tabs type="border-card" @tab-click="getComInfoByBuildingName">
-				<el-tab-pane label="企业信息">			
+			<el-tabs type="border-card" v-model="activeName" @tab-click="getComInfoByBuildingName">
+				<el-tab-pane label="企业信息" name="first">			
 					<filter-panel ref="filterPanel" @firstSelectChange="getFloorInfos" @secondSelectChange="flyToTarget"></filter-panel>
 
 					<el-table :data="companyDataForms.companiesFullInfo" height="250" border style="width: 100%">
@@ -86,6 +86,11 @@
 								</el-table-column>
 					</el-table>
 				</el-tab-pane>
+				<el-tab-pane label="营收分布" >
+					<div height="293"  style="width: 100%">
+						<barchart-tax  v-if="taxRound.length>0" :taxRound = 'taxRound'></barchart-tax>
+					</div>
+				</el-tab-pane>
 			</el-tabs>
 		</dialog-drag>
 	</div>
@@ -94,13 +99,14 @@
 <script>
 import DialogDrag from 'vue-dialog-drag';
 import { getInfoByBuildingNameAndFloor,getRoomByBuilding,getCountTaxByBuilding,getCountRevenueByBuilding,
-         getTotalTaRByBuilding,getIndustryTypeByBuilding} from '@/api/company.js';
+         getTotalTaRByBuilding,getIndustryTypeByBuilding, getTaxRoundByBuilding,getRevenueRoundByBuilding} from '@/api/company.js';
 import filterPanel from './filterComponents/filterPanel.vue'
-
+import barchartTax from './filterComponents/barchartTax.vue'
 export default {
 	name: 'companyInfoPanel',
 	components: {
 		DialogDrag,
+		barchartTax,
 		filterPanel
 	},
 	props: {
@@ -120,7 +126,9 @@ export default {
 			 countRevenue:null,
 			 industryType:null,
 			 totalTaR:null,
+			 taxRound:[],
 			 companyCount:null,
+			 activeName: 'first',
 		}
 	},
 	computed:{
@@ -137,6 +145,7 @@ export default {
 	methods: {
 		close (){
 			this.companyDatas.show = false;
+			this.activeName = "first";
 			//清空子组件的状态
 			this.$refs.filterPanel.clearFilterPanel();
 		},
@@ -153,7 +162,6 @@ export default {
 
 		//获取楼宇信息 总营收 税收 产业分布 楼宇企业数
 		getComInfoByBuildingName( ){
-			debugger
 			const buildingName = this.companyDataForms.buildingName;
 			console.log(buildingName);
 		    //向后端请求 返回指定楼栋税收前十
@@ -173,7 +181,6 @@ export default {
 			// //向后端请求楼栋总税收、总营收
 			getTotalTaRByBuilding(buildingName).then(res =>{
 				this.totalTaR = res;
-				console.log(this.totalTaR);
 			}).catch(err => {
 				console.log(err);
 			});
@@ -181,7 +188,19 @@ export default {
 			// //向后端请求产业分类及产业总营收、税收
 			getIndustryTypeByBuilding(buildingName).then(res =>{
 				this.industryType = res;
-				console.log(this.industryType);
+			}).catch(err => {
+				console.log(err);
+			});
+
+			 getTaxRoundByBuilding(buildingName).then(res =>{
+				//  this.taxRound = res;
+				 if( this.taxRound.length < 1 || this.taxRound.length >2){
+					 this.taxRound = [];
+					res.forEach( item =>{
+                      this.taxRound.push(item.tRound);
+				    })				      
+				 }
+               console.log(this.taxRound);
 			}).catch(err => {
 				console.log(err);
 			});
@@ -191,6 +210,7 @@ export default {
 		flyToTarget (buildingName,curRoom){
 			//定位飞行过程中，信息面板设为不可见
 			this.companyDataForms.show = false;
+			this.activeName = "first";
 			getInfoByBuildingNameAndFloor(buildingName,curRoom).then( res =>{
 				this.bus.$emit('deliveryPositionInfo', res[0], curRoom);
 			})

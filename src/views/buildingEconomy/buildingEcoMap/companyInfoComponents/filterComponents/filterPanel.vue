@@ -66,13 +66,11 @@ export default {
 		getBuildings() {
 			getBuildings().then(res => {
 				this.buildingsData.buildings = res;
-				console.log(this.buildingsData.buildings);
 			}).catch(err =>{
 				console.log(err);
 			})
 		},
 		handleFirstSelect (curValue){
-			debugger
 			this.buildingFloorData.FloorValue = '';
 			this.$emit('firstSelectChange', curValue,  this.buildingFloorData);
 			
