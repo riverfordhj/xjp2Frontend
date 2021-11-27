@@ -88,6 +88,11 @@
 				</el-tab-pane>
 				<el-tab-pane label="营收分布" >
 					<div height="293"  style="width: 100%">
+						<barchart-revenue   :revenueRound = 'revenueRound'></barchart-revenue>
+					</div>
+				</el-tab-pane>
+				<el-tab-pane label="税收分布" >
+					<div height="293"  style="width: 100%">
 						<barchart-tax  v-if="taxRound.length>0" :taxRound = 'taxRound'></barchart-tax>
 					</div>
 				</el-tab-pane>
@@ -102,11 +107,13 @@ import { getInfoByBuildingNameAndFloor,getRoomByBuilding,getCountTaxByBuilding,g
          getTotalTaRByBuilding,getIndustryTypeByBuilding, getTaxRoundByBuilding,getRevenueRoundByBuilding} from '@/api/company.js';
 import filterPanel from './filterComponents/filterPanel.vue'
 import barchartTax from './filterComponents/barchartTax.vue'
+import barchartRevenue from './filterComponents/barchartRevenue.vue'
 export default {
 	name: 'companyInfoPanel',
 	components: {
 		DialogDrag,
 		barchartTax,
+		barchartRevenue,
 		filterPanel
 	},
 	props: {
@@ -127,6 +134,7 @@ export default {
 			 industryType:null,
 			 totalTaR:null,
 			 taxRound:[],
+			 revenueRound:[],
 			 companyCount:null,
 			 activeName: 'first',
 		}
@@ -193,17 +201,28 @@ export default {
 			});
 
 			 getTaxRoundByBuilding(buildingName).then(res =>{
-				//  this.taxRound = res;
-				 if( this.taxRound.length < 1 || this.taxRound.length >2){
-					 this.taxRound = [];
+				 this.taxRound = [];
+				 if( this.taxRound.length < 1){				 
 					res.forEach( item =>{
                       this.taxRound.push(item.tRound);
 				    })				      
 				 }
-               console.log(this.taxRound);
-			}).catch(err => {
+                 console.log(this.taxRound);
+			 }).catch(err => {
 				console.log(err);
-			});
+			    });
+
+			getRevenueRoundByBuilding(buildingName).then(res =>{
+				 this.revenueRound = [];
+				 if( this.revenueRound.length < 1){				 
+					res.forEach( item =>{
+                      this.revenueRound.push(item.rRound);
+				    })				      
+				 }
+                 console.log(this.revenueRound);
+			 }).catch(err => {
+				console.log(err);
+			    });
 
 		},
 		//定位到选定楼层

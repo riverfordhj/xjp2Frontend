@@ -22,7 +22,7 @@ export default {
       type: String,
       default: '300px'
     },
-    taxRound: {
+    revenueRound: {
       type: Array,
       default: function() {
         return []
@@ -54,7 +54,7 @@ export default {
   },
 
   watch: {
-    taxRound: {
+    revenueRound: {
       deep: true,
       handler(val) {
         this.setOptions(val);
@@ -82,7 +82,7 @@ export default {
             },
             xAxis: [{
               type: 'category',
-              data: ['0-30', '30-50', '50-100', '100-300', '300-500', '500-1000', '1000以上'],
+              data: ['0-50', '50-100', '100-500', '500-1000','1000-5000', '5000以上'],
               axisTick: {
                 alignWithLabel: true
               }
@@ -105,7 +105,7 @@ export default {
         },
     initChart() {
       this.chart = echarts.init(this.$el, 'macarons');
-      this.setOptions(this.taxRound);
+      this.setOptions(this.revenueRound);
     }
   }
 }
