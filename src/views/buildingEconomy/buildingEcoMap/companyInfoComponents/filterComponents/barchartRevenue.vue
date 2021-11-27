@@ -94,7 +94,7 @@ export default {
               }
             }],
             series: [{        
-              name: '税收分布',
+              name: '营收分布',
               type: 'bar',
               stack: 'vistors',
               barWidth: '60%',
