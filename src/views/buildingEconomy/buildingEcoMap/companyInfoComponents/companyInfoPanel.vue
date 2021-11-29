@@ -8,7 +8,7 @@
 			:options="option"
 			@close="close"
 		>
-			<el-tabs type="border-card" v-model="activeName" @tab-click="getComInfoByBuildingName">
+			<el-tabs type="border-card" v-model="companyDataForms.activeName" @tab-click="getComInfoByBuildingName">
 				<el-tab-pane label="企业信息" name="first">			
 					<filter-panel ref="filterPanel" @firstSelectChange="getFloorInfos" @secondSelectChange="flyToTarget"></filter-panel>
 
@@ -136,13 +136,16 @@ export default {
 			 taxRound:[],
 			 revenueRound:[],
 			 companyCount:null,
-			 activeName: 'first',
+			//  activeName: 'first',
 		}
 	},
 	computed:{
 		companyInFloorTitle(){
 			return '楼层入驻公司信息： ' + this.companyDataForms.title;
 		},
+		companyactiveName(){
+			return this.companyDataForms.activeName;
+		}
 	},
 	watch:{
 		"companyDatas.companiesFullInfo": function(){

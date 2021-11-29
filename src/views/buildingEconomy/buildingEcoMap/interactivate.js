@@ -325,7 +325,7 @@ var interactOperate = {
 		companyInfo.roomName = pickedFeature.getProperty('roomid')
 		this.companyDatas.buildingName = companyInfo.buildingName;
 		this.companyDatas.title = `${companyInfo.buildingName} - ${companyInfo.roomName}`;
-     
+    this.companyDatas.activeName = "first";
     this.getCompanyFullInfo(companyInfo) // JSON.stringify(
 
     // debugger

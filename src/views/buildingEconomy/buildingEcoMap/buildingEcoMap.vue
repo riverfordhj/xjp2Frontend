@@ -34,7 +34,8 @@ export default {
 				buildingName:'',
 				companiesFullInfo: [],
 				interactOperate,
-				clearFilter: false
+				clearFilter: false,
+				activeName: '',
 			},
 			modelTreeData: [],
 
