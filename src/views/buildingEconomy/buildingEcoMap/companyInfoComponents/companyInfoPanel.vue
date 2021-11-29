@@ -203,31 +203,32 @@ export default {
 				console.log(err);
 			});
 
+			getRevenueRoundByBuilding(buildingName).then(res =>{
+				 this.revenueRound = [];
+				 if( this.revenueRound.length < 1){
+					 Object.values(res[0]).map( val =>{
+						 this.revenueRound.push(val);
+					 })			 		      
+				 }				
+                  console.log(this.revenueRound);
+			 }).catch(err => {
+				console.log(err);
+			    });
+
 			 getTaxRoundByBuilding(buildingName).then(res =>{
 				 this.taxRound = [];
 				 if( this.taxRound.length < 1){				 
-					res.forEach( item =>{
-                      this.taxRound.push(item.tRound);
-				    })				      
+					Object.values(res[0]).map( val =>{
+						this.taxRound.push(val);
+					})				      
 				 }
                  console.log(this.taxRound);
 			 }).catch(err => {
 				console.log(err);
 			    });
 
-			getRevenueRoundByBuilding(buildingName).then(res =>{
-				 this.revenueRound = [];
-				 if( this.revenueRound.length < 1){				 
-					res.forEach( item =>{
-                      this.revenueRound.push(item.rRound);
-				    })				      
-				 }
-                 console.log(this.revenueRound);
-			 }).catch(err => {
-				console.log(err);
-			    });
-
-		},
+			
+		    },
 		//定位到选定楼层
 		flyToTarget (buildingName,curRoom){
 			//定位飞行过程中，信息面板设为不可见
