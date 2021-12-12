@@ -178,21 +178,12 @@ export const asyncRoutes = [
           roles: ['Administrator']
         }
       },
-      // {
-      //   path: 'index',
-      //   name: '地图',
-      //   component: () => import('@/views/map/cesium/index_9_24'), // cesium-test
-      //   meta: {
-      //     title: '地图(暂无)',
-      //     icon: 'map'
-      //   }
-      // },
       {
         path: 'monomerization_cesium',
-        name: '倾斜模型',
-        component: () => import('@/views/map/monomerization_cesium/index'),
+        name: 'rainPoint',
+        component: () => import('@/views/map/monomerization_cesium/index_rain'),
         meta: {
-          title: '火灾事件',
+          title: '渍水点',
           icon: 'map'
         }
       },

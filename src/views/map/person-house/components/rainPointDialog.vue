@@ -1,7 +1,7 @@
 <template>
   <el-dialog
     :title="title"
-    :data="locationinfo"
+    :data="rainpointinfo"
     :visible.sync="dialogVisible"
     width="25%"
   >
@@ -10,42 +10,26 @@
         <div class="msg">
           <el-row>
             <el-col :span="8">
-              <div class="grid-content bg-purple">姓名</div>
+              <div class="grid-content bg-purple">名称</div>
             </el-col>
             <el-col :span="16">
-              <div class="grid-content bg-purple">{{locationinfo["姓名"]}}</div>
+              <div class="grid-content bg-purple">{{rainpointinfo.name}}</div>
             </el-col>
           </el-row>
           <el-row>
             <el-col :span="8">
-              <div class="grid-content bg-purple">性别</div>
+              <div class="grid-content bg-purple">地址</div>
             </el-col>
             <el-col :span="16">
-              <div class="grid-content bg-purple">{{locationinfo["性别"]}}</div>
+              <div class="grid-content bg-purple">{{rainpointinfo.address || " "}}</div>
             </el-col>
           </el-row>
           <el-row>
             <el-col :span="8">
-              <div class="grid-content bg-purple">年龄</div>
+              <div class="grid-content bg-purple">上报人</div>
             </el-col>
             <el-col :span="16">
-              <div class="grid-content bg-purple">{{locationinfo["年龄"]}}</div>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="8">
-              <div class="grid-content bg-purple">电话</div>
-            </el-col>
-            <el-col :span="16">
-              <div class="grid-content bg-purple">{{locationinfo["联系电话"] || "无"}}</div>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="8">
-              <div class="grid-content bg-purple">居住地址</div>
-            </el-col>
-            <el-col :span="16">
-              <div class="grid-content bg-purple">{{locationinfo["居住地址"]}}</div>
+              <div class="grid-content bg-purple">{{rainpointinfo.report || " "}}</div>
             </el-col>
           </el-row>
           <el-row>
@@ -53,17 +37,18 @@
               <div class="grid-content bg-purple">类型</div>
             </el-col>
             <el-col :span="16">
-              <div class="grid-content bg-purple">{{locationinfo["类型"]}}</div>
+              <div class="grid-content bg-purple">{{rainpointinfo.type || "无"}}</div>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="8">
+              <div class="grid-content bg-purple">备注</div>
+            </el-col>
+            <el-col :span="16">
+              <div class="grid-content bg-purple">{{rainpointinfo.note || "无"}}</div>
             </el-col>
           </el-row>
         </div>
-        <!-- <div class="img">
-          <img
-            src="../../assets/cesium_images/刘德兰.png"
-            alt=""
-            class="oldMan-img"
-          >
-        </div> -->
       </div>
 
     </div>
@@ -71,7 +56,7 @@
 </template>
 
 <script>
-// import oldMen from '../../assets/cesium_images/刘德兰.png'
+
 export default {
   name: '',
   props: {
@@ -79,7 +64,7 @@ export default {
       type: Boolean,
       default: false
     },
-    locationinfo:{
+    rainpointinfo:{
        type: Object,
        default:function() {
         return []
@@ -88,7 +73,7 @@ export default {
   },
   data() {
     return {
-      title: '详细信息',
+      title: '渍水点信息',
       dialogVisible: false
     }
   },

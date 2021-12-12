@@ -153,6 +153,14 @@ export function getSpecialPersonLoction_ZH() {
     method: 'get'
   })
 }
+
+//获取渍水点 
+export function GetRainPoint() {
+  return request({
+    url: '/person/GetRainPoint',
+    method: 'get'
+  })
+}
 export function getFields() {
   return request({
     url: '/person/GetFields',
