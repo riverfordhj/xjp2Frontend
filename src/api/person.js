@@ -161,6 +161,31 @@ export function GetRainPoint() {
     method: 'get'
   })
 }
+
+export function DeleteTargetRain(rainFields){
+	return request({
+    url: '/Rooms/DeleteTargetRain',
+    method: 'post',
+		data: rainFields
+  })
+}
+
+export function CreateTargetRain(rainFields){
+	return request({
+    url: '/Rooms/CreateTargetRain',
+    method: 'post',
+		data: rainFields
+  })
+}
+
+export function UpdateTargetRain(rainFields){
+	return request({
+    url: '/Rooms/UpdateTargetRain',
+    method: 'post',
+		data: rainFields
+  })
+}
+
 export function getFields() {
   return request({
     url: '/person/GetFields',
