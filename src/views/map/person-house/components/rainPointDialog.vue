@@ -7,50 +7,52 @@
   >
     <div class="main">
       <div>
-        <div class="msg">
-          <el-row>
-            <el-col :span="8">
-              <div class="grid-content bg-purple">名称</div>
-            </el-col>
-            <el-col :span="16">
-              <div class="grid-content bg-purple">{{rainpointinfo.name}}</div>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="8">
-              <div class="grid-content bg-purple">地址</div>
-            </el-col>
-            <el-col :span="16">
-              <div class="grid-content bg-purple">{{rainpointinfo.address || " "}}</div>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="8">
-              <div class="grid-content bg-purple">上报人</div>
-            </el-col>
-            <el-col :span="16">
-              <div class="grid-content bg-purple">{{rainpointinfo.report || " "}}</div>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="8">
-              <div class="grid-content bg-purple">类型</div>
-            </el-col>
-            <el-col :span="16">
-              <div class="grid-content bg-purple">{{rainpointinfo.type || "无"}}</div>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="8">
-              <div class="grid-content bg-purple">备注</div>
-            </el-col>
-            <el-col :span="16">
-              <div class="grid-content bg-purple">{{rainpointinfo.note || "无"}}</div>
-            </el-col>
-          </el-row>
-        </div>
+          <div class="msg">
+            <el-row>
+              <el-col :span="8">
+                <div class="grid-content bg-purple">名称</div>
+              </el-col>
+              <el-col :span="16">
+                <div class="grid-content bg-purple">{{rainpointinfo.name}}</div>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="8">
+                <div class="grid-content bg-purple">地址</div>
+              </el-col>
+              <el-col :span="16">
+                <div class="grid-content bg-purple">{{rainpointinfo.address || " "}}</div>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="8">
+                <div class="grid-content bg-purple">上报人</div>
+              </el-col>
+              <el-col :span="16">
+                <div class="grid-content bg-purple">{{rainpointinfo.report || " "}}</div>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="8">
+                <div class="grid-content bg-purple">类型</div>
+              </el-col>
+              <el-col :span="16">
+                <div class="grid-content bg-purple">{{rainpointinfo.type || "无"}}</div>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="8">
+                <div class="grid-content bg-purple">备注</div>
+              </el-col>
+              <el-col :span="16">
+                <div class="grid-content bg-purple">{{rainpointinfo.note || "无"}}</div>
+              </el-col>
+            </el-row>
+          </div>
+          <div class="img">
+              <el-image :src= rainpointinfo.filePath></el-image>
+           </div>
       </div>
-
     </div>
   </el-dialog>
 </template>
@@ -101,7 +103,7 @@ export default {
 
 .msg {
   float: left;
-  width: 100%;
+  width: 60%;
   font-size: 14px;
   color: #606266;
 }

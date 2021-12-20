@@ -53,7 +53,12 @@ module.exports = {
 				//target: 'http://112.17.184.211:19898/XjpBackend2',
 				target: 'https://localhost:44318',
         secure: false
-      }
+      },
+      '/UploadFile': {
+				//target: 'http://112.17.184.211:19898/XjpBackend2',
+				target: 'https://localhost:44318',
+        secure: false
+      },
     },
     after: require('./mock/mock-server.js')
   },
