@@ -43,7 +43,6 @@
 						<span v-else>{{ row.status }}</span>
 					</template>
 				</el-table-column>
-				<el-table-column align="center" label="类型" width="100">
 				<el-table-column align="center" label="上报时间" width="80">
 					<template slot-scope="{row}">
 						<el-input v-if="row.edit" v-model="row.reportTime" class="edit-input" size="small" clearable/>
