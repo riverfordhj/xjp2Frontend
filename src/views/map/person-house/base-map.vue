@@ -41,6 +41,8 @@
     <ColorSetPage :option="layerPropertyOption" @colorChange="setDthColor" />
     <!-- 人房信息面板 -->
     <PersonHouseInfomationPage :person-house-info="personHouseDataForm" />
+    <!-- 渍水点详细信息面板 -->
+    <RainpointDialog :opened="personHouseDataForm.opened" :rainpointinfo ="personHouseDataForm.raininfo" />
   </div>
 </template>
 
@@ -50,19 +52,22 @@ import axios from 'axios'
 import DialogDrag from 'vue-dialog-drag'
 
 var Cesium = require('cesium/Cesium')
-
+import {GetRainPoint } from '@/api/person.js'
 import 'cesium/Widgets/widgets.css'
 import { interactOperate } from './interactivate3DTiles.js'
 import PersonHouseInfomationPage from './components/person-house-infomation-page'
 import ColorSetPage from './components/color-set-page'
+import RainpointDialog from './components/rainPointDialog.vue'
+import Wetpoint from "../../../assets/cesium_images/渍水点.svg"
 
 
 export default {
   name: 'PersonHouseMap',
   components: {
     DialogDrag,
+    RainpointDialog,
     PersonHouseInfomationPage,
-    ColorSetPage
+    ColorSetPage,
   },
   data() {
     return {
@@ -71,6 +76,7 @@ export default {
 
       layerTreeVisible: false,
       modelTreeData: [],
+      rainPoint:[],
 
       defaultProps: {
         children: 'children',
@@ -86,18 +92,22 @@ export default {
         color: '' // 模型颜色
       },
       // modelColor: null,
-
+     
       personHouseDataForm: {
         title: '人房数据页',
         show: false,
+        opened: false,
         roomid: '',
         personInRoom: [],
+        raininfo:{},
         viewer: this.viewer,
         interactOperate
       }
     }
   },
-
+  created(){
+    this.getrainPointData()
+  },
   mounted() {
     this.initMap()
     this.loadData()
@@ -285,7 +295,64 @@ export default {
           color: color
         })
       }
-    }
+    },
+    //获取后台数据，渍水点 添加entity标记
+    getrainPointData(){
+        var _this = this;
+        GetRainPoint().then(response =>{
+           response.forEach(item =>{
+            debugger
+                _this.addEntity(
+                    this.viewer,
+                    Cesium.Cartesian3.fromDegrees(
+                      //114.31988525390625, 30.577434539794922, 60),
+                        parseFloat(item["longitude"]),
+                        parseFloat(item["latitude"]),
+                        parseFloat(item["height"]) 
+                     ),
+                    item.name,   //item.type,'里斯'
+                    Wetpoint
+                );
+                  console.log(item);
+           })  
+        }).catch(err =>{
+            console.log(err);
+        });
+    },
+    addEntity(viewer,postion, text, img) {
+        viewer.entities.add({
+            // id: text,
+            // id:personID,
+            // phone:phone,
+            position: postion,
+            label: {
+            text: text,
+            // font: parseInt(objEntity.FontSize) * 2.2 + 'px ' + objEntity.FontName,
+            style: Cesium.LabelStyle.FILL_AND_OUTLINE,
+            outlineWidth: 6,
+            translucencyByDistance: new Cesium.NearFarScalar(
+                1.5e2,
+                1.0,
+                1.5e5,
+                0.0
+            ),
+            horizontalOrigin: Cesium.HorizontalOrigin.LEFT,
+            // verticalOrigin : LSGlobe.VerticalOrigin.BOTTOM, //垂直方向以底部来计算标签的位置
+            pixelOffset: new Cesium.Cartesian2(20, -2), // 偏移量
+            disableDepthTestDistance: 1000000000, // 优先级
+            scale: 0.5,
+            },
+            billboard: {
+            image: img, // default: undefined
+            text: "123",
+            show: true, // default
+            width: 55,
+            height: 55,
+            disableDepthTestDistance: 1000000000,
+            scale: 0.6,
+            },
+        });
+    },
   }
 }
 </script>

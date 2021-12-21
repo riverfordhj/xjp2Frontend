@@ -88,7 +88,7 @@ export default {
   },
   data() {
     return {
-      title: '老年人信息',
+      title: '详细信息',
       dialogVisible: false
     }
   },

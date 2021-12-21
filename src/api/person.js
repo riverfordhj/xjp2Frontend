@@ -82,7 +82,6 @@ export function getPersonsBySearch(sname) {
 
 //公共服务 ----特殊人群
 export function getSpecialType() {
-  debugger
   return request({
     url:  '/person/GetSpecialGroupsType',
     method: 'get'
@@ -97,7 +96,6 @@ export function getSpecialGroups() {
 
 //公共服务 ----低保户
 export function getPoorType() {
-  debugger
   return request({
     url:  '/person/GetPoorType',
     method: 'get'
@@ -133,8 +131,7 @@ export function getDisability() {
 
 
 //公共服务 ----军人服务
-export function getMilitaryType() {
-  debugger
+export function getMilitaryType() {  
   return request({
     url:  '/person/GetMilitaryType',
     method: 'get'
@@ -153,6 +150,39 @@ export function getSpecialPersonLoction_ZH() {
     method: 'get'
   })
 }
+
+//获取渍水点 
+export function GetRainPoint() {
+  return request({
+    url: '/person/GetRainPoint',
+    method: 'get'
+  })
+}
+
+export function DeleteTargetRain(rainFields){
+	return request({
+    url: '/Rooms/DeleteTargetRain',
+    method: 'post',
+		data: rainFields
+  })
+}
+
+export function CreateTargetRain(rainFields){
+	return request({
+    url: '/Rooms/CreateTargetRain',
+    method: 'post',
+		data: rainFields
+  })
+}
+
+export function UpdateTargetRain(rainFields){
+	return request({
+    url: '/Rooms/UpdateTargetRain',
+    method: 'post',
+		data: rainFields
+  })
+}
+
 export function getFields() {
   return request({
     url: '/person/GetFields',
@@ -322,6 +352,17 @@ export function BatchingPersonHouseData(tableList) {
     url: '/person/BatchingPersonHouseData',
 		method: 'post',
 		data: tableList
+  })
+}
+
+
+//处理路径存储问题
+export function SaveImgPath(row) {
+  debugger
+  return request({
+    url: '/ImgUpload/SaveImgPath',
+		method: 'post',
+    data: row
   })
 }
 

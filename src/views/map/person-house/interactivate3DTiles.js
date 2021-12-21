@@ -4,7 +4,7 @@ export {
 }
 
 var Cesium = require('cesium/Cesium')
-import { getPersonByRoom } from '@/api/person.js'
+import { getPersonByRoom,GetRainPoint } from '@/api/person.js'
 
 var interactOperate = {
   viewer: null, // cesium viewer
@@ -119,8 +119,7 @@ var interactOperate = {
     this.nameOverlay.style.bottom = this.viewer.canvas.clientHeight - movement.endPosition.y + 'px'
     this.nameOverlay.style.left = movement.endPosition.x + 'px'
 
-    // nameOverlay.textContent = '水岸星城党员群众服务中心'
-    // debugger
+
     this.nameOverlay.textContent = name
 
     // Highlight the feature if it's not already selected.
@@ -161,10 +160,8 @@ var interactOperate = {
   },
   // mouseclick事件处理
   onLeftClick(movement) {
-    // debugger
     // Pick a new feature
     const room = this.pickFeature(movement.position)
-
     if (room === null) {
       this.orginClickHandler(movement.position)
       return
@@ -173,10 +170,35 @@ var interactOperate = {
     this.setSelectedFeature(room)
 
     // 显示属性面板
-    this.setInfobox(room)
-
+    const boool = room.hasOwnProperty("collection");
+    
+    if(boool){
+       this.rainPoint(movement.position);
+    }else{
+      this.setInfobox(room);
+    }
     // this.FlytoRoom(pickedFeature)
   },
+  // 2021.12.10渍水点 点击事件
+ rainPoint(position){
+    //const pickedPrimitive = this.viewer.scene.pick(movement.position);
+    const pickedPrimitive = this.viewer.scene.pick(position)
+    const pickedEntity = Cesium.defined(pickedPrimitive)
+                    ? pickedPrimitive.id
+                    : undefined;
+    if (Cesium.defined(pickedEntity)) {
+        // 点击页面上的实体图片返回相关信息pickedEntity
+        if (pickedEntity.label.text._value !== "") {
+            this.personHouseDataForm.opened = !this.personHouseDataForm.opened;
+            console.log(pickedEntity.label.text._value, pickedEntity);
+            GetRainPoint().then(response =>{
+                this.personHouseDataForm.raininfo = response.find(item => item.name === pickedEntity.label.text._value)                       
+            });
+            return;
+          }
+     }
+ },
+
   // 高亮处理选择room
   setSelectedFeature(room) {
     // Select the feature if it's not already selected
@@ -209,7 +231,6 @@ var interactOperate = {
   // 根据屏幕坐标选取 room model
   pickFeature(position) {
     const pickedFeature = this.viewer.scene.pick(position)
-     debugger
     if (!Cesium.defined(pickedFeature)) {
       return null
     } else {
@@ -219,7 +240,6 @@ var interactOperate = {
   // 根据屏幕坐标及roomNO选取 room model
   pickFeatureByRoomNO(position, roomNO) {
     const features = this.viewer.scene.drillPick(position)
-    // debugger
     for (let i = 0; i < features.length; i++) {
       const feature = features[i]
       if (!Cesium.defined(feature)) {
@@ -235,7 +255,6 @@ var interactOperate = {
   },
 
   FlytoRoom(position, roomNO) {
-    // debugger
     this.roomNO = roomNO
 
     var longitude = Cesium.Math.toRadians(position.long)
@@ -276,7 +295,6 @@ var interactOperate = {
   },
   // 飞到room后，根据屏幕中心点选取room
   flytoComplete() {
-    // debugger
     const ow = document.getElementById('cesiumContainer').offsetWidth / 2
     const oh = document.getElementById('cesiumContainer').offsetHeight / 2
 
@@ -341,17 +359,13 @@ var interactOperate = {
     roomInfo.RoomNO = `${unit}-${roomId}`
 
     this.personHouseDataForm.roomid = `${roomInfo.AddressName}-${roomInfo.BuildingName}-${roomInfo.RoomNO}`
-    // debugger
     this.getPersonInRoom(roomInfo) // JSON.stringify(
 
-    // debugger
     this.setSelectedEntity(pickedFeature)
   },
   // 获取后台数据
   getPersonInRoom(roomInfo) {
-    debugger
     getPersonByRoom(roomInfo).then(response => { // login{      username: 'hj',      password: 'password'    }
-      // debugger
       if (this.personHouseDataForm.show !== true) {
         this.personHouseDataForm.show = true
       }
@@ -390,7 +404,6 @@ var interactOperate = {
   },
   // 对cesium viewer 进行配置，响应鼠标事件，对 3dtile feature 选择、高亮显示
   install(viewer, personHouseDataForm) {
-    // debugger
 
     this.viewer = viewer
     this.personHouseDataForm = personHouseDataForm

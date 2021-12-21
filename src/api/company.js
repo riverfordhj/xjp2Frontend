@@ -77,7 +77,71 @@ export function getCompanyBySearch(sname) {
 }
 
 
+// 返回指定楼栋税收前十
+export function getCountTaxByBuilding(BuildingName){
+	return request({
+		url: `/Combasic/GetCountTaxByBuilding`,
+		method: 'get',
+		params: {
+			BuildingName,
+		}
+	})
+}
 
+//返回指定楼栋营收前十
+export function getCountRevenueByBuilding(BuildingName){
+	return request({
+		url: `/Combasic/GetCountRevenueByBuilding`,
+		method: 'get',
+		params: {
+			BuildingName,
+		}
+	})
+}
+
+  //返回指定楼栋总税收、总营收
+export function getTotalTaRByBuilding(BuildingName){
+	return request({
+		url: `/Combasic/GetTotalTaRByBuilding`,
+		method: 'get',
+		params: {
+			BuildingName,
+		}
+	})
+}
+
+  //返回指定楼栋产业分类及产业总营收、税收
+export function getIndustryTypeByBuilding(BuildingName){
+	return request({
+		url: `/Combasic/GetIndustryTypeByBuilding`,
+		method: 'get',
+		params: {
+			BuildingName,
+		}
+	})
+}
+
+  //返回指定楼栋营收分布
+  export function getRevenueRoundByBuilding(BuildingName){
+	return request({
+		url: `/Combasic/GetRevenueRoundByBuilding`,
+		method: 'get',
+		params: {
+			BuildingName,
+		}
+	})
+}
+
+  //返回指定楼栋税收分布
+  export function getTaxRoundByBuilding(BuildingName){
+	return request({
+		url: `/Combasic/GetTaxRoundByBuilding`,
+		method: 'get',
+		params: {
+			BuildingName,
+		}
+	})
+}
 
 
 

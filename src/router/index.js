@@ -178,21 +178,12 @@ export const asyncRoutes = [
           roles: ['Administrator']
         }
       },
-      // {
-      //   path: 'index',
-      //   name: '地图',
-      //   component: () => import('@/views/map/cesium/index_9_24'), // cesium-test
-      //   meta: {
-      //     title: '地图(暂无)',
-      //     icon: 'map'
-      //   }
-      // },
       {
         path: 'monomerization_cesium',
-        name: '倾斜模型',
-        component: () => import('@/views/map/monomerization_cesium/index'),
+        name: 'rainPoint',
+        component: () => import('@/views/map/monomerization_cesium/index_rain'),
         meta: {
-          title: '火灾事件',
+          title: '渍水点',
           icon: 'map'
         }
       },
@@ -401,64 +392,44 @@ export const asyncRoutes = [
 					icon: 'search'
 				}
 			},
-			{
-				path: 'buildingInfoTable',
-				name: 'buildingInfoTable',
-				component: () => import('@/views/buildingEconomy/buildingInfoTable'),
-				meta: {
-					title: '商业体信息表',
-					icon: 'table' 
-				}
-			},
-			{
-				path: 'buildingEcoTable',
-				name: 'buildingEcoTable',
-				component: () => import('@/views/buildingEconomy/buildingEcoTable/buildingEcoTable'),
-				meta: {
-					title: '公司信息管理',
-					icon: 'dataManager' 
-				}
-			},
-			{
-				path: 'companyTax',
-				name: 'companyTax',
-				component: () => import('@/views/buildingEconomy/buildingEcoTable/companyTax'),
-				meta: {
-					title: '公司纳税信息',
-					icon: 'dataManager' 
-				}
-			},		
-			{
-				path: 'inqueryBuildingTax',
-				name: 'inqueryBuildingTax',
-				component: () => import('@/views/buildingEconomy/inqueryCompanyTax/inquery-companyTax.vue'),
-				meta: {
-					title: '公司税收统计分析',
-					icon: 'search'
-				}
-			}
+			// {
+			// 	path: 'buildingInfoTable',
+			// 	name: 'buildingInfoTable',
+			// 	component: () => import('@/views/buildingEconomy/buildingInfoTable'),
+			// 	meta: {
+			// 		title: '商业体信息表',
+			// 		icon: 'table' 
+			// 	}
+			// },
+			// {
+			// 	path: 'buildingEcoTable',
+			// 	name: 'buildingEcoTable',
+			// 	component: () => import('@/views/buildingEconomy/buildingEcoTable/buildingEcoTable'),
+			// 	meta: {
+			// 		title: '公司信息管理',
+			// 		icon: 'dataManager' 
+			// 	}
+			// },
+			// {
+			// 	path: 'companyTax',
+			// 	name: 'companyTax',
+			// 	component: () => import('@/views/buildingEconomy/buildingEcoTable/companyTax'),
+			// 	meta: {
+			// 		title: '公司纳税信息',
+			// 		icon: 'dataManager' 
+			// 	}
+			// },		
+			// {
+			// 	path: 'inqueryBuildingTax',
+			// 	name: 'inqueryBuildingTax',
+			// 	component: () => import('@/views/buildingEconomy/inqueryCompanyTax/inquery-companyTax.vue'),
+			// 	meta: {
+			// 		title: '公司税收统计分析',
+			// 		icon: 'search'
+			// 	}
+			// }
     ]
 	},
-  // {
-  //   path: '/map1',
-  //   component: Layout,
-  //   meta: {
-  //     title: '地图',
-  //     icon: 'map',
-  //   },
-  //   children: [
-  //     {
-  //       path: 'person-house-map',
-  //       name: 'PersonHouseMap',
-  //       component: () => import('@/views/map/person-house/base-map'), // cesium-test
-  //       meta: {
-  //         title: '人房地图',
-  //         icon: 'map',
-  //         roles: ['Administrator']
-  //       }
-  //     }
-  //   ]
-  // },
 	{
     path: '/house',
     component: Layout,

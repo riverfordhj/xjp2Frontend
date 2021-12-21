@@ -48,16 +48,6 @@
             :value="item.label">
           </el-option>
         </el-select>
-       <!-- <el-tree  
-         show-checkbox 
-         :data="typeData" 
-         :props="defaultProps" 
-         :default-expanded-keys="[1]"
-         :default-checked-keys="defaultChecked"
-          node-key="id"
-         @check-change="handleCheckChange">
-
-       </el-tree> -->
     
     </dialog-drag>
 
@@ -125,7 +115,6 @@ export default {
         ]
 
       },
-      defaultChecked: [], // 模型树check状态
       defaultProps: {
         children: 'children',
         label: 'label'
@@ -150,29 +139,6 @@ export default {
 
       ],
       typeoption:'',
-      // typeData:[
-      //   {
-      //       id: 1,
-      //       label:"特殊人群类别",
-      //       children:[
-      //       {
-      //         id:11,
-      //         label:"精神病人"
-      //       },
-      //       {
-      //         id:12,
-      //         label:"信访维稳人员"
-      //       },
-      //         {
-      //         id:13,
-      //         label:"邪教人员"
-      //       },
-      //       {
-      //         id:14,
-      //         label:"吸毒人员"
-      //       }
-      //       ],
-      //   }],
       dialogVisible: false,
       dialogVisible2: false,
       dtfFeatures: null,
@@ -225,24 +191,6 @@ export default {
       this.dialogVisible2 = false;
       this.typeoption = '';
     },
-    //树形菜单checkbox
-    // handleCheckChange(data, checked, indeterminate) {
-    //   debugger
-    //       if(data.id == "11" ){
-    //         this.getMental();
-    //         viewer.entities.show = checked;
-            
-    //       }else if(data.id == "12" ){
-    //         this.getComplaint();
-    //         viewer.entities.show = checked;
-    //       }else if(data.id == "13" ){
-    //         this.getHeresy();
-    //         viewer.entities.show = checked;
-    //       }else if(data.id == "14" ){
-    //         this.getDrug();
-    //         viewer.entities.show = checked;
-    //       }
-    // },
     FlyTo(feature) {
       if (!feature) {
         feature = this.theFeature;
@@ -349,7 +297,6 @@ export default {
         }).catch(err =>{
           console.log(err);
         });
-        return
     },
     //获取后台数据，过滤信访维稳人员并渲染到页面上
     getComplaint(){
@@ -418,7 +365,6 @@ export default {
         });
     },
     getSpecialType(typeoption){
-      debugger
       viewer.entities.removeAll();
       console.log(viewer.entities.values);
       if(typeoption == "精神病人"){
@@ -683,19 +629,19 @@ export default {
       handler.setInputAction((movement) => {
         var pickedPrimitive = viewer.scene.pick(movement.position);
         var pickedEntity = Cesium.defined(pickedPrimitive)
-          ? pickedPrimitive.id
-          : undefined;
-        if (Cesium.defined(pickedEntity)) {
-          // 点击页面上的实体图片返回相关信息pickedEntity
-          if (pickedEntity.label.text._value !== "") {
-            _this.opened = !_this.opened;
-            console.log(pickedEntity.label.text._value, pickedEntity);
-             getSpecialPersonLoction_ZH().then(response =>{
-                _this.filterLoctionInfo = response.find(item => item["姓名"] === pickedEntity.label.text._value)                       
-             });
-             return;
-          }
-        }
+                         ? pickedPrimitive.id
+                         : undefined;
+              if (Cesium.defined(pickedEntity)) {                
+                // 点击页面上的实体图片返回相关信息pickedEntity
+                if (pickedEntity.label.text._value !== "") {                
+                  _this.opened = !_this.opened;
+                  console.log(pickedEntity.label.text._value, pickedEntity);
+                  getSpecialPersonLoction_ZH().then(response =>{
+                      _this.filterLoctionInfo = response.find(item => item["姓名"] === pickedEntity.label.text._value)                       
+                  });
+                  return;
+                }
+              }
       }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
     },
     asComfirm() {
@@ -703,7 +649,6 @@ export default {
       var arr = viewer.entities.values;
       var entity = arr.find(o =>(o.label.text._value == _this.entityName || o.id ==  _this.entityName || o.phone == _this.entityName && o.id != '' && o.phone != '' ));
       if(entity){
-        debugger
         viewer.flyTo(entity);
       }else{
          this.$message.error('请输入正确姓名、身份证、电话');

@@ -29,7 +29,7 @@
 						<span v-else>{{ row.height }}</span>
 					</template>
 				</el-table-column>
-				<el-table-column align="center" label="上报人" width="100">
+				<el-table-column align="center" label="上报人" width="80">
 					<template slot-scope="{row}">
 						<el-input v-if="row.edit" v-model="row.report" class="edit-input" size="small" clearable/>
 						<span v-else>{{ row.report }}</span>
@@ -44,6 +44,19 @@
 					</template>
 				</el-table-column>
 				<el-table-column align="center" label="类型" width="100">
+				<el-table-column align="center" label="上报时间" width="80">
+					<template slot-scope="{row}">
+						<el-input v-if="row.edit" v-model="row.reportTime" class="edit-input" size="small" clearable/>
+						<span v-else>{{ row.reportTime }}</span>
+					</template>
+				</el-table-column>
+				<el-table-column align="center" label="状态" width="80">
+					<template slot-scope="{row}">
+						<el-input v-if="row.edit" v-model="row.status" class="edit-input" size="small" clearable/>
+						<span v-else>{{ row.status }}</span>
+					</template>
+				</el-table-column>
+				<el-table-column align="center" label="类型" width="80">
 					<template slot-scope="{row}">
 						<el-input v-if="row.edit" v-model="row.type" class="edit-input" size="small" clearable/>
 						<span v-else>{{ row.type }}</span>
@@ -154,10 +167,17 @@
 <script>
 var Cesium = require("cesium/Cesium");
 import "cesium/Widgets/widgets.css";
+import uploadImage from '@/components/uploadImage.vue';
 import {GetRainPoint, DeleteTargetRain, CreateTargetRain, UpdateTargetRain} from '@/api/person.js'
 import checkPermission from '@/utils/permission.js';//权限判断函数
 export default {
     name:'rain',
+    props:{
+			labelName: {
+			type: String,
+			default: 'upload-Image'
+			},
+		},		
     data(){
         return{
             rainPoint:[],
@@ -183,7 +203,7 @@ export default {
         }
     },
     components: {
-	
+	   uploadImage
 	},
     computed:{
 
