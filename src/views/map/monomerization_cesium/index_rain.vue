@@ -73,6 +73,11 @@
 						<span v-else>{{ row.note }}</span>
 					</template>
 				</el-table-column>
+				                <el-table-column  align="center" label="上传" width="170" fixed="right">
+					<template slot-scope="{row}">
+			            <upload-image label-name="上传照片" :rowdata="row" ></upload-image>					
+					</template>
+                </el-table-column>
 				<el-table-column   align="center" label="编辑" width="240" fixed="right">
 				<template slot-scope="{row}">
 					<el-button-group  v-if ="row.edit === false" :key="row.id">
