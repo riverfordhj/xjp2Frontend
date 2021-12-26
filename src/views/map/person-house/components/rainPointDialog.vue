@@ -21,7 +21,7 @@
                 <div class="grid-content bg-purple">地址</div>
               </el-col>
               <el-col :span="16">
-                <div class="grid-content bg-purple">{{rainpointinfo.address || " "}}</div>
+                <div class="grid-content bg-purple">{{rainpointinfo.address || "无"}}</div>
               </el-col>
             </el-row>
             <el-row>
@@ -29,7 +29,7 @@
                 <div class="grid-content bg-purple">上报人</div>
               </el-col>
               <el-col :span="16">
-                <div class="grid-content bg-purple">{{rainpointinfo.report || " "}}</div>
+                <div class="grid-content bg-purple">{{rainpointinfo.report || "无"}}</div>
               </el-col>
             </el-row>
             <el-row>
@@ -38,6 +38,14 @@
               </el-col>
               <el-col :span="16">
                 <div class="grid-content bg-purple">{{rainpointinfo.type || "无"}}</div>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="8">
+                <div class="grid-content bg-purple">上报时间</div>
+              </el-col>
+              <el-col :span="16">
+                <div class="grid-content bg-purple">{{rainpointinfo.reportTime || "无"}}</div>
               </el-col>
             </el-row>
             <el-row>
