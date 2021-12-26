@@ -1,7 +1,5 @@
 <template>
 <div>
-
-       <!-- <el-image :src="src"></el-image> -->
 		<el-upload ref="loadimage" 
 		           :on-success="imgSuccess"
 				   :on-remove="imgRemove"
@@ -24,11 +22,8 @@ export default {
  name: '',
  data(){
 	  return {
-		  test:"hejinin",
 			loading: false,
-			uploadUrl:"/api/ImgUpload/SingleFileUpload",
-			  src: '/UploadFile/20211219/wwww_211949.png'
-			//   src:"https://localhost:44318/UploadFile/20211216/fff_170014.jpg"
+		    uploadUrl:"/XjpBackend/api/ImgUpload/SingleFileUpload",
 		}
  },
  props:{
@@ -41,7 +36,6 @@ export default {
 		}
  },
  created(){
-        // console.log(this.rowdata);
  },
  methods: {
 		submitUpload(){			
@@ -51,10 +45,13 @@ export default {
 			let isSuccess = true ;
 			this.rowdata.filePath = res.completeFilePath,
 		    SaveImgPath(this.rowdata).catch(err => {isSuccess = false; console.log(err);});
-            console.log(this.rowdata);
-			console.log(res.completeFilePath,1);
-			console.log(file,2);
-            console.log(fileList,3);
+			console.log(res);
+			this.$message({
+					message: res,
+					type: 'success'
+				});
+			// console.log(file,2);
+            // console.log(fileList,3);
 		},
 		imgRemove(){
 
