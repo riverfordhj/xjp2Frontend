@@ -35,7 +35,7 @@
 						<span v-else>{{ row.report }}</span>
 					</template>
 				</el-table-column>
-				<el-table-column align="center" label="状态" width="100">
+				<el-table-column align="center" label="状态" width="80">
 					<template slot-scope="{row}">
 						<el-select v-if="row.edit" v-model="row.status" size="small" placeholder="请选择">
 							<el-option v-for="item in ttstatus" :key="item" :label="item" :value="item"></el-option>
@@ -43,16 +43,9 @@
 						<span v-else>{{ row.status }}</span>
 					</template>
 				</el-table-column>
-				<el-table-column align="center" label="上报时间" width="80">
+				<el-table-column align="center" label="上报时间" width="160">
 					<template slot-scope="{row}">
-						<el-input v-if="row.edit" v-model="row.reportTime" class="edit-input" size="small" clearable/>
-						<span v-else>{{ row.reportTime }}</span>
-					</template>
-				</el-table-column>
-				<el-table-column align="center" label="状态" width="80">
-					<template slot-scope="{row}">
-						<el-input v-if="row.edit" v-model="row.status" class="edit-input" size="small" clearable/>
-						<span v-else>{{ row.status }}</span>
+						<span>{{ row.reportTime }}</span>
 					</template>
 				</el-table-column>
 				<el-table-column align="center" label="类型" width="80">
@@ -141,13 +134,22 @@
 				<el-input v-model="formData.report" placeholder="上报人"></el-input>
 				</el-form-item>
 				<el-form-item label="状态" >
-				<el-select v-model="formData.status" placeholder="请选择" clearable >
+				<el-select v-model="formData.status" placeholder="请选择" clearable style="width:100%">
 					<el-option
 						v-for="item in ttstatus"
 						:key="item"
 						:value="item">
 					</el-option>
 				</el-select>
+				</el-form-item>
+				<el-form-item label="上报时间">
+					<el-date-picker
+					 type="datetime" 
+					 v-model="formData.reportTime" 
+					 placeholder="选择日期时间"
+					 value-format="yyyy-MM-dd HH:mm:ss"
+					 style="width:100%">
+					</el-date-picker>
 				</el-form-item>
 				<el-form-item label="类型" >
 				<el-input v-model="formData.type" placeholder="类型"></el-input>
@@ -195,6 +197,7 @@ export default {
 							height:'',
 							report:'',
 							status:'',
+							reportTime:'',
 							type:'',
 							address:'',
 							note:''
@@ -251,6 +254,7 @@ export default {
 						"height": row.height,
 						"report": row.report ,
 						"status": row.status,
+						"reportTime": row.reportTime,
 						"type": row.type,
 						"address": row.address,
 						"note": row.note
@@ -301,6 +305,7 @@ export default {
 							height:'',
 							report:'',
 							status:'',
+							reportTime:'',
 							type:'',
 							address:'',
 							note:''
