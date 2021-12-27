@@ -58,7 +58,10 @@
             </el-row>
           </div>
           <div class="img">
-              <el-image :src= rainpointinfo.filePath></el-image>
+                  <img width="100%" :src = rainpointinfo.filePath alt="" @click="handlePictureCardPreview">
+                  <el-dialog :visible.sync="dialogVisible1">
+                      <img width="100%" :src = rainpointinfo.filePath alt="" >
+                  </el-dialog>
            </div>
       </div>
     </div>
@@ -84,13 +87,19 @@ export default {
   data() {
     return {
       title: '渍水点信息',
-      dialogVisible: false
+      dialogVisible: false,
+      dialogVisible1: false,
     }
   },
   watch: {
     opened() {
       this.dialogVisible = true
     }
+  },
+  methods:{
+     handlePictureCardPreview() {
+        this.dialogVisible1 = true;
+      }
   }
 }
 </script>
