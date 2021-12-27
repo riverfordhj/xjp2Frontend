@@ -29,13 +29,13 @@
 						<span v-else>{{ row.height }}</span>
 					</template>
 				</el-table-column>
-				<el-table-column align="center" label="上报人" width="80">
+				<el-table-column align="center" label="上报人" width="120">
 					<template slot-scope="{row}">
 						<el-input v-if="row.edit" v-model="row.report" class="edit-input" size="small" clearable/>
 						<span v-else>{{ row.report }}</span>
 					</template>
 				</el-table-column>
-				<el-table-column align="center" label="状态" width="80">
+				<el-table-column align="center" label="状态" width="100">
 					<template slot-scope="{row}">
 						<el-select v-if="row.edit" v-model="row.status" size="small" placeholder="请选择">
 							<el-option v-for="item in ttstatus" :key="item" :label="item" :value="item"></el-option>
@@ -48,13 +48,13 @@
 						<span>{{ row.reportTime }}</span>
 					</template>
 				</el-table-column>
-				<el-table-column align="center" label="类型" width="80">
+				<el-table-column align="center" label="类型" width="150">
 					<template slot-scope="{row}">
 						<el-input v-if="row.edit" v-model="row.type" class="edit-input" size="small" clearable/>
 						<span v-else>{{ row.type }}</span>
 					</template>
 				</el-table-column>
-				<el-table-column align="center" label="地址"  width="170">
+				<el-table-column align="center" label="地址"  width="150">
 					<template slot-scope="{row}">
 						<el-input v-if="row.edit" v-model="row.address" class="edit-input" size="small" clearable/>
 						<span v-else>{{ row.address }}</span>
