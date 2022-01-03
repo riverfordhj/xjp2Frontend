@@ -63,6 +63,7 @@ export const constantRoutes = [
         path: 'dashboard',
         name: 'Dashboard',
         component: () => import('@/views/dashboard/admin/index'),
+        //component: () => import('@/views/screenDisplay/index'),
         meta: {
           title: '系统总览',
           icon: 'dashboard'
@@ -391,6 +392,15 @@ export const asyncRoutes = [
 					title: '楼宇统计分析',
 					icon: 'search'
 				}
+      },
+      {
+          path: 'screenDisplay',
+          name: 'screenDisplay',
+          component: () => import('@/views/screenDisplay/index'),
+          meta: {
+            title: '大屏展示',
+            icon: 'search'
+          }
 			},
 			// {
 			// 	path: 'buildingInfoTable',
