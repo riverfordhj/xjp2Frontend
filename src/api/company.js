@@ -88,6 +88,13 @@ export function getCountTaxByBuilding(BuildingName){
 	})
 }
 
+export function GetTaxTop(){
+	return request({
+		url: `/Combasic/GetTaxTop`,
+		method: 'get',
+	})
+}
+
 //返回指定楼栋营收前十
 export function getCountRevenueByBuilding(BuildingName){
 	return request({
@@ -96,6 +103,13 @@ export function getCountRevenueByBuilding(BuildingName){
 		params: {
 			BuildingName,
 		}
+	})
+}
+
+export function GetRevenueTop(){
+	return request({
+		url: `/Combasic/GetRevenueTop`,
+		method: 'get',
 	})
 }
 
@@ -110,6 +124,13 @@ export function getTotalTaRByBuilding(BuildingName){
 	})
 }
 
+export function getTotalTaR(){
+	return request({
+		url: `/Combasic/GetTotalTaRByBuilding`,
+		method: 'get',
+	})
+}
+
   //返回指定楼栋产业分类及产业总营收、税收
 export function getIndustryTypeByBuilding(BuildingName){
 	return request({
@@ -118,6 +139,13 @@ export function getIndustryTypeByBuilding(BuildingName){
 		params: {
 			BuildingName,
 		}
+	})
+}
+
+export function getIndustryType(){
+	return request({
+		url: `/Combasic/GetIndustryTypeByBuilding`,
+		method: 'get',
 	})
 }
 
@@ -132,6 +160,13 @@ export function getIndustryTypeByBuilding(BuildingName){
 	})
 }
 
+export function getRevenueRound(){
+	return request({
+		url: `/Combasic/GetRevenueRoundByBuilding`,
+		method: 'get',
+	})
+}
+
   //返回指定楼栋税收分布
   export function getTaxRoundByBuilding(BuildingName){
 	return request({
@@ -140,6 +175,13 @@ export function getIndustryTypeByBuilding(BuildingName){
 		params: {
 			BuildingName,
 		}
+	})
+}
+
+export function getTaxRound(){
+	return request({
+		url: `/Combasic/GetTaxRoundByBuilding`,
+		method: 'get',
 	})
 }
 
