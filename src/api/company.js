@@ -178,14 +178,13 @@ export function getRevenueRound(){
 	})
 }
 
-export function getTaxRound(){
+  //返回徐家棚街道的营收税收 用于轮播图
+  export function GetTotalTaR(){
 	return request({
-		url: `/Combasic/GetTaxRoundByBuilding`,
+		url: `/Combasic/GetTotalTaR`,
 		method: 'get',
 	})
 }
-
-
 
 
 

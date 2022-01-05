@@ -1,43 +1,43 @@
 <template>
   <div class="left-chart-1">
-    <div class="lc1-header">张三收费站</div>
-    <div class="lc1-details">设备运行总数<span>430</span></div>
+    <div class="lc1-header">徐家棚营收前十</div>
+    <!-- <div class="lc1-details">设备运行总数<span>430</span></div> -->
     <dv-capsule-chart class="lc1-chart" :config="config" />
     <dv-decoration-2 style="height:10px;" />
   </div>
 </template>
 
 <script>
+
+import { getRoomByBuilding,getCountTaxByBuilding,getCountRevenueByBuilding,
+         getTotalTaRByBuilding,getIndustryTypeByBuilding, getTaxRoundByBuilding,getRevenueRoundByBuilding} from '@/api/company.js';
+
 export default {
   name: 'LeftChart1',
   data () {
     return {
       config: {
-        data: [
-          {
-            name: '收费系统',
-            value: 167
-          },
-          {
-            name: '通信系统',
-            value: 67
-          },
-          {
-            name: '监控系统',
-            value: 123
-          },
-          {
-            name: '供配电系统',
-            value: 55
-          },
-          {
-            name: '其他',
-            value: 98
-          }
-        ],
+        data:[],
         colors: ['#00baff', '#3de7c9', '#fff', '#ffc530', '#469f4b'],
-        unit: '件'
-      }
+        unit: '万元'
+      },
+      countTax:[],
+    }
+  },
+  created(){
+      this.getComInfoByBuildingName();
+  },
+  methods:{
+    getComInfoByBuildingName( ){
+        //向后端请求 返回指定楼栋税收前十
+        getCountTaxByBuilding('V+合伙人大厦').then(res =>{
+          debugger
+        this.config.data = JSON.parse(JSON.stringify(res).replace(/companyName/g, 'name').replace(/cTax/g, 'value').replace(/有限公司/g, '').replace(/分公司/g, '').replace(/有限责任公司/g, ''));
+          console.log( this.config.data);
+          this.config = {...this.config}
+        }).catch(err => {
+          console.log(err);
+        });
     }
   }
 }

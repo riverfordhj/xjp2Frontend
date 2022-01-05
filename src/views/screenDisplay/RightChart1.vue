@@ -1,49 +1,49 @@
 <template>
-  <div class="right-chart-1">
-    <div class="rc1-header">赵六收费站</div>
-
-    <div class="rc1-chart-container">
-      <div class="left">
-        <div class="number">262</div>
-        <div>设备运行总数</div>
-      </div>
-
-      <dv-capsule-chart class="right" :config="config" />
-    </div>
+  <div id="scroll-board">
+    <dv-scroll-board :config="config" />
   </div>
 </template>
 
 <script>
+import { GetTotalTaR } from '@/api/company.js';
 export default {
-  name: 'RightChart1',
+  name: 'ScrollBoard',
   data () {
     return {
       config: {
-        data: [
-          {
-            name: '收费系统',
-            value: 25
-          },
-          {
-            name: '通信系统',
-            value: 66
-          },
-          {
-            name: '监控系统',
-            value: 123
-          },
-          {
-            name: '供配电系统',
-            value: 72
-          },
-          {
-            name: '其他',
-            value: 99
-          }
-        ],
-        unit: '件'
+        header: ['楼宇名称', '营收', '税收', '数量'],
+        data: [],
+        index: true,
+        columnWidth: [50, 140,100],
+        align: ['center'],
+        rowNum: 6,
+        // headerBGC: '#1981f6',
+        headerHeight: 45,
+         oddRowBGC: '#003B51',
+         evenRowBGC: 'rgba(10, 29, 50, 0.8)'
       }
     }
+  },
+  created(){
+      this.getrtData();
+  },
+  methods:{
+      getrtData(){
+         GetTotalTaR().then(res =>{
+           let arr = [];
+           if(res.length >0){
+             for( let i in res){
+               let cname = res[i].key;
+               let tRevenue = res[i].tRevenue;
+               let tTax = res[i].tTax;
+               let ccount = res[i].companyCount;
+               arr.push([cname,tRevenue,tTax,ccount])
+             }
+             this.config.data = arr;
+            this.config = {...this.config};
+           }
+         })
+      }
   }
 }
 </script>
@@ -55,45 +55,11 @@ html, body {
   padding: 0px;
   margin: 0px;
 }
-.right-chart-1 {
+#scroll-board {
   width: 100%;
+  box-sizing: border-box;
+   margin-right: 7px;
   height: 100%;
-  display: flex;
-  flex-direction: column;
-
-  .rc1-header {
-    font-size: 24px;
-    font-weight: bold;
-    height: 30px;
-    line-height: 30px;
-  }
-
-  .rc1-chart-container {
-    flex: 1;
-    display: flex;
-  }
-
-  .left {
-    width: 30%;
-    font-size: 16px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-
-    .number {
-      font-size: 34px;
-      color: #096dd9;
-      font-weight: bold;
-      margin-bottom: 30px;
-    }
-  }
-
-  .right {
-    flex: 1;
-    padding-bottom: 20px;
-    padding-right: 20px;
-    box-sizing: border-box;
-  }
+  overflow: hidden;
 }
 </style>
