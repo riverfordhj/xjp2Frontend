@@ -88,6 +88,7 @@ export function getCountTaxByBuilding(BuildingName){
 	})
 }
 
+// 返回街道税收前十
 export function GetTaxTop(){
 	return request({
 		url: `/Combasic/GetTaxTop`,
@@ -106,6 +107,7 @@ export function getCountRevenueByBuilding(BuildingName){
 	})
 }
 
+//返回街道营收前十
 export function GetRevenueTop(){
 	return request({
 		url: `/Combasic/GetRevenueTop`,
@@ -124,13 +126,6 @@ export function getTotalTaRByBuilding(BuildingName){
 	})
 }
 
-export function getTotalTaR(){
-	return request({
-		url: `/Combasic/GetTotalTaRByBuilding`,
-		method: 'get',
-	})
-}
-
   //返回指定楼栋产业分类及产业总营收、税收
 export function getIndustryTypeByBuilding(BuildingName){
 	return request({
@@ -142,6 +137,7 @@ export function getIndustryTypeByBuilding(BuildingName){
 	})
 }
 
+//返回街道产业分类及产业总营收、税收
 export function getIndustryType(){
 	return request({
 		url: `/Combasic/GetIndustryTypeByBuilding`,
@@ -160,6 +156,7 @@ export function getIndustryType(){
 	})
 }
 
+//返回街道营收分布
 export function getRevenueRound(){
 	return request({
 		url: `/Combasic/GetRevenueRoundByBuilding`,
@@ -177,6 +174,17 @@ export function getRevenueRound(){
 		}
 	})
 }
+
+  //返回街道税收分布
+  export function getTaxRound(BuildingName){
+		return request({
+			url: `/Combasic/GetTaxRoundByBuilding`,
+			method: 'get',
+			params: {
+				BuildingName,
+			}
+		})
+	}
 
   //返回徐家棚街道的营收税收 用于轮播图
   export function GetTotalTaR(){
