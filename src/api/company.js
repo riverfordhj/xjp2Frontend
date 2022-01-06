@@ -96,6 +96,14 @@ export function GetTaxTop(){
 	})
 }
 
+// 返回街道税收前十 添加经纬度在地图展示 暂不可用
+export function GetTaxTopOnMap(){
+	return request({
+		url: `/Combasic/GetTaxTopOnMap`,
+		method: 'get',
+	})
+}
+
 //返回指定楼栋营收前十
 export function getCountRevenueByBuilding(BuildingName){
 	return request({
@@ -111,6 +119,14 @@ export function getCountRevenueByBuilding(BuildingName){
 export function GetRevenueTop(){
 	return request({
 		url: `/Combasic/GetRevenueTop`,
+		method: 'get',
+	})
+}
+
+//返回街道营收前十 添加经纬度在地图展示 暂不可用
+export function GetRevenueTopOnMap(){
+	return request({
+		url: `/Combasic/GetRevenueTopOnMap`,
 		method: 'get',
 	})
 }
@@ -176,13 +192,10 @@ export function getRevenueRound(){
 }
 
   //返回街道税收分布
-  export function getTaxRound(BuildingName){
+  export function getTaxRound(){
 		return request({
 			url: `/Combasic/GetTaxRoundByBuilding`,
 			method: 'get',
-			params: {
-				BuildingName,
-			}
 		})
 	}
 
