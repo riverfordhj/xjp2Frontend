@@ -96,7 +96,7 @@ export function GetTaxTop(){
 	})
 }
 
-// 返回街道税收前十 添加经纬度在地图展示 暂不可用
+// 返回街道税收前十 添加经纬度在地图展示
 export function GetTaxTopOnMap(){
 	return request({
 		url: `/Combasic/GetTaxTopOnMap`,
@@ -123,7 +123,7 @@ export function GetRevenueTop(){
 	})
 }
 
-//返回街道营收前十 添加经纬度在地图展示 暂不可用
+//返回街道营收前十 添加经纬度在地图展示
 export function GetRevenueTopOnMap(){
 	return request({
 		url: `/Combasic/GetRevenueTopOnMap`,
@@ -206,6 +206,28 @@ export function getRevenueRound(){
 		method: 'get',
 	})
 }
+
+  //返回徐家棚街道分行业的营收前十名
+  export function GetIndustryRevenueTop(industryCode){
+		return request({
+			url: `/Combasic/GetIndustryRevenueTop`,
+			method: 'get',
+			params: {
+				industryCode,
+			}
+		})
+	}
+
+	  //返回徐家棚街道分行业的税收前十名
+		export function GetIndustryTaxTop(industryCode){
+			return request({
+				url: `/Combasic/GetIndustryTaxTop`,
+				method: 'get',
+				params: {
+					industryCode,
+				}
+			})
+		}
 
 
 

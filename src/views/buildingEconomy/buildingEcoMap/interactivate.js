@@ -1,6 +1,8 @@
 var Cesium = require('cesium/Cesium');
 import { getCompanyInfoByRoom } from '@/api/company.js'
 import { flatCompanyInfo } from '@/utils/tools.js'
+import { GetTaxTopOnMap } from '@/api/company.js'
+import { GetRevenueTopOnMap } from '@/api/company.js'
 
 // 定义3dTiles模型所选要素的交互形式
 export {
@@ -149,9 +151,44 @@ var interactOperate = {
     this.setSelectedFeature(room)
 
     // 显示属性面板
-    this.setInfobox(room)
-
+    const boool = room.hasOwnProperty("collection");
+    
+    if(boool){
+       this.taxtopPoint(movement.position);
+    }else{
+      this.setInfobox(room);
+    }
+    // this.FlytoRoom(pickedFeature)
   },
+  // 税收前十 点击事件
+	taxtopPoint(position){
+    //const pickedPrimitive = this.viewer.scene.pick(movement.position);
+    const pickedPrimitive = this.viewer.scene.pick(position)
+    const pickedEntity = Cesium.defined(pickedPrimitive)
+                    ? pickedPrimitive.id
+                    : undefined;
+    if (Cesium.defined(pickedEntity)) {
+        // 点击页面上的实体图片返回相关信息pickedEntity
+        if (pickedEntity.sign == "tax") {
+            this.companyDatas.opened = !this.companyDatas.opened;
+            console.log(pickedEntity.label.text._value, pickedEntity);
+            GetTaxTopOnMap().then(response =>{
+                this.companyDatas.taxinfo = response.find(item => item.name === pickedEntity.label.text._value)                       
+            });
+
+            return;
+          }
+					if (pickedEntity.sign == "revenue") {
+            this.companyDatas.opened1 = !this.companyDatas.opened1;
+            console.log(pickedEntity.label.text._value, pickedEntity);
+            GetRevenueTopOnMap().then(response =>{
+                this.companyDatas.revenueinfo = response.find(item => item.name === pickedEntity.label.text._value)                       
+            });
+
+            return;
+          }
+     }
+ },
   // 高亮处理选择room
   setSelectedFeature(room) {
     // Select the feature if it's not already selected
