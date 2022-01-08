@@ -1,7 +1,25 @@
 <template>
 	<div>
-		<div id="cesiumContainer"></div>
+		<div id="cesiumContainer" ref="cesiumContainer" />
+		<div class="mainMenu">
+						<el-button
+							type="primary"
+							icon="el-icon-info" 
+							@click="gettaxtoppoint()"
+						>
+							税收前十
+						</el-button>
+						<el-button
+							type="primary"
+							icon="el-icon-info" 
+							@click="getrevenuetoppoint()"
+						>
+							营收前十
+						</el-button>
+    </div>
 		<company-info-panel :company-datas="companyDatas"></company-info-panel>
+    <taxtopPointDialog :opened="companyDatas.opened" :taxpointinfo ="companyDatas.taxinfo" />
+    <revenuetopPointDialog :opened1="companyDatas.opened1" :revenuepointinfo ="companyDatas.revenueinfo" />
 	</div>
 </template>
 
@@ -12,6 +30,12 @@ import companyInfoPanel from './companyInfoComponents/companyInfoPanel.vue';
 
 var Cesium = require('cesium/Cesium');
 import 'cesium/Widgets/widgets.css';
+import TaxTop from "../../../assets/cesium_images/总税收.svg"
+import RevenueTop from "../../../assets/cesium_images/总营收.svg"
+import {GetTaxTopOnMap } from '@/api/company.js'
+import { GetRevenueTopOnMap } from '@/api/company.js'
+import taxtopPointDialog from './companyInfoComponents/taxtopPointDialog.vue'
+import revenuetopPointDialog from './companyInfoComponents/revenuetopPointDialog.vue'
 
 // let tilesets = new Map();
 
@@ -28,14 +52,20 @@ export default {
 			// 		url: 'http://localhost:80/xjp/3D/sanjiaolu/v+/tileset.json'
 			// 	}
 			// ],
+      taxtopPoint:[],
+      revenuetopPoint:[],
 			companyDatas:{
 				show: false,
+        opened: false,
+				opened1: false,
 				title: '',
 				buildingName:'',
 				companiesFullInfo: [],
 				interactOperate,
 				clearFilter: false,
 				activeName: '',
+        taxinfo:{},
+				revenueinfo:{},
 			},
 			modelTreeData: [],
 
@@ -44,7 +74,9 @@ export default {
 		}
 	},
 	components: {
-		companyInfoPanel
+		companyInfoPanel,
+		taxtopPointDialog,
+		revenuetopPointDialog,
 	},
 	mounted() {
 		this.init();
@@ -66,6 +98,14 @@ export default {
 		})
 	},
 	methods: {
+		gettaxtoppoint(){
+			this.viewer.entities.removeAll();
+			this.getTaxTopData()
+		},
+		getrevenuetoppoint(){
+			this.viewer.entities.removeAll();
+			this.getRevenueTopData()
+		},
 		init (){
 			Cesium.Ion.defaultAccessToken =
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI5MjMyYjZiMC1lZmY1LTQzNmEtODg1NS01NmQzMmE2NWY2ZjMiLCJpZCI6NDQ1MSwic2NvcGVzIjpbImFzciIsImdjIl0sImlhdCI6MTU0MDg4NTM2Mn0.7OzWWlmUmJv_EJo0RFpuiL2G_KLgZBENAAXOgU1O1qM'
@@ -131,8 +171,125 @@ export default {
 				}
 				
       })
-    }
-		
+    },
+    //获取后台数据，税收前十 添加entity标记
+    getTaxTopData(){
+        var _this = this;
+        GetTaxTopOnMap().then(response =>{
+           response.forEach(item =>{
+            debugger
+                _this.addEntity(
+                    this.viewer,
+                    Cesium.Cartesian3.fromDegrees(
+                      //114.31988525390625, 30.577434539794922, 60),
+                        parseFloat(item["longitude"]),
+                        parseFloat(item["latitude"]),
+                        parseFloat(item["height"]) 
+                     ),
+                    item.name,   //item.type,'里斯'
+										item.sign,
+                    TaxTop
+                );
+                  console.log(item);
+           })  
+        }).catch(err =>{
+            console.log(err);
+        });
+    },
+    //获取后台数据，营收前十 添加entity标记
+    getRevenueTopData(){
+        var _this = this;
+        GetRevenueTopOnMap().then(response =>{
+           response.forEach(item =>{
+            debugger
+                _this.addEntity1(
+                    this.viewer,
+                    Cesium.Cartesian3.fromDegrees(
+                      //114.31988525390625, 30.577434539794922, 60),
+                        parseFloat(item["longitude"]),
+                        parseFloat(item["latitude"]),
+                        parseFloat(item["height"]) 
+                     ),
+                    item.name,   //item.type,'里斯'
+										item.sign,
+                    RevenueTop
+                );
+                  console.log(item);
+           })  
+        }).catch(err =>{
+            console.log(err);
+        });
+    },
+    addEntity(viewer,postion, text, sign, img) {
+        viewer.entities.add({
+            // id: text,
+            // id:personID,
+            // phone:phone,
+            position: postion,
+						sign : "tax",
+            label: {
+            text: text,
+            // font: parseInt(objEntity.FontSize) * 2.2 + 'px ' + objEntity.FontName,
+            style: Cesium.LabelStyle.FILL_AND_OUTLINE,
+            outlineWidth: 6,
+            translucencyByDistance: new Cesium.NearFarScalar(
+                1.5e2,
+                1.0,
+                1.5e5,
+                0.0
+            ),
+            horizontalOrigin: Cesium.HorizontalOrigin.LEFT,
+            // verticalOrigin : LSGlobe.VerticalOrigin.BOTTOM, //垂直方向以底部来计算标签的位置
+            pixelOffset: new Cesium.Cartesian2(20, -2), // 偏移量
+            disableDepthTestDistance: 1000000000, // 优先级
+            scale: 0.5,
+            },
+            billboard: {
+            image: img, // default: undefined
+            text: "123",
+            show: true, // default
+            width: 55,
+            height: 55,
+            disableDepthTestDistance: 1000000000,
+            scale: 0.6,
+            },
+        });
+    },
+    addEntity1(viewer,postion, text, sign, img) {
+        viewer.entities.add({
+            // id: text,
+            // id:personID,
+            // phone:phone,
+            position: postion,
+						sign : "revenue",
+            label: {
+            text: text,
+            // font: parseInt(objEntity.FontSize) * 2.2 + 'px ' + objEntity.FontName,
+            style: Cesium.LabelStyle.FILL_AND_OUTLINE,
+            outlineWidth: 6,
+            translucencyByDistance: new Cesium.NearFarScalar(
+                1.5e2,
+                1.0,
+                1.5e5,
+                0.0
+            ),
+            horizontalOrigin: Cesium.HorizontalOrigin.LEFT,
+            // verticalOrigin : LSGlobe.VerticalOrigin.BOTTOM, //垂直方向以底部来计算标签的位置
+            pixelOffset: new Cesium.Cartesian2(20, -2), // 偏移量
+            disableDepthTestDistance: 1000000000, // 优先级
+            scale: 0.5,
+            },
+            billboard: {
+            image: img, // default: undefined
+            text: "123",
+            show: true, // default
+            width: 55,
+            height: 55,
+            disableDepthTestDistance: 1000000000,
+            scale: 0.6,
+            },
+        });
+    },
 	}
 }
 </script>
@@ -141,4 +298,10 @@ export default {
 	#cesiumContainer {
 		height: calc(100vh - 84px);
 	}
+	.mainMenu {
+  left: 10px;
+  top: 10px;
+  position: absolute;
+  z-index: 991;
+}
 </style>
