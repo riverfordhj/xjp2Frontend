@@ -194,7 +194,7 @@ export function getRevenueRound(){
   //返回街道税收分布
   export function getTaxRound(){
 		return request({
-			url: `/Combasic/GetTaxRoundByBuilding`,
+			url: `/Combasic/GetTaxRound`,
 			method: 'get',
 		})
 	}
