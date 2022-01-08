@@ -1,7 +1,6 @@
 <template>
   <div class="left-chart-2">
-    <div class="lc2-header">李四收费站</div>
-    <div class="lc2-details">设备运行总数<span>245</span></div>
+    <div class="lc2-header">徐家棚税收前10</div>
     <dv-charts class="lc2-chart" :option="option" />
     <dv-decoration-2 style="height:10px;" />
   </div>

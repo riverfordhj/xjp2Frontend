@@ -159,7 +159,7 @@ export function getIndustryType(){
 //返回街道营收分布
 export function getRevenueRound(){
 	return request({
-		url: `/Combasic/GetRevenueRoundByBuilding`,
+		url: `/Combasic/GetRevenueRound`,
 		method: 'get',
 	})
 }
@@ -176,13 +176,10 @@ export function getRevenueRound(){
 }
 
   //返回街道税收分布
-  export function getTaxRound(BuildingName){
+  export function getTaxRound(){
 		return request({
 			url: `/Combasic/GetTaxRoundByBuilding`,
 			method: 'get',
-			params: {
-				BuildingName,
-			}
 		})
 	}
 
@@ -195,7 +192,7 @@ export function getRevenueRound(){
 }
 
 
-
+//..................分割线........................
 export function getCompanyInfo(){
 	return request({
 		url: '/Companies/GetBuildingCompany',

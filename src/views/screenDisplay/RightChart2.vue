@@ -1,101 +1,138 @@
 <template>
-  <div class="right-chart-2">
-    <div class="rc1-header">孙七收费站</div>
-
-    <div class="rc1-chart-container">
-      <div class="left">
-        <div class="number">267</div>
-        <div>设备运行总数</div>
-      </div>
-
-      <dv-charts class="right" :option="option" />
-    </div>
-  </div>
+  <div :class="className" :style="{height:height,width:width}"/>
 </template>
 
 <script>
+import { getRevenueRound } from '@/api/company.js';
+import echarts from 'echarts'
+require('echarts/theme/macarons') // echarts theme
+import { debounce } from '@/utils'
+const animationDuration = 2000
+
 export default {
-  name: 'RightChart2',
-  data () {
+  props: {
+    className: {
+      type: String,
+      default: 'chart'
+    },
+    width: {
+      type: String,
+      default: '100%'
+    },
+    height: {
+      type: String,
+      default: '300px'
+    },
+    // revenueRound: {
+    //   type: Array,
+    //   default: function() {
+    //     return []
+    //   },
+    // }
+  },
+  data() {
     return {
-      option: {
-        series: [
-          {
-            type: 'pie',
-            data: [
-              { name: '收费系统', value: 93 },
-              { name: '通信系统', value: 66 },
-              { name: '监控系统', value: 52 },
-              { name: '供配电系统', value: 34 },
-              { name: '其他', value: 22 }
-            ],
-            radius: ['45%', '65%'],
-            insideLabel: {
-              show: false
-            },
-            outsideLabel: {
-              labelLineEndLength: 10,
-              formatter: '{percent}%\n{name}',
-              style: {
-                fontSize: 14,
-                fill: '#fff'
-              }
-            }
-          }
-        ],
-        color: ['#00baff', '#3de7c9', '#fff', '#ffc530', '#469f4b']
+      chart: null,
+      revenueRoundData:[],
+    }
+  },
+  //updated mounted
+  created(){
+     this.getRevenueRoundData();
+  },
+  mounted() {
+    this.initChart();
+    this.__resizeHandler = debounce(() => {
+      if (this.chart) {
+        this.chart.resize()
       }
+    }, 100)
+    window.addEventListener('resize', this.__resizeHandler)
+  },
+  beforeDestroy() {
+    if (!this.chart) {
+      return
+    }
+    window.removeEventListener('resize', this.__resizeHandler)
+    this.chart.dispose()
+    this.chart = null
+  },
+
+  watch: {
+    revenueRoundData: {
+      deep: true,
+      handler(val) {
+        this.setOptions(val);
+      },
+    },
+  },
+
+
+
+  methods: {
+    getRevenueRoundData(){
+        getRevenueRound().then(res =>{
+          debugger
+					 Object.values(res[0]).map( val =>{
+             this.revenueRoundData.push(val);
+					 })			 		      
+        })
+        console.log(this.revenueRoundData)
+    },
+    setOptions( actualData ) {
+      this.chart.setOption({
+        title : {
+          text: '徐家棚营收分布',
+          textStyle:{
+              fontSize: 15,
+              fontWeight: 'bolder',
+          },
+          y:'-4px',
+        },
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: { // 坐标轴指示器，坐标轴触发有效
+            type: 'shadow' // 默认为直线，可选为：'line' | 'shadow'
+          }
+        },
+        grid: {
+          top: 30,
+          left: '2%',
+          right: '2%',
+          bottom: '3%',
+          containLabel: true
+        },
+        xAxis: [{
+          type: 'category',
+          data: ['0-50', '50-100', '100-500', '500-1000','1000-5000', '5000以上'],
+          axisTick: {
+              alignWithLabel: true
+            // show:true
+          },
+          axisLabel:{
+             interval:0
+          }
+        }],
+        yAxis: [{
+          type: 'value',
+          axisTick: {
+            show: true
+          }
+        }],
+        series: [{        
+          name: '营收分布',
+          type: 'bar',
+          stack: 'vistors',
+          barWidth: '50%',
+          data: actualData ,
+          animationDuration
+        }]
+      })
+    },
+    initChart() {
+      this.chart = echarts.init(this.$el, 'macarons');
+      this.setOptions(this.revenueRoundData);
     }
   }
 }
 </script>
-
-<style lang="less">
-html, body {
-  width: 100%;
-  height: 100%;
-  padding: 0px;
-  margin: 0px;
-}
-.right-chart-2 {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-
-  .rc1-header {
-    font-size: 24px;
-    font-weight: bold;
-    height: 30px;
-    line-height: 30px;
-  }
-
-  .rc1-chart-container {
-    flex: 1;
-    display: flex;
-  }
-
-  .left {
-    width: 30%;
-    font-size: 16px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-
-    .number {
-      font-size: 34px;
-      color: #096dd9;
-      font-weight: bold;
-      margin-bottom: 30px;
-    }
-  }
-
-  .right {
-    flex: 1;
-    padding-bottom: 20px;
-    padding-right: 20px;
-    box-sizing: border-box;
-  }
-}
-</style>
