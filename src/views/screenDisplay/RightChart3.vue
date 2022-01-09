@@ -83,7 +83,6 @@ export default {
              this.taxRoundData.push(val);
 					 })			 		      
         });
-        console.log( this.revenueRoundData,this.taxRoundData)
     },
     setOptions() {
       var option =  {

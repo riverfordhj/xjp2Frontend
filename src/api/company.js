@@ -156,7 +156,7 @@ export function getIndustryTypeByBuilding(BuildingName){
 //返回街道产业分类及产业总营收、税收
 export function getIndustryType(){
 	return request({
-		url: `/Combasic/GetIndustryTypeByBuilding`,
+		url: `/Combasic/GetIndustryType`,
 		method: 'get',
 	})
 }

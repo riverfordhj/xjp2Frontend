@@ -164,7 +164,7 @@ html, body {
   }
 
   .left-chart-container {
-    width: 22%;
+    width: 24%;
     padding: 10px;
     box-sizing: border-box;
 
@@ -174,7 +174,7 @@ html, body {
   }
 
   .right-main-container {
-    width: 78%;
+    width: 76%;
     padding-left: 5px;
     box-sizing: border-box;
   }
@@ -201,6 +201,14 @@ html, body {
   .rmctc-chart-1, .rmctc-chart-2 {
     height: 50%;
     box-sizing: border-box;
+  }
+  .el-tabs{
+    margin-top:-12px;
+    margin-left:-10px;
+  }
+  .el-tabs__content{
+    width: 465px;
+    margin-left:-5px;
   }
   .el-tabs__item{
     color:aqua;
