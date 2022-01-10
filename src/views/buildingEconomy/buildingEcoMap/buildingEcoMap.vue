@@ -16,6 +16,13 @@
 						>
 							营收前十
 						</el-button>
+						<el-button
+							type="primary"
+							icon="el-icon-remove" 
+							@click="handledelete()"
+						>
+							清除标记
+						</el-button>
     </div>
 		<company-info-panel :company-datas="companyDatas"></company-info-panel>
     <taxtopPointDialog :opened="companyDatas.opened" :taxpointinfo ="companyDatas.taxinfo" />
@@ -30,8 +37,8 @@ import companyInfoPanel from './companyInfoComponents/companyInfoPanel.vue';
 
 var Cesium = require('cesium/Cesium');
 import 'cesium/Widgets/widgets.css';
-import TaxTop from "../../../assets/cesium_images/总税收.svg"
-import RevenueTop from "../../../assets/cesium_images/总营收.svg"
+import TaxTop from "../../../assets/cesium_images/税收.svg"
+import RevenueTop from "../../../assets/cesium_images/营收.svg"
 import {GetTaxTopOnMap } from '@/api/company.js'
 import { GetRevenueTopOnMap } from '@/api/company.js'
 import taxtopPointDialog from './companyInfoComponents/taxtopPointDialog.vue'
@@ -105,6 +112,9 @@ export default {
 		getrevenuetoppoint(){
 			this.viewer.entities.removeAll();
 			this.getRevenueTopData()
+		},
+		handledelete(){
+			this.viewer.entities.removeAll();
 		},
 		init (){
 			Cesium.Ion.defaultAccessToken =
