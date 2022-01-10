@@ -24,6 +24,9 @@
 
         <div class="right-main-container">
           <div class="rmc-top-container">
+              <digital-flop />
+          </div>
+          <div class="rmc-center-container">
             <dv-border-box-3 class="rmctc-left-container">
 
               <Center-Cmp />
@@ -36,11 +39,17 @@
                 <Right-Chart-1 />
 
               </dv-border-box-3>
-
-              <dv-border-box-4 class="rmctc-chart-2" :reverse="true">
-
-                <Right-Chart-2 />
-
+              
+              <dv-border-box-4 class="rmctc-chart-2" :reverse="true" >
+               <!-- <Right-Chart-2 /> -->
+                  <el-tabs v-model="activeName" style="width:100%;height:100%;" @tab-click="handleClick">
+                    <el-tab-pane label="营收分布" name="first" class="tabitem">                 
+					                 <Right-Chart-2 />				        
+                    </el-tab-pane>
+                    <el-tab-pane label="税收分布" name="second">
+					                 <Right-Chart-3 />
+                    </el-tab-pane>
+                  </el-tabs>
               </dv-border-box-4>
             </div>
           </div>
@@ -62,10 +71,13 @@ import LeftChart1 from './LeftChart1'
 import LeftChart2 from './LeftChart2'
 import LeftChart3 from './LeftChart3'
 
+import digitalFlop from './digitalFlop'
+
 import CenterCmp from './CenterCmp'
 
 import RightChart1 from './RightChart1'
 import RightChart2 from './RightChart2'
+import RightChart3 from './RightChart3'
 
 import BottomCharts from './BottomCharts'
 
@@ -75,13 +87,22 @@ export default {
     LeftChart1,
     LeftChart2,
     LeftChart3,
+    digitalFlop,
     CenterCmp,
     RightChart1,
     RightChart2,
+    RightChart3,
     BottomCharts
   },
   data () {
-    return {}
+    return {
+      activeName: 'first'
+      }
+  },
+  methods:{
+        handleClick(){
+
+        }
   }
 }
 </script>
@@ -143,7 +164,7 @@ html, body {
   }
 
   .left-chart-container {
-    width: 22%;
+    width: 24%;
     padding: 10px;
     box-sizing: border-box;
 
@@ -153,13 +174,15 @@ html, body {
   }
 
   .right-main-container {
-    width: 78%;
+    width: 76%;
     padding-left: 5px;
     box-sizing: border-box;
   }
-
-  .rmc-top-container {
-    height: 65%;
+  .rmc-top-container{
+    height: 10%;
+   }
+  .rmc-center-container {
+    height: 55%;
     display: flex;
   }
 
@@ -177,6 +200,18 @@ html, body {
 
   .rmctc-chart-1, .rmctc-chart-2 {
     height: 50%;
+    box-sizing: border-box;
+  }
+  .el-tabs{
+    margin-top:-12px;
+    margin-left:-10px;
+  }
+  .el-tabs__content{
+    width: 465px;
+    margin-left:-5px;
+  }
+  .el-tabs__item{
+    color:aqua;
   }
 }
 </style>

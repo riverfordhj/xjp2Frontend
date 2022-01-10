@@ -11,10 +11,10 @@ export default {
   data () {
     return {
       config: {
-        header: ['楼宇名称', '营收', '税收', '数量'],
+        header: ['楼宇名称', '营收/万', '税收/万', '数量'],
         data: [],
         index: true,
-        columnWidth: [50, 140,100],
+        columnWidth: [50, 140,100,100],
         align: ['center'],
         rowNum: 6,
         // headerBGC: '#1981f6',

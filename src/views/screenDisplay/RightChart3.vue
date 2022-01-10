@@ -23,19 +23,13 @@ export default {
       type: String,
       default: '205px'
     },
-    // revenueRound: {
-    //   type: Array,
-    //   default: function() {
-    //     return []
-    //   },
-    // }
   },
   data() {
     return {
       chart: null,
       revenueRoundData:[],
       taxRoundData:[],
-      xRevenue:['0-50', '50-100', '100-500', '500-1000','1000-5000', '5000以上'],
+      xTax:['0-30', '30-50', '50-100', '100-300', '300-500', '500-1000', '1000以上'],
     }
   },
   //updated mounted
@@ -93,16 +87,12 @@ export default {
     setOptions() {
       var option =  {
         // title : {
-        //   text: '徐家棚营收分布',
+        //   text: '徐家棚税收分布',
         //   textStyle:{
         //       fontSize: 15,
         //       fontWeight: 'bolder',
         //   },
         //   y:'-4px',
-        // },
-        // legend: {
-        //   data:['营收分布','税收分布'],
-        //   textStyle:{color: '#3f3'},
         // },
         tooltip: {
           trigger: 'axis',
@@ -112,7 +102,7 @@ export default {
         },
         grid: {
           top: 10,
-          left: 10,
+          left: '2%',
           right: '2%',
           bottom: '3%',
           containLabel: true
@@ -120,7 +110,7 @@ export default {
         xAxis: [
             {
             type: 'category',
-            data: this.xRevenue,
+            data: this.xTax,
             axisTick: { alignWithLabel: true},
             axisLabel:{ interval:0 }
             }
@@ -132,11 +122,11 @@ export default {
         series: [{        
           name: '营收分布',
           type: 'bar',
-          // stack: 'vistors',
+           stack: 'vistors',
            barWidth: '40%',
-          data: this.revenueRoundData ,
-          // animationDuration
-          itemStyle : { normal: {label : {show: true, position: 'inside'}}},
+          data: this.taxRoundData ,
+           animationDuration,
+            itemStyle : { normal: {label : {show: true, position: 'inside'}}},
         },
         ]
       }
