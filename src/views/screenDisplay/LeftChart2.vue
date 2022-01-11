@@ -13,7 +13,7 @@ export default {
   data () {
     return {
       config: {
-          header: ['产业名称', '营/万', '税/万', '数量'],
+          header: ['产业名称', '营收/万', '税收/万', '数量'],
           data: [],
           index: true,
           // waitTime:5000,
@@ -43,7 +43,6 @@ export default {
                 let ccount = res[i].industryCompanyCount;
                 arr.push([industryName,industryRevenue,industryTax,ccount])
               }
-              console.log(arr)
               this.config.data = arr;
               this.config = {...this.config};
            }

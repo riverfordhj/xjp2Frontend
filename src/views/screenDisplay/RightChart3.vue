@@ -94,6 +94,19 @@ export default {
         //   },
         //   y:'-4px',
         // },
+        toolbox: {
+              show : true,
+              orient: 'vertical',
+              x: 'right',
+              y: 'top',
+              feature : {
+                  mark : {show: true},
+                  dataView : {show: true, readOnly: false},
+                  magicType : {show: true, type: ['line', 'bar', 'tiled']},
+                  restore : {show: true},
+                  saveAsImage : {show: true}
+              }
+          },
         tooltip: {
           trigger: 'axis',
           axisPointer: { // 坐标轴指示器，坐标轴触发有效
