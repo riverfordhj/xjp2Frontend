@@ -173,7 +173,7 @@ var interactOperate = {
             this.companyDatas.opened = !this.companyDatas.opened;
             console.log(pickedEntity.label.text._value, pickedEntity);
             GetTaxTopOnMap().then(response =>{
-                this.companyDatas.taxinfo = response.find(item => item.name === pickedEntity.label.text._value)                       
+                this.companyDatas.taxinfo = response.find(item => item.name === pickedEntity.companyname)                       
             });
 
             return;
@@ -182,7 +182,7 @@ var interactOperate = {
             this.companyDatas.opened1 = !this.companyDatas.opened1;
             console.log(pickedEntity.label.text._value, pickedEntity);
             GetRevenueTopOnMap().then(response =>{
-                this.companyDatas.revenueinfo = response.find(item => item.name === pickedEntity.label.text._value)                       
+                this.companyDatas.revenueinfo = response.find(item => item.name === pickedEntity.companyname)                       
             });
 
             return;

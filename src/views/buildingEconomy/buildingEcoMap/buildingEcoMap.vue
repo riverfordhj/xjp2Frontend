@@ -197,7 +197,6 @@ export default {
                         parseFloat(item["height"]) 
                      ),
                     item.name,   //item.type,'里斯'
-										item.sign,
                     TaxTop
                 );
                   console.log(item);
@@ -221,7 +220,6 @@ export default {
                         parseFloat(item["height"]) 
                      ),
                     item.name,   //item.type,'里斯'
-										item.sign,
                     RevenueTop
                 );
                   console.log(item);
@@ -230,15 +228,16 @@ export default {
             console.log(err);
         });
     },
-    addEntity(viewer,postion, text, sign, img) {
+    addEntity(viewer, postion, text, img) {
         viewer.entities.add({
             // id: text,
             // id:personID,
             // phone:phone,
             position: postion,
 						sign : "tax",
+						companyname: text,
             label: {
-            text: text,
+            text: text.replace(/有限/g, '').replace(/公司/g, '').replace(/武汉市/g, '').replace(/武汉/g, '').replace(/责任/g, '').replace(/中心支/g, '').replace(/（）/g, ''),
             // font: parseInt(objEntity.FontSize) * 2.2 + 'px ' + objEntity.FontName,
             style: Cesium.LabelStyle.FILL_AND_OUTLINE,
             outlineWidth: 6,
@@ -265,15 +264,16 @@ export default {
             },
         });
     },
-    addEntity1(viewer,postion, text, sign, img) {
+    addEntity1(viewer, postion, text, img) {
         viewer.entities.add({
             // id: text,
             // id:personID,
             // phone:phone,
             position: postion,
 						sign : "revenue",
+						companyname: text,
             label: {
-            text: text,
+            text: text.replace(/有限/g, '').replace(/公司/g, '').replace(/湖北省/g, '').replace(/湖北/g, '').replace(/责任/g, '').replace(/管理/g, '').replace(/（）/g, '').replace(/华中分/g, '').replace(/山东/g, ''),
             // font: parseInt(objEntity.FontSize) * 2.2 + 'px ' + objEntity.FontName,
             style: Cesium.LabelStyle.FILL_AND_OUTLINE,
             outlineWidth: 6,
