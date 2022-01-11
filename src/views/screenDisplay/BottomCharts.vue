@@ -131,8 +131,8 @@ export default {
 
   methods: {
     async getIndustryRevenueTop(){
-      for(var i = 3;i <= 18;i++){
-        // if( i != 2){
+      for(var i = 1;i <= 18;i++){
+        if( i != 2){
           await  GetIndustryRevenueTop(i).then(res =>{
               debugger
                const RevenueTop = JSON.parse(JSON.stringify(res).replace(/companyname/g, 'name').replace(/revenue/g, 'value'));
@@ -147,7 +147,7 @@ export default {
                this.seriesData9.push(RevenueTop[8] ? RevenueTop[8] : {})
                this.seriesData10.push(RevenueTop[9] ? RevenueTop[9] : {})
             })
-        // }
+        }
       }
       console.log(this.seriesData1);
        
@@ -190,7 +190,7 @@ export default {
           xAxis : [
               {
                   type : 'category',
-                  data : ['制造业','电燃气水','建筑业','运输仓储','计算机信息', '批发零售', '住宿餐饮', '金融业', '房地产业', '租赁商务业', "科研地勘",
+                  data : ['农林牧渔','制造业','电燃气水','建筑业','运输仓储','计算机信息', '批发零售', '住宿餐饮', '金融业', '房地产业', '租赁商务业', "科研地勘",
                 "水利公共管理", "服务业", "教育", "卫生社会保障业", "文娱体育业"],
                   axisTick: { alignWithLabel: true},
                   axisLabel:{ interval:0 }
@@ -213,9 +213,12 @@ export default {
                     verticalAlign: 'middle',
                     rotate: 90,
                     fontSize: 6,
-                    // formatter:function(params){
-                    //   return params.name;
-                    //   },
+                    // textStyle: {
+                    //     color: '#333'
+                    // },
+                    formatter:function(params){
+                      return params.name;
+                      },
                    },
                   data:this.seriesData1,
               },
@@ -230,9 +233,9 @@ export default {
                     verticalAlign: 'middle',
                     rotate: 90,
                     fontSize: 6,
-                      // formatter:function(params){
-                      // return params.name;
-                      // },
+                      formatter:function(params){
+                      return params.name;
+                      },
                    },
                   data:this.seriesData2,
               },
@@ -247,9 +250,9 @@ export default {
                     verticalAlign: 'middle',
                     rotate: 90,
                     fontSize: 6,
-                      // formatter:function(params){
-                      // return params.name;
-                      // },
+                      formatter:function(params){
+                      return params.name;
+                      },
                    },
                   data:this.seriesData3,
               },
@@ -264,9 +267,9 @@ export default {
                     verticalAlign: 'middle',
                     rotate: 90,
                     fontSize: 6,
-                      // formatter:function(params){
-                      // return params.name;
-                      // },
+                      formatter:function(params){
+                      return params.name;
+                      },
                    },
                   data:this.seriesData4,
               },
@@ -281,9 +284,9 @@ export default {
                     verticalAlign: 'middle',
                     rotate: 90,
                     fontSize: 6,
-                      // formatter:function(params){
-                      // return params.name;
-                      // },
+                      formatter:function(params){
+                      return params.name;
+                      },
                    },
                   data:this.seriesData5,
               },
@@ -298,9 +301,9 @@ export default {
                     verticalAlign: 'middle',
                     rotate: 90,
                     fontSize: 6,
-                      // formatter:function(params){
-                      // return params.name;
-                      // },
+                      formatter:function(params){
+                      return params.name;
+                      },
                    },
                   data:this.seriesData6,
               },
@@ -315,9 +318,9 @@ export default {
                     verticalAlign: 'middle',
                     rotate: 90,
                     fontSize: 6,
-                      // formatter:function(params){
-                      // return params.name;
-                      // },
+                      formatter:function(params){
+                      return params.name;
+                      },
                    },
                   data:this.seriesData7,
               },
@@ -332,9 +335,9 @@ export default {
                     verticalAlign: 'middle',
                     rotate: 90,
                     fontSize: 6,
-                      // formatter:function(params){
-                      // return params.name;
-                      // },
+                      formatter:function(params){
+                      return params.name;
+                      },
                    },
                   data:this.seriesData8,
               },
@@ -349,9 +352,9 @@ export default {
                     verticalAlign: 'middle',
                     rotate: 90,
                     fontSize: 6,
-                      // formatter:function(params){
-                      // return params.name;
-                      // },
+                      formatter:function(params){
+                      return params.name;
+                      },
                    },
                   data:this.seriesData9,
               },
@@ -366,9 +369,9 @@ export default {
                     verticalAlign: 'middle',
                     rotate: 90,
                     fontSize: 6,
-                      // formatter:function(params){
-                      // return params.name;
-                      // },
+                      formatter:function(params){
+                      return params.name;
+                      },
                    },
                   data:this.seriesData10,
               },
