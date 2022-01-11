@@ -11,7 +11,7 @@ const animationDuration = 2000
 
 
 export default {
-  name: 'BottomCharts',
+  name: 'BottomsCharts',
   props: {
     className: {
       type: String,
@@ -44,7 +44,7 @@ export default {
     }
   },
    created(){
-     this.getIndustryRevenueTop();
+     this.getIndustryTaxTop();
   },
   mounted() {
     this.initChart();
@@ -130,12 +130,12 @@ export default {
 
 
   methods: {
-    async getIndustryRevenueTop(){
+    async getIndustryTaxTop(){
       for(var i = 1;i <= 18;i++){
         if( i != 2){
-          await  GetIndustryRevenueTop(i).then(res =>{
+          await  GetIndustryTaxTop(i).then(res =>{
               debugger
-               const RevenueTop = JSON.parse(JSON.stringify(res).replace(/companyname/g, 'name').replace(/revenue/g, 'value'));
+               const RevenueTop = JSON.parse(JSON.stringify(res).replace(/companyname/g, 'name').replace(/tax/g, 'value'));
                this.seriesData1.push(RevenueTop[0] ? RevenueTop[0] : {})
                this.seriesData2.push(RevenueTop[1] ? RevenueTop[1] : {})
                this.seriesData3.push(RevenueTop[2] ? RevenueTop[2] : {})

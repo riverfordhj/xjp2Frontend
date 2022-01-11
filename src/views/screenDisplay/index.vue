@@ -55,9 +55,14 @@
           </div>
 
           <dv-border-box-4 class="rmc-bottom-container">
-
-            <Bottom-Charts />
-
+            <el-tabs v-model="activeName1" style="width:100%;height:100%;" @tab-click="handleClick">
+              <el-tab-pane label="产业营收前十" name="third" class="titem">                 
+					        <Bottom-Charts />				        
+              </el-tab-pane>
+              <el-tab-pane label="产业税收前十" name="forth">
+					        <Bottoms-Charts />
+              </el-tab-pane>
+            </el-tabs>
           </dv-border-box-4>
         </div>
       </dv-border-box-1>
@@ -80,6 +85,7 @@ import RightChart2 from './RightChart2'
 import RightChart3 from './RightChart3'
 
 import BottomCharts from './BottomCharts'
+import BottomsCharts from './BottomsCharts'
 
 export default {
   name: 'DataView',
@@ -92,11 +98,13 @@ export default {
     RightChart1,
     RightChart2,
     RightChart3,
-    BottomCharts
+    BottomCharts,
+		BottomsCharts
   },
   data () {
     return {
-      activeName: 'first'
+      activeName: 'first',
+			activeName1: 'third'
       }
   },
   methods:{
@@ -195,21 +203,21 @@ html, body {
   }
 
   .rmc-bottom-container {
-    height: 35%;
+    height: 50%;
   }
 
   .rmctc-chart-1, .rmctc-chart-2 {
     height: 50%;
     box-sizing: border-box;
   }
-  .el-tabs{
-    margin-top:-12px;
-    margin-left:-10px;
-  }
-  .el-tabs__content{
-    width: 465px;
-    margin-left:-5px;
-  }
+  // .el-tabs{
+  //   margin-top:-12px;
+  //   margin-left:-10px;
+  // }
+  // .el-tabs__content{
+  //   width: 465px;
+  //   margin-left:-5px;
+  // }
   .el-tabs__item{
     color:aqua;
   }
