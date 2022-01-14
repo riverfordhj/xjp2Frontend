@@ -43,7 +43,7 @@
               <dv-border-box-4 class="rmctc-chart-2" :reverse="true" >
                <!-- <Right-Chart-2 /> -->
                   <el-tabs v-model="activeName" style="width:100%;height:100%;" @tab-click="handleClick">
-                    <el-tab-pane label="营收分布" name="first" class="tabitem">                 
+                    <el-tab-pane label="营收分布" name="first">                 
 					                 <Right-Chart-2 />				        
                     </el-tab-pane>
                     <el-tab-pane label="税收分布" name="second">
@@ -54,13 +54,13 @@
             </div>
           </div>
 
-          <dv-border-box-4 class="rmc-bottom-container">
-            <el-tabs v-model="activeName1" style="width:100%;height:100%;" @tab-click="handleClick">
-              <el-tab-pane label="产业营收前十" name="third" class="titem">                 
+          <dv-border-box-4 class="rmc-bottom-container" >
+            <el-tabs class="revenuetop" v-model="activeName1" style="width:100%;height:100%;" @tab-click="handleClick">
+              <el-tab-pane class="revenuetop" label="产业营收前十" name="third">                 
 					        <Bottom-Charts />				        
               </el-tab-pane>
-              <el-tab-pane label="产业税收前十" name="forth">
-					        <Bottoms-Charts />
+              <el-tab-pane class="revenuetop" label="产业税收前十" name="forth">
+					        <Bottom-Charts-1 />
               </el-tab-pane>
             </el-tabs>
           </dv-border-box-4>
@@ -85,7 +85,7 @@ import RightChart2 from './RightChart2'
 import RightChart3 from './RightChart3'
 
 import BottomCharts from './BottomCharts'
-import BottomsCharts from './BottomsCharts'
+import BottomCharts1 from './BottomCharts1'
 
 export default {
   name: 'DataView',
@@ -99,7 +99,7 @@ export default {
     RightChart2,
     RightChart3,
     BottomCharts,
-		BottomsCharts
+		BottomCharts1
   },
   data () {
     return {
@@ -203,21 +203,25 @@ html, body {
   }
 
   .rmc-bottom-container {
-    height: 50%;
+    height: 35%;
   }
 
   .rmctc-chart-1, .rmctc-chart-2 {
     height: 50%;
     box-sizing: border-box;
   }
-  // .el-tabs{
-  //   margin-top:-12px;
-  //   margin-left:-10px;
-  // }
-  // .el-tabs__content{
-  //   width: 465px;
-  //   margin-left:-5px;
-  // }
+  .revenuetop .el-tabs__content{
+    width: 1380px;
+    margin-top: -42px;
+  }
+  .el-tabs{
+    margin-top:-12px;
+    margin-left:-10px;
+  }
+  .el-tabs__content{
+    width: 465px;
+    margin-left:-5px;
+  }
   .el-tabs__item{
     color:aqua;
   }
