@@ -212,10 +212,10 @@ html, body {
   }
   .revenuetop .el-tabs__content{
     width: 1380px;
-    margin-top: -42px;
+    margin-top: -45px;
   }
   .el-tabs{
-    margin-top:-12px;
+    margin-top:-5px;
     margin-left:-10px;
   }
   .el-tabs__content{
