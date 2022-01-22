@@ -94,19 +94,19 @@ export default {
         //   },
         //   y:'-4px',
         // },
-        toolbox: {
-              show : true,
-              orient: 'vertical',
-              x: 'right',
-              y: 'top',
-              feature : {
-                  mark : {show: true},
-                  dataView : {show: true, readOnly: false},
-                  magicType : {show: true, type: ['line', 'bar', 'tiled']},
-                  restore : {show: true},
-                  saveAsImage : {show: true}
-              }
-          },
+        // toolbox: {
+        //       show : true,
+        //       orient: 'vertical',
+        //       x: 'right',
+        //       y: 'top',
+        //       feature : {
+        //           mark : {show: true},
+        //           dataView : {show: true, readOnly: false},
+        //           magicType : {show: true, type: ['line', 'bar', 'tiled']},
+        //           restore : {show: true},
+        //           saveAsImage : {show: true}
+        //       }
+        //   },
         tooltip: {
           trigger: 'axis',
           axisPointer: { // 坐标轴指示器，坐标轴触发有效
@@ -120,21 +120,21 @@ export default {
           bottom: '3%',
           containLabel: true
         },
-        xAxis: [
-            {
-            type: 'category',
-            data: this.xTax,
-            axisTick: { alignWithLabel: true},
-            axisLabel:{ interval:0 }
-            }
-        ],
-        yAxis: [{
-          type: 'value',
-          axisTick: {show: true}
-        }],
+        // xAxis: [
+        //     {
+        //     type: 'category',
+        //     data: this.xTax,
+        //     axisTick: { alignWithLabel: true},
+        //     axisLabel:{ interval:0 }
+        //     }
+        // ],
+        // yAxis: [{
+        //   type: 'value',
+        //   axisTick: {show: true}
+        // }],
         series: [{        
           name: '营收分布',
-          type: 'bar',
+          type: 'pie',
            stack: 'vistors',
            barWidth: '40%',
           data: this.taxRoundData ,

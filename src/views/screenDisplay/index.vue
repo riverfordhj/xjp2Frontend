@@ -41,15 +41,11 @@
               </dv-border-box-3>
               
               <dv-border-box-4 class="rmctc-chart-2" :reverse="true" >
-               <!-- <Right-Chart-2 /> -->
-                  <el-tabs v-model="activeName" style="width:100%;height:100%;" @tab-click="handleClick">
-                    <el-tab-pane label="营收分布" name="first">                 
+               <!-- <Right-Chart-2 /> -->            
 					                 <Right-Chart-2 />				        
-                    </el-tab-pane>
-                    <el-tab-pane label="税收分布" name="second">
+
 					                 <Right-Chart-3 />
-                    </el-tab-pane>
-                  </el-tabs>
+
               </dv-border-box-4>
             </div>
           </div>
@@ -103,7 +99,6 @@ export default {
   },
   data () {
     return {
-      activeName: 'first',
 			activeName1: 'third'
       }
   },
@@ -214,15 +209,22 @@ html, body {
     width: 1380px;
     margin-top: -45px;
   }
-  .el-tabs{
+  .revenuetop .el-tabs{
     margin-top:-5px;
     margin-left:-10px;
   }
-  .el-tabs__content{
+  .revenuetop .el-tabs__item{
+    color:aqua;
+  }
+  .industry .el-tabs__content{
     width: 465px;
     margin-left:-5px;
   }
-  .el-tabs__item{
+  .industry .el-tabs{
+    margin-top:-25px;
+    margin-left:-10px;
+  }
+  .industry .el-tabs__item{
     color:aqua;
   }
 }
