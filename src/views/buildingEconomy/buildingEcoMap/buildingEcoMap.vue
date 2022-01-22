@@ -122,7 +122,7 @@ export default {
 
       this.viewer = new Cesium.Viewer('cesiumContainer', {
         shouldAnimate: true,
-        baseLayerPicker: false,
+        baseLayerPicker: true,
         fullscreenButton: false,
         sceneModePicker: false,
         timeline: false,
@@ -131,7 +131,15 @@ export default {
         navigationHelpButton: false,
         animation: false,
         infoBox: true,
-        requestRenderMode: true
+        requestRenderMode: true,
+        imageryProvider: new Cesium.WebMapTileServiceImageryProvider({
+          url: 'http://t0.tianditu.com/img_w/wmts?service=wmts&request=GetTile&version=1.0.0&LAYER=img&tileMatrixSet=w&TileMatrix={TileMatrix}&TileRow={TileRow}&TileCol={TileCol}&style=default&format=tiles&tk=b97312f85a240009c717a8480b6d54d2',
+          layer: 'tdtBasicLayer',
+          style: 'default',
+          format: 'image/jpeg',
+          tileMatrixSetID: 'GoogleMapsCompatible',
+          show: false
+        }) // 天地图影像
 			});
 			this.viewer.terrainProvider = Cesium.createWorldTerrain();//使用官方的地形图层
 		},
