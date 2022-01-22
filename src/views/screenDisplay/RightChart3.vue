@@ -3,11 +3,10 @@
 </template>
 
 <script>
-import { getRevenueRound ,getTaxRound} from '@/api/company.js';
+import { getTaxRound } from '@/api/company.js';
 import echarts from 'echarts'
 require('echarts/theme/macarons') // echarts theme
 import { debounce } from '@/utils'
-const animationDuration = 2000
 
 export default {
   props: {
@@ -17,24 +16,23 @@ export default {
     },
     width: {
       type: String,
-      default: '460px'
+      default: '400px'
     },
     height: {
       type: String,
-      default: '205px'
+      default: '330px'
     },
   },
   data() {
     return {
       chart: null,
-      revenueRoundData:[],
       taxRoundData:[],
       xTax:['0-30', '30-50', '50-100', '100-300', '300-500', '500-1000', '1000以上'],
     }
   },
   //updated mounted
   created(){
-     this.getRevenueRoundData();
+     this.getTaxRoundData();
   },
   mounted() {
     this.initChart();
@@ -55,12 +53,6 @@ export default {
   },
 
   watch: {
-    revenueRoundData: {
-      deep: true,
-      handler(val) {
-        this.setOptions(val);
-      },
-    },
      taxRoundData: {
       deep: true,
       handler(val) {
@@ -72,12 +64,7 @@ export default {
 
 
   methods: {
-    getRevenueRoundData(){
-        getRevenueRound().then(res =>{         
-					 Object.values(res[0]).map( val =>{
-             this.revenueRoundData.push(val);
-					 })			 		      
-        });
+    getTaxRoundData(){
         getTaxRound().then(res =>{       
 					 Object.values(res[0]).map( val =>{
              this.taxRoundData.push(val);
@@ -86,62 +73,39 @@ export default {
     },
     setOptions() {
       var option =  {
-        // title : {
-        //   text: '徐家棚税收分布',
-        //   textStyle:{
-        //       fontSize: 15,
-        //       fontWeight: 'bolder',
-        //   },
-        //   y:'-4px',
-        // },
-        // toolbox: {
-        //       show : true,
-        //       orient: 'vertical',
-        //       x: 'right',
-        //       y: 'top',
-        //       feature : {
-        //           mark : {show: true},
-        //           dataView : {show: true, readOnly: false},
-        //           magicType : {show: true, type: ['line', 'bar', 'tiled']},
-        //           restore : {show: true},
-        //           saveAsImage : {show: true}
-        //       }
-        //   },
-        tooltip: {
-          trigger: 'axis',
-          axisPointer: { // 坐标轴指示器，坐标轴触发有效
-            type: 'shadow' // 默认为直线，可选为：'line' | 'shadow'
-          }
-        },
-        grid: {
-          top: 10,
-          left: '2%',
-          right: '2%',
-          bottom: '3%',
-          containLabel: true
-        },
-        // xAxis: [
-        //     {
-        //     type: 'category',
-        //     data: this.xTax,
-        //     axisTick: { alignWithLabel: true},
-        //     axisLabel:{ interval:0 }
-        //     }
-        // ],
-        // yAxis: [{
-        //   type: 'value',
-        //   axisTick: {show: true}
-        // }],
-        series: [{        
-          name: '营收分布',
+				title: {
+					text: '徐家棚税收分布图',
+					left: 'center'
+				},
+				tooltip: {
+					trigger: 'item'
+				},
+				color : ['#91cc75', '#fac858', '#73c0de', 
+				'#3ba272', '#fc8452', '#9a60b4', '#ea7ccc'],
+				legend: {
+					orient: 'horizontal',
+					top:'22px',
+					textStyle:{
+						color:"#ffffff"
+					}
+				},
+        series: [{
           type: 'pie',
-           stack: 'vistors',
-           barWidth: '40%',
-          data: this.taxRoundData ,
-           animationDuration,
-            itemStyle : { normal: {label : {show: true, position: 'inside'}}},
+					radius: '65%',
+          data: [
+						{ name: this.xTax[0], value: this.taxRoundData[0]},
+						{ name: this.xTax[1], value: this.taxRoundData[1]},
+						{ name: this.xTax[2], value: this.taxRoundData[2]},
+						{ name: this.xTax[3], value: this.taxRoundData[3]},
+						{ name: this.xTax[4], value: this.taxRoundData[4]},
+						{ name: this.xTax[5], value: this.taxRoundData[5]},
+						{ name: this.xTax[6], value: this.taxRoundData[6]},
+					],
+					label:{
+						show:false
+					},
         },
-        ]
+        ],
       }
       this.chart.setOption(option);
     },

@@ -85,7 +85,6 @@ export default {
       for(var i = 3;i <= 18;i++){
         if(i != 16 && i != 17){
           await  GetIndustryTaxTop(i).then(res =>{
-              debugger
                const RevenueTop = JSON.parse(JSON.stringify(res).replace(/companyname/g, 'name').replace(/tax/g, 'value').replace(/有限/g, '').replace(/公司/g, '').replace(/武汉市/g, '').replace(/武汉/g, '').replace(/责任/g, '').replace(/中心支/g, '').replace(/（）/g, ''));
                this.seriesData1.push(RevenueTop[0] ? RevenueTop[0] : {})
                this.seriesData2.push(RevenueTop[1] ? RevenueTop[1] : {})
@@ -93,7 +92,6 @@ export default {
             })
         }
       }
-      console.log(this.seriesData1);
        
     },
     setOptions() {

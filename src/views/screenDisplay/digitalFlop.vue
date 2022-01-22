@@ -7,21 +7,21 @@
     >
       <div class="digital-flop-title">{{ item.title }}</div>
       <div class="digital-flop">
-				<table class="table table-bordered">
-				<span v-if="!editing" @dblclick="edit">
-        <dv-digital-flop
+				<span v-if="!editing" @dblclick="edit(this)" :style="item.number.style"> 
+                  
+                  
+        <!-- <dv-digital-flop
           :config="item.number"
           style="width:120px;height:60px;"
-        />
+        /> -->
+				{{item.number.number}}
 				</span>
 				<input type="text"
-				class="form-control"
 				ref="input"
 				v-if="editing"
-				:value="item.number.number"
-				:v-model="item.number"
+				
+			  v-model="item.number.number"
 				@blur="save">
-			</table>
           <div class="unit">{{ item.unit }}</div>
       </div>
     </div>
@@ -31,87 +31,130 @@
 </template>
 
 <script>
+import { GetTotalTaRNO } from '@/api/company.js';
 export default {
   name: 'DigitalFlop',
   data () {
     return {
 			editing: false,
-      digitalFlopData: [
-        {
-          title: '徐家棚总营收',
-          number: {
-            number: [1271.37],
-             toFixed: 2,
-            content: '{nt}{nt}',
-            textAlign: 'center',
-            style: {
-              fill: '#4d99fc',
-              fontWeight: 'bold'
-            }
-          },
-          unit: '亿'
-        },
-        {
-          title: '徐家棚总税收',
-          number: {
-            number: [26.18],
-            toFixed: 2,
-            content: '{nt}',
-            textAlign: 'right',
-            style: {
-              fill: '#f46827',
-              fontWeight: 'bold'
-            }
-          },
-          unit: '亿'
-        },
-         {
-          title: '楼宇数量',
-          number: {
-            number: [23],
-            content: '{nt}',
-            textAlign: 'right',
-            style: {
-              fill: '#40faee',
-              fontWeight: 'bold'
-            }
-          },
-          unit: '栋'
-        },
-        {
-          title: '总企业数量',
-          number: {
-            number: [1010],
-            content: '{nt}',
-            textAlign: 'right',
-            style: {
-              fill: '#40faee',
-              fontWeight: 'bold'
-            }
-          },
-          unit: '个'
-        },
-      ]
+      companycount:'',
+      taxsum:'',
+      revenuesum:'',
+      digitalFlopData:[],
+    
     }
   },
-  methods: {
-   
-		edit:function(){
+  created(){
+     this.getcountData();
+  },
+  methods: { 
+    getcountData(){
+      GetTotalTaRNO().then(res =>{
+          this.revenuesum = parseFloat((res[0].tRevenue / 10000).toFixed(2));
+          this.companycount = res[0].companyCount ;
+          this.taxsum = parseFloat((res[0].tTax / 10000).toFixed(2));;
+          this.digitalFlopData = [
+              // {
+              //   title: '徐家棚总营收',
+              //   number: {
+              //     number: this.revenuesum,
+              //       toFixed: 2,
+              //     content: '{nt}{nt}',
+              //     textAlign: 'center',
+              //     style: {
+							// 			fontSize: '30px',
+              //       color: '#f46827',
+							// 			fontWeight: 'bold',
+              //     }
+              //   },
+              //   unit: '亿'
+              // },
+              {
+                title: '徐家棚总税收',
+                number: {
+                  number: this.taxsum,
+                  toFixed: 2,
+                  content: '{nt}',
+                  textAlign: 'center',
+                  style: {
+										fontSize: '30px',
+                    color: '#40faee',
+                    fontWeight: 'bold'
+                  }
+                },
+                unit: '亿'
+              },
+              {
+                title: '楼宇数量',
+                number: {
+                  number: 23,
+                  content: '{nt}',
+                  textAlign: 'center',
+                  style: {
+										fontSize: '30px',
+                    color: '#f46827',
+                    fontWeight: 'bold'
+                  }
+                },
+                unit: '栋'
+              },
+              {
+                title: '总企业数量',
+                number: {
+                  number: this.companycount,
+                  content: '{nt}',
+                  textAlign: 'center',
+                  style: {
+										fontSize: '30px',
+                    color: '#40faee',
+                    fontWeight: 'bold'
+                  }
+                },
+                unit: '家'
+              },
+              {
+                title: '“四上”企业数',
+                number: {
+                  number: 400,
+                  content: '{nt}',
+                  textAlign: 'center',
+                  style: {
+										fontSize: '30px',
+                    color: '#f46827',
+                    fontWeight: 'bold'
+                  }
+                },
+                unit: '家'
+              },
+              {
+                title: '区级重大项目数',
+                number: {
+                  number: 12,
+                  content: '{nt}',
+                  textAlign: 'center',
+                  style: {
+										fontSize: '30px',
+                    color: '#40faee',
+                    fontWeight: 'bold'
+                  }
+                },
+                unit: '项'
+              },
+            ]
+      })
+    },
+		edit: function () {
 			this.editing = true
-			this.$nextTick(function(){
-				this.$els.input.focus()
+			this.$nextTick(function () {
+				// this.$els.input.focus()
 			})
-		},
-		save:function(){
-			this.editing = false
-		}
+				},
+			save: function () {
+					this.editing = false;
+				}
   },
   mounted () {
-    // const { createData } = this
-
-    // createData()
-
-    // setInterval(createData, 30000)
+ 
   }
 }
 </script>

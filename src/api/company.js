@@ -191,6 +191,14 @@ export function getRevenueRound(){
 	})
 }
 
+  //返回徐家棚街道count 用于顶部
+  export function GetTotalTaRNO(){
+	return request({
+		url: `/Combasic/GetTotalTaRNO`,
+		method: 'get',
+	})
+   }
+
   //返回街道税收分布
   export function getTaxRound(){
 		return request({
@@ -205,7 +213,7 @@ export function getRevenueRound(){
 		url: `/Combasic/GetTotalTaR`,
 		method: 'get',
 	})
-}
+   }
 
   //返回徐家棚街道分行业的营收前十名
   export function GetIndustryRevenueTop(industryCode){

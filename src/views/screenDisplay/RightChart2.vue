@@ -3,11 +3,10 @@
 </template>
 
 <script>
-import { getRevenueRound ,getTaxRound} from '@/api/company.js';
+import { getRevenueRound } from '@/api/company.js';
 import echarts from 'echarts'
 require('echarts/theme/macarons') // echarts theme
 import { debounce } from '@/utils'
-const animationDuration = 2000
 
 export default {
   props: {
@@ -17,11 +16,11 @@ export default {
     },
     width: {
       type: String,
-      default: '460px'
+      default: '400px'
     },
     height: {
       type: String,
-      default: '205px'
+      default: '330px'
     },
   },
   data() {
@@ -44,14 +43,6 @@ export default {
     }, 100)
     window.addEventListener('resize', this.__resizeHandler)
   },
-  // beforeDestroy() {
-  //   if (!this.chart) {
-  //     return
-  //   }
-  //   window.removeEventListener('resize', this.__resizeHandler)
-  //   this.chart.dispose()
-  //   this.chart = null
-  // },
 
   watch: {
     revenueRoundData: {
@@ -74,16 +65,34 @@ export default {
     },
     setOptions() {
       var option =  {
-
 				title: {
-					text: '徐家棚营收分布图'
+					text: '徐家棚营收分布图',
+					left: 'center'
+				},
+				tooltip: {
+					trigger: 'item',
+				},
+				legend: {
+					orient: 'horizontal',
+					top:'22px',
+					textStyle:{
+						color:"#ffffff"
+					}
 				},
         series: [{
           type: 'pie',
-          data: this.revenueRoundData ,
-					insideLabel: {
-					 show: true
-				  }
+					radius: '65%',
+          data:[
+						{ name: this.xRevenue[0], value:this.revenueRoundData[0]},
+						{ name: this.xRevenue[1], value:this.revenueRoundData[1]},
+						{ name: this.xRevenue[2], value:this.revenueRoundData[2]},
+						{ name: this.xRevenue[3], value:this.revenueRoundData[3]},
+						{ name: this.xRevenue[4], value:this.revenueRoundData[4]},
+						{ name: this.xRevenue[5], value:this.revenueRoundData[5]}
+					],
+					label:{
+						show:false,
+					},
         },
         ],
       }

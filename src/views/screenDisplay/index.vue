@@ -41,12 +41,12 @@
               </dv-border-box-3>
               
               <dv-border-box-4 class="rmctc-chart-2" :reverse="true" >
-               <!-- <Right-Chart-2 /> -->            
-					                 <Right-Chart-2 />				        
 
-					                 <Right-Chart-3 />
+								<Right-Chart-2 />
 
-              </dv-border-box-4>
+								<Right-Chart-3 />
+								
+							</dv-border-box-4>
             </div>
           </div>
 
@@ -214,17 +214,6 @@ html, body {
     margin-left:-10px;
   }
   .revenuetop .el-tabs__item{
-    color:aqua;
-  }
-  .industry .el-tabs__content{
-    width: 465px;
-    margin-left:-5px;
-  }
-  .industry .el-tabs{
-    margin-top:-25px;
-    margin-left:-10px;
-  }
-  .industry .el-tabs__item{
     color:aqua;
   }
 }
