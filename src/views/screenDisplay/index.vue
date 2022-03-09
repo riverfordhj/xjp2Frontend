@@ -52,10 +52,10 @@
 
           <dv-border-box-4 class="rmc-bottom-container" >
             <el-tabs class="revenuetop" v-model="activeName1" style="width:100%;height:100%;" @tab-click="handleClick">
-              <el-tab-pane class="revenuetop" label="产业营收前十" name="third">                 
+              <el-tab-pane class="revenuetop" label="产业营收前三" name="third">                 
 					        <Bottom-Charts />				        
               </el-tab-pane>
-              <el-tab-pane class="revenuetop" label="产业税收前十" name="forth">
+              <el-tab-pane class="revenuetop" label="产业税收前三" name="forth">
 					        <Bottom-Charts-1 />
               </el-tab-pane>
             </el-tabs>
