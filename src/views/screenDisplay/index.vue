@@ -41,25 +41,21 @@
               </dv-border-box-3>
               
               <dv-border-box-4 class="rmctc-chart-2" :reverse="true" >
-               <!-- <Right-Chart-2 /> -->
-                  <el-tabs v-model="activeName" style="width:100%;height:100%;" @tab-click="handleClick">
-                    <el-tab-pane label="营收分布" name="first">                 
-					                 <Right-Chart-2 />				        
-                    </el-tab-pane>
-                    <el-tab-pane label="税收分布" name="second">
-					                 <Right-Chart-3 />
-                    </el-tab-pane>
-                  </el-tabs>
-              </dv-border-box-4>
+
+								<Right-Chart-2 />
+
+								<Right-Chart-3 />
+								
+							</dv-border-box-4>
             </div>
           </div>
 
           <dv-border-box-4 class="rmc-bottom-container" >
             <el-tabs class="revenuetop" v-model="activeName1" style="width:100%;height:100%;" @tab-click="handleClick">
-              <el-tab-pane class="revenuetop" label="产业营收前十" name="third">                 
+              <el-tab-pane class="revenuetop" label="产业营收前三" name="third">                 
 					        <Bottom-Charts />				        
               </el-tab-pane>
-              <el-tab-pane class="revenuetop" label="产业税收前十" name="forth">
+              <el-tab-pane class="revenuetop" label="产业税收前三" name="forth">
 					        <Bottom-Charts-1 />
               </el-tab-pane>
             </el-tabs>
@@ -103,7 +99,6 @@ export default {
   },
   data () {
     return {
-      activeName: 'first',
 			activeName1: 'third'
       }
   },
@@ -214,15 +209,11 @@ html, body {
     width: 1380px;
     margin-top: -45px;
   }
-  .el-tabs{
+  .revenuetop .el-tabs{
     margin-top:-5px;
     margin-left:-10px;
   }
-  .el-tabs__content{
-    width: 465px;
-    margin-left:-5px;
-  }
-  .el-tabs__item{
+  .revenuetop .el-tabs__item{
     color:aqua;
   }
 }

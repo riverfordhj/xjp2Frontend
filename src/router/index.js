@@ -482,7 +482,7 @@ export const asyncRoutes = [
 			},
       {
         path: 'assgin-permissions',
-        name: '权限分配',
+        name: '自定义用户分配API',
         component: () => import('@/views/system/assgin-permissions'),
         meta: {
           title: '自定义用户分配API',
@@ -492,7 +492,7 @@ export const asyncRoutes = [
       },
       {
         path: 'create-user',
-        name: '创建用户',
+        name: '用户管理',
         component: () => import('@/views/system/create-user'),
         meta: {
           title: '用户管理',

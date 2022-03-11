@@ -23,7 +23,7 @@ export default {
     },
     height: {
       type: String,
-      default: '360px'
+      default: '330px'
     },
   },
   components: {
@@ -34,13 +34,6 @@ export default {
       seriesData1:[],
       seriesData2:[],
       seriesData3:[],
-      seriesData4:[],
-      seriesData5:[],
-      seriesData6:[],
-      seriesData7:[],
-      seriesData8:[],
-      seriesData9:[],
-      seriesData10:[],
     }
   },
    created(){
@@ -83,73 +76,22 @@ export default {
         this.setOptions(val);
       },
     },
-    seriesData4: {
-      deep: true,
-      handler(val) {
-        this.setOptions(val);
-      },
-    },
-    seriesData5: {
-      deep: true,
-      handler(val) {
-        this.setOptions(val);
-      },
-    },  
-     seriesData6: {
-      deep: true,
-      handler(val) {
-        this.setOptions(val);
-      },
-    },
-    seriesData7: {
-      deep: true,
-      handler(val) {
-        this.setOptions(val);
-      },
-    },
-    seriesData8: {
-      deep: true,
-      handler(val) {
-        this.setOptions(val);
-      },
-    },  
-     seriesData9: {
-      deep: true,
-      handler(val) {
-        this.setOptions(val);
-      },
-    },
-     seriesData10: {
-      deep: true,
-      handler(val) {
-        this.setOptions(val);
-      },
-    },
   },
 
 
 
   methods: {
     async getIndustryRevenueTop(){
-      for(var i = 1;i <= 18;i++){
-        if( i != 2){
+      for(var i = 3;i <= 18;i++){
+        if(i != 16 && i != 17){
           await  GetIndustryRevenueTop(i).then(res =>{
-              debugger
-               const RevenueTop = JSON.parse(JSON.stringify(res).replace(/companyname/g, 'name').replace(/revenue/g, 'value'));
+               const RevenueTop = JSON.parse(JSON.stringify(res).replace(/companyname/g, 'name').replace(/revenue/g, 'value').replace(/有限/g, '').replace(/公司/g, '').replace(/湖北省/g, '').replace(/湖北/g, '').replace(/责任/g, '').replace(/管理/g, '').replace(/（）/g, ''));
                this.seriesData1.push(RevenueTop[0] ? RevenueTop[0] : {})
                this.seriesData2.push(RevenueTop[1] ? RevenueTop[1] : {})
                this.seriesData3.push(RevenueTop[2] ? RevenueTop[2] : {})
-               this.seriesData4.push(RevenueTop[3] ? RevenueTop[3] : {})
-               this.seriesData5.push(RevenueTop[4] ? RevenueTop[4] : {})
-               this.seriesData6.push(RevenueTop[5] ? RevenueTop[5] : {})
-               this.seriesData7.push(RevenueTop[6] ? RevenueTop[6] : {})
-               this.seriesData8.push(RevenueTop[7] ? RevenueTop[7] : {})
-               this.seriesData9.push(RevenueTop[8] ? RevenueTop[8] : {})
-               this.seriesData10.push(RevenueTop[9] ? RevenueTop[9] : {})
             })
         }
       }
-      console.log(this.seriesData1);
        
     },
     setOptions() {
@@ -181,7 +123,7 @@ export default {
           containLabel: true
         },
           legend: {
-              data:['第1','第2','第3','第4', '第5', '第6', '第7', '第8', '第9', "第10"],
+              data:['第1','第2','第3'],
               textStyle:{
                  color:'auto'
               },
@@ -190,8 +132,8 @@ export default {
           xAxis : [
               {
                   type : 'category',
-                  data : ['农林牧渔','制造业','电燃气水','建筑业','运输仓储','计算机信息', '批发零售', '住宿餐饮', '金融业', '房地产业', '租赁商务业', "科研地勘",
-                "水利公共管理", "服务业", "教育", "卫生社会保障业", "文娱体育业"],
+                  data : ['制造业','电燃气水','建筑业','运输仓储','计算机信息', '批发零售', '住宿餐饮', '金融业', '房地产业', '租赁商务业', "科研地勘",
+                "水利公共管理", "服务业", "文娱体育业"],
                   axisTick: { alignWithLabel: true},
                   axisLabel:{ interval:0 }
               }
@@ -212,11 +154,11 @@ export default {
                     align: 'left',
                     verticalAlign: 'middle',
                     rotate: 90,
-                    fontSize: 6,
-                    // textStyle: {
-                    //     color: '#333'
-                    // },
-                    formatter:function(params){
+                    fontSize: 12,
+                    textStyle: {
+                        color: '#FFFFFF'
+                    },
+                      formatter:function(params){
                       return params.name;
                       },
                    },
@@ -232,7 +174,10 @@ export default {
                     align: 'left',
                     verticalAlign: 'middle',
                     rotate: 90,
-                    fontSize: 6,
+                    fontSize: 12,
+                    textStyle: {
+                        color: '#FFFFFF'
+                    },
                       formatter:function(params){
                       return params.name;
                       },
@@ -249,133 +194,16 @@ export default {
                     align: 'left',
                     verticalAlign: 'middle',
                     rotate: 90,
-                    fontSize: 6,
+                    fontSize: 12,
+                    textStyle: {
+                        color: '#FFFFFF'
+                    },
                       formatter:function(params){
                       return params.name;
                       },
                    },
                   data:this.seriesData3,
               },
-                            {
-                  name:'第4',
-                  type:'bar',
-                  label: {
-                    show: true,
-                    position: 'insideBottom',
-                    distance: 15,
-                    align: 'left',
-                    verticalAlign: 'middle',
-                    rotate: 90,
-                    fontSize: 6,
-                      formatter:function(params){
-                      return params.name;
-                      },
-                   },
-                  data:this.seriesData4,
-              },
-                            {
-                  name:'第5',
-                  type:'bar',
-                  label: {
-                    show: true,
-                    position: 'insideBottom',
-                    distance: 15,
-                    align: 'left',
-                    verticalAlign: 'middle',
-                    rotate: 90,
-                    fontSize: 6,
-                      formatter:function(params){
-                      return params.name;
-                      },
-                   },
-                  data:this.seriesData5,
-              },
-                            {
-                  name:'第6',
-                  type:'bar',
-                  label: {
-                    show: true,
-                    position: 'insideBottom',
-                    distance: 15,
-                    align: 'left',
-                    verticalAlign: 'middle',
-                    rotate: 90,
-                    fontSize: 6,
-                      formatter:function(params){
-                      return params.name;
-                      },
-                   },
-                  data:this.seriesData6,
-              },
-                            {
-                  name:'第7',
-                  type:'bar',
-                  label: {
-                    show: true,
-                    position: 'insideBottom',
-                    distance: 15,
-                    align: 'left',
-                    verticalAlign: 'middle',
-                    rotate: 90,
-                    fontSize: 6,
-                      formatter:function(params){
-                      return params.name;
-                      },
-                   },
-                  data:this.seriesData7,
-              },
-                            {
-                  name:'第8',
-                  type:'bar',
-                  label: {
-                    show: true,
-                    position: 'insideBottom',
-                    distance: 15,
-                    align: 'left',
-                    verticalAlign: 'middle',
-                    rotate: 90,
-                    fontSize: 6,
-                      formatter:function(params){
-                      return params.name;
-                      },
-                   },
-                  data:this.seriesData8,
-              },
-                            {
-                  name:'第9',
-                  type:'bar',
-                  label: {
-                    show: true,
-                    position: 'insideBottom',
-                    distance: 15,
-                    align: 'left',
-                    verticalAlign: 'middle',
-                    rotate: 90,
-                    fontSize: 6,
-                      formatter:function(params){
-                      return params.name;
-                      },
-                   },
-                  data:this.seriesData9,
-              },
-                            {
-                  name:'第10',
-                  type:'bar',
-                  label: {
-                    show: true,
-                    position: 'insideBottom',
-                    distance: 15,
-                    align: 'left',
-                    verticalAlign: 'middle',
-                    rotate: 90,
-                    fontSize: 6,
-                      formatter:function(params){
-                      return params.name;
-                      },
-                   },
-                  data:this.seriesData10,
-              },
-       
           ]
       };               
       this.chart.setOption(option);

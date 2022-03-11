@@ -7,10 +7,21 @@
     >
       <div class="digital-flop-title">{{ item.title }}</div>
       <div class="digital-flop">
-        <dv-digital-flop
+				<span v-if="!editing" @dblclick="edit(this)" :style="item.number.style"> 
+                  
+                  
+        <!-- <dv-digital-flop
           :config="item.number"
           style="width:120px;height:60px;"
-        />
+        /> -->
+				{{item.number.number}}
+				</span>
+				<input type="text"
+				ref="input"
+				v-if="editing"
+				
+			  v-model="item.number.number"
+				@blur="save">
           <div class="unit">{{ item.unit }}</div>
       </div>
     </div>
@@ -25,9 +36,10 @@ export default {
   name: 'DigitalFlop',
   data () {
     return {
-      companycount:[],
-      taxsum:[],
-      revenuesum:[],
+			editing: false,
+      companycount:'',
+      taxsum:'',
+      revenuesum:'',
       digitalFlopData:[],
     
     }
@@ -38,33 +50,35 @@ export default {
   methods: { 
     getcountData(){
       GetTotalTaRNO().then(res =>{
-          this.revenuesum.push(res[0].tRevenue / 10000);
-          this.companycount.push(res[0].companyCount) ;
-          this.taxsum.push(res[0].tTax / 10000) ;
+          this.revenuesum = parseFloat((res[0].tRevenue / 10000).toFixed(2));
+          this.companycount = res[0].companyCount ;
+          this.taxsum = parseFloat((res[0].tTax / 10000).toFixed(2));;
           this.digitalFlopData = [
-              {
-                title: '徐家棚总营收',
-                number: {
-                  number: this.revenuesum,
-                    toFixed: 2,
-                  content: '{nt}{nt}',
-                  textAlign: 'center',
-                  style: {
-                    fill: '#4d99fc',
-                    fontWeight: 'bold'
-                  }
-                },
-                unit: '亿'
-              },
+              // {
+              //   title: '徐家棚总营收',
+              //   number: {
+              //     number: this.revenuesum,
+              //       toFixed: 2,
+              //     content: '{nt}{nt}',
+              //     textAlign: 'center',
+              //     style: {
+							// 			fontSize: '30px',
+              //       color: '#f46827',
+							// 			fontWeight: 'bold',
+              //     }
+              //   },
+              //   unit: '亿'
+              // },
               {
                 title: '徐家棚总税收',
                 number: {
                   number: this.taxsum,
                   toFixed: 2,
                   content: '{nt}',
-                  textAlign: 'right',
+                  textAlign: 'center',
                   style: {
-                    fill: '#f46827',
+										fontSize: '30px',
+                    color: '#40faee',
                     fontWeight: 'bold'
                   }
                 },
@@ -73,11 +87,12 @@ export default {
               {
                 title: '楼宇数量',
                 number: {
-                  number: [23],
+                  number: 23,
                   content: '{nt}',
-                  textAlign: 'right',
+                  textAlign: 'center',
                   style: {
-                    fill: '#40faee',
+										fontSize: '30px',
+                    color: '#f46827',
                     fontWeight: 'bold'
                   }
                 },
@@ -88,17 +103,55 @@ export default {
                 number: {
                   number: this.companycount,
                   content: '{nt}',
-                  textAlign: 'right',
+                  textAlign: 'center',
                   style: {
-                    fill: '#40faee',
+										fontSize: '30px',
+                    color: '#40faee',
                     fontWeight: 'bold'
                   }
                 },
-                unit: '个'
+                unit: '家'
+              },
+              {
+                title: '“四上”企业数',
+                number: {
+                  number: 400,
+                  content: '{nt}',
+                  textAlign: 'center',
+                  style: {
+										fontSize: '30px',
+                    color: '#f46827',
+                    fontWeight: 'bold'
+                  }
+                },
+                unit: '家'
+              },
+              {
+                title: '区级重大项目数',
+                number: {
+                  number: 12,
+                  content: '{nt}',
+                  textAlign: 'center',
+                  style: {
+										fontSize: '30px',
+                    color: '#40faee',
+                    fontWeight: 'bold'
+                  }
+                },
+                unit: '项'
               },
             ]
       })
     },
+		edit: function () {
+			this.editing = true
+			this.$nextTick(function () {
+				// this.$els.input.focus()
+			})
+				},
+			save: function () {
+					this.editing = false;
+				}
   },
   mounted () {
  
