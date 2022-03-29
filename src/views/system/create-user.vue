@@ -13,6 +13,12 @@
 						<span v-else>{{ row.name }}</span>
 					</template>
 				</el-table-column>
+						<el-table-column align="center" label="密码">
+					<template slot-scope="{row}">
+						<el-input v-if="row.edit" v-model="row.note" class="edit-input" size="small" clearable/>
+						<span v-else>{{ row.note }}</span>
+					</template>
+				</el-table-column>
 				<el-table-column align="center" label="注册时间" width="200">
 					<template slot-scope="{row}">
 						<span>{{ row.reportTime }}</span>
@@ -46,12 +52,7 @@
 						<span v-else>{{ row.type }}</span>
 					</template>
 				</el-table-column>
-				<el-table-column align="center" label="备注">
-					<template slot-scope="{row}">
-						<el-input v-if="row.edit" v-model="row.note" class="edit-input" size="small" clearable/>
-						<span v-else>{{ row.note }}</span>
-					</template>
-				</el-table-column>
+		
 				<el-table-column   align="center" label="编辑" width="240">
 				<template slot-scope="{row}">
 					<el-button-group  v-if ="row.edit === false" :key="row.id">
@@ -102,6 +103,9 @@
 				<el-form-item label="用户名" >
 				<el-input v-model="formData.name" placeholder="用户名"></el-input>
 				</el-form-item>
+				<el-form-item label="用户密码" >
+				<el-input v-model="formData.note" placeholder="用户密码"></el-input>
+				</el-form-item>
 				<el-form-item label="注册时间">
 					<el-date-picker
 					 type="datetime" 
@@ -135,9 +139,9 @@
 					</el-option>
 				</el-select>
 				</el-form-item>
-				<el-form-item label="备注" >
+				<!-- <el-form-item label="备注" >
 				<el-input v-model="formData.note" placeholder="备注"></el-input>
-				</el-form-item>
+				</el-form-item> -->
 			</el-form>
 			<span slot="footer" class="dialog-footer">
 				<el-button type="warning" icon="el-icon-refresh" @click="dialogVisible = false" >取 消</el-button>
