@@ -16,6 +16,13 @@
 						>
 							营收前十
 						</el-button>
+            <el-button
+							type="primary"
+							icon="el-icon-info" 
+							@click="getOutsideCompanypointData()"
+						>
+							非楼宇企业
+						</el-button>
 						<el-button
 							type="primary"
 							icon="el-icon-remove" 
@@ -27,6 +34,7 @@
 		<company-info-panel :company-datas="companyDatas"></company-info-panel>
     <taxtopPointDialog :opened="companyDatas.opened" :taxpointinfo ="companyDatas.taxinfo" />
     <revenuetopPointDialog :opened1="companyDatas.opened1" :revenuepointinfo ="companyDatas.revenueinfo" />
+    <outcompany-info-panel  :outcompanyinfo ="companyDatas"> </outcompany-info-panel>
 	</div>
 </template>
 
@@ -39,10 +47,12 @@ var Cesium = require('cesium/Cesium');
 import 'cesium/Widgets/widgets.css';
 import TaxTop from "../../../assets/cesium_images/税收.svg"
 import RevenueTop from "../../../assets/cesium_images/营收.svg"
-import {GetTaxTopOnMap } from '@/api/company.js'
+import Outcompany from "../../../assets/cesium_images/企业.svg"
+import {GetTaxTopOnMap,GetOutsideCompanyPoint } from '@/api/company.js'
 import { GetRevenueTopOnMap } from '@/api/company.js'
 import taxtopPointDialog from './companyInfoComponents/taxtopPointDialog.vue'
 import revenuetopPointDialog from './companyInfoComponents/revenuetopPointDialog.vue'
+import outcompanyInfoPanel from './companyInfoComponents/outsidecompanyDialog.vue'
 
 // let tilesets = new Map();
 
@@ -59,15 +69,19 @@ export default {
 			// 		url: 'http://localhost:80/xjp/3D/sanjiaolu/v+/tileset.json'
 			// 	}
 			// ],
-      taxtopPoint:[],
-      revenuetopPoint:[],
+      // taxtopPoint:[],
+      // revenuetopPoint:[],
+
 			companyDatas:{
 				show: false,
         opened: false,
 				opened1: false,
 				title: '',
 				buildingName:'',
-				companiesFullInfo: [],
+				companiesFullInfo: [],       
+        // outcompanyinfo:{},
+         show1: false,
+        OutsideCompanyinfo: [],
 				interactOperate,
 				clearFilter: false,
 				activeName: '',
@@ -84,6 +98,7 @@ export default {
 		companyInfoPanel,
 		taxtopPointDialog,
 		revenuetopPointDialog,
+    outcompanyInfoPanel,
 	},
 	mounted() {
 		this.init();
@@ -105,6 +120,10 @@ export default {
 		})
 	},
 	methods: {
+    getOutsideCompanypointData(){
+      this.viewer.entities.removeAll();
+      this.getOutsidecompany()
+    },
 		gettaxtoppoint(){
 			this.viewer.entities.removeAll();
 			this.getTaxTopData()
@@ -236,6 +255,29 @@ export default {
             console.log(err);
         });
     },
+    //获取后台数据，区外企业信息 添加entity标记
+    getOutsidecompany(){
+         var _this = this;
+        GetOutsideCompanyPoint().then(response =>{
+          // debugger
+           response.forEach(item =>{
+            // debugger
+                _this.addEntity2(
+                    this.viewer,
+                    Cesium.Cartesian3.fromDegrees(
+                        parseFloat(item["long"]),
+                        parseFloat(item["lat"]),
+                        parseFloat(item["height"]) 
+                     ),
+                    item.companyName,  
+                    Outcompany
+                );
+                  // console.log(item);
+           })  
+        }).catch(err =>{
+            console.log(err);
+        });
+    },
     addEntity(viewer, postion, text, img) {
         viewer.entities.add({
             // id: text,
@@ -282,6 +324,42 @@ export default {
 						companyname: text,
             label: {
             text: text.replace(/有限/g, '').replace(/公司/g, '').replace(/湖北省/g, '').replace(/湖北/g, '').replace(/责任/g, '').replace(/管理/g, '').replace(/（）/g, '').replace(/华中分/g, '').replace(/山东/g, ''),
+            // font: parseInt(objEntity.FontSize) * 2.2 + 'px ' + objEntity.FontName,
+            style: Cesium.LabelStyle.FILL_AND_OUTLINE,
+            outlineWidth: 6,
+            translucencyByDistance: new Cesium.NearFarScalar(
+                1.5e2,
+                1.0,
+                1.5e5,
+                0.0
+            ),
+            horizontalOrigin: Cesium.HorizontalOrigin.LEFT,
+            // verticalOrigin : LSGlobe.VerticalOrigin.BOTTOM, //垂直方向以底部来计算标签的位置
+            pixelOffset: new Cesium.Cartesian2(20, -2), // 偏移量
+            disableDepthTestDistance: 1000000000, // 优先级
+            scale: 0.5,
+            },
+            billboard: {
+            image: img, // default: undefined
+            text: "123",
+            show: true, // default
+            width: 55,
+            height: 55,
+            disableDepthTestDistance: 1000000000,
+            scale: 0.6,
+            },
+        });
+    },
+    addEntity2(viewer, postion, text, img) {
+        viewer.entities.add({
+            // id: text,
+            // id:personID,
+            // phone:phone,
+            position: postion,
+						sign : "outsideCompany",
+						companyname: text,
+            label: {
+            text: text.replace(/有限/g, '').replace(/公司/g, '').replace(/湖北省/g, '').replace(/责任/g, '').replace(/管理/g, '').replace(/（）/g, '').replace(/华中分/g, '').replace(/山东/g, ''),
             // font: parseInt(objEntity.FontSize) * 2.2 + 'px ' + objEntity.FontName,
             style: Cesium.LabelStyle.FILL_AND_OUTLINE,
             outlineWidth: 6,

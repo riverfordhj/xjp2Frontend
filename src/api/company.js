@@ -236,6 +236,13 @@ export function getRevenueRound(){
 				}
 			})
 		}
+       // 获取区外企业信息
+		export function GetOutsideCompanyPoint(){
+			return request({
+				url: '/Combasic/GetOutsideCompanyPoint',
+				method: 'get',
+			})
+		}
 
 
 //..................分割线........................
@@ -315,4 +322,6 @@ export function updateBuildingStatus(buildingName, status){
 		data: JsonData
 	})
 }
+
+
 

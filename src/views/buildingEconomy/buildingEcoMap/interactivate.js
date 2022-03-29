@@ -1,5 +1,5 @@
 var Cesium = require('cesium/Cesium');
-import { getCompanyInfoByRoom } from '@/api/company.js'
+import { getCompanyInfoByRoom,GetOutsideCompanyPoint } from '@/api/company.js'
 import { flatCompanyInfo } from '@/utils/tools.js'
 import { GetTaxTopOnMap } from '@/api/company.js'
 import { GetRevenueTopOnMap } from '@/api/company.js'
@@ -154,6 +154,7 @@ var interactOperate = {
     const boool = room.hasOwnProperty("collection");
     
     if(boool){
+      debugger
        this.taxtopPoint(movement.position);
     }else{
       this.setInfobox(room);
@@ -177,12 +178,32 @@ var interactOperate = {
             });
 
             return;
-          }
+          }else
 					if (pickedEntity.sign == "revenue") {
             this.companyDatas.opened1 = !this.companyDatas.opened1;
             console.log(pickedEntity.label.text._value, pickedEntity);
             GetRevenueTopOnMap().then(response =>{
                 this.companyDatas.revenueinfo = response.find(item => item.name === pickedEntity.companyname)                       
+            });
+
+            return;
+          }else
+          if (pickedEntity.sign == "outsideCompany") 
+          {
+            debugger
+            // this.companyDatas.show1 = !this.companyDatas.show1;
+            // console.log(pickedEntity.label.text._value, pickedEntity);
+            GetOutsideCompanyPoint().then(response =>{
+              debugger
+              if(this.companyDatas.show1 !== true){
+                this.companyDatas.show1 = true;
+              }
+              console.log(response);
+              debugger
+              this.companyDatas.OutsideCompanyinfo = [];
+                const outinfo = response.find(item => item.companyName === pickedEntity.companyname);
+                this.companyDatas.OutsideCompanyinfo.push(outinfo);
+                console.log(this.companyDatas.OutsideCompanyinfo)                  
             });
 
             return;
@@ -377,6 +398,7 @@ var interactOperate = {
 				this.companyDatas.show = true;
 			}
 			this.companyDatas.companiesFullInfo = flatCompanyInfo(res);
+      console.log(this.companyDatas.companiesFullInfo)
 		}).catch(err => {
 			console.log(err);
 		});
