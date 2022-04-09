@@ -8,7 +8,7 @@
 
     <breadcrumb class="breadcrumb-container" />
 
-    <span class="title">徐家棚智慧街道3D一张图</span>
+    <span class="title">徐家棚智慧街道3D一张图0</span>
 
     <div class="right-menu">
       <MessageTip class="message" />
