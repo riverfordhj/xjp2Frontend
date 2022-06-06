@@ -51,14 +51,26 @@
           </div>
 
           <dv-border-box-4 class="rmc-bottom-container" >
-            <el-tabs class="revenuetop" v-model="activeName1" style="width:100%;height:100%;" @tab-click="handleClick">
-              <el-tab-pane class="revenuetop" label="产业营收前三" name="third">                 
+						<div class="title">
+		<!-- 按钮 -->
+	     <el-upload
+	       action=""
+	       :multiple="false"
+	       :show-file-list="false"
+	       accept="csv, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+	       :http-request="httpRequest">
+	       <el-button type="text">分产业营收前五</el-button>
+	     </el-upload>
+	     <!-- 按钮 end -->
+						</div>
+            <!-- <el-tabs class="revenuetop" v-model="activeName1" style="width:100%;height:100%;" @tab-click="handleClick">
+              <el-tab-pane class="revenuetop" label="产业营收前三" name="third">                  -->
 					        <Bottom-Charts />				        
-              </el-tab-pane>
-              <el-tab-pane class="revenuetop" label="产业税收前三" name="forth">
-					        <Bottom-Charts-1 />
-              </el-tab-pane>
-            </el-tabs>
+              <!-- </el-tab-pane>
+              <el-tab-pane class="revenuetop" label="产业税收前三" name="forth"> -->
+					        <!-- <Bottom-Charts-1 /> -->
+              <!-- </el-tab-pane>
+            </el-tabs> -->
           </dv-border-box-4>
         </div>
       </dv-border-box-1>
@@ -83,6 +95,8 @@ import RightChart3 from './RightChart3'
 import BottomCharts from './BottomCharts'
 import BottomCharts1 from './BottomCharts1'
 
+import XLSX from 'xlsx';
+
 export default {
   name: 'DataView',
   components: {
@@ -105,7 +119,57 @@ export default {
   methods:{
         handleClick(){
 
+        },
+	    httpRequest (e) {
+	      let file = e.file // 文件信息
+	      console.log('e: ', e)
+	      console.log('file: ', e.file)
+
+        if (!file) {
+          // 没有文件
+          return false
+        } else if (!/\.(xls|xlsx)$/.test(file.name.toLowerCase())) {
+          // 格式根据自己需求定义
+          this.$message.error('上传格式不正确，请上传xls或者xlsx格式')
+          return false
         }
+
+        const fileReader = new FileReader()
+        fileReader.onload = (ev) => {
+          try {
+            const data = ev.target.result
+            const workbook = XLSX.read(data, {
+              type: 'binary' // 以字符编码的方式解析
+            })
+						const industry = []
+						const industryname = workbook.SheetNames
+            // const exl = XLSX.utils.sheet_to_json(workbook.Sheets[exlname]) // 生成json表格内容
+						for(let i = 0; i < workbook.SheetNames.length; i++){
+							const exlname = workbook.SheetNames[i]
+							const exl = XLSX.utils.sheet_to_json(workbook.Sheets[exlname]).map(item =>{
+								item.name = item.单位详细名称
+								item.value = item.营收
+								return item;
+							})
+							const anexl = []
+							exl.map(i => {
+								anexl.push(Object.assign({}, { name: i.name,value: i.value }))
+							})
+							industry.push(anexl.slice(0,5))
+						}
+						console.log(industry)
+						this.bus.$emit('deliveryindustry', industry, industryname)
+            
+            // 将 JSON 数据挂到 data 里
+            // this.tableData = exl
+            // document.getElementsByName('file')[0].value = '' // 根据自己需求，可重置上传value为空，允许重复上传同一文件
+          } catch (e) {
+            console.log('出错了：：')
+            return false
+          }
+	    }
+      fileReader.readAsBinaryString(file)		
+		}		
   }
 }
 </script>
@@ -216,5 +280,15 @@ html, body {
   .revenuetop .el-tabs__item{
     color:aqua;
   }
+	.title{
+		z-index: 20;
+		position: absolute;
+		left: 2.5%;
+		top: 2%;
+    span {
+      color: #fff;
+      font-size: 16px;
+    }
+	}
 }
 </style>

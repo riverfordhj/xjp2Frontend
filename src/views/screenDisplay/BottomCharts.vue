@@ -31,9 +31,16 @@ export default {
   },
   data () {
     return {
+			industryrevenue: [],
       seriesData1:[],
       seriesData2:[],
       seriesData3:[],
+			seriesData4:[],
+			seriesData5:[],
+			type: ['制造业','电燃气水','建筑业','运输仓储',
+			'计算机信息','批发零售','住宿餐饮','金融业', 
+			'房地产业','租赁商务业',"科研地勘","水利公共管理",
+			"服务业", "文娱体育业"]
     }
   },
    created(){
@@ -46,7 +53,15 @@ export default {
         this.chart.resize()
       }
     }, 100)
-    window.addEventListener('resize', this.__resizeHandler)
+    window.addEventListener('resize', this.__resizeHandler);
+		this.bus.$on('deliveryindustry', (industry, industryname) =>{
+			// console.log(industry, industryname,'这是传来的产业数据')
+			this.type = industryname
+			this.industryrevenue = industry			
+			this.getIndustryRevenueTop();
+			this.setOptions();
+			this.initChart();
+		});
   },
   beforeDestroy() {
     if (!this.chart) {
@@ -82,17 +97,50 @@ export default {
 
   methods: {
     async getIndustryRevenueTop(){
-      for(var i = 3;i <= 18;i++){
-        if(i != 16 && i != 17){
-          await  GetIndustryRevenueTop(i).then(res =>{
-               const RevenueTop = JSON.parse(JSON.stringify(res).replace(/companyname/g, 'name').replace(/revenue/g, 'value').replace(/有限/g, '').replace(/公司/g, '').replace(/湖北省/g, '').replace(/湖北/g, '').replace(/责任/g, '').replace(/管理/g, '').replace(/（）/g, ''));
-               this.seriesData1.push(RevenueTop[0] ? RevenueTop[0] : {})
-               this.seriesData2.push(RevenueTop[1] ? RevenueTop[1] : {})
-               this.seriesData3.push(RevenueTop[2] ? RevenueTop[2] : {})
-            })
-        }
-      }
-       
+			console.log(this.industryrevenue.length == 0)
+			if(this.industryrevenue.length == 0){
+					this.seriesData1 = []
+					this.seriesData2 = []
+					this.seriesData3 = []
+					this.seriesData4 = []
+					this.seriesData5 = []
+				for(var i = 3;i <= 18;i++){
+					if(i != 16 && i != 17){
+						await  GetIndustryRevenueTop(i).then(res =>{
+							// console.log(res)
+								const RevenueTop = JSON.parse(JSON.stringify(res).replace(/companyname/g, 'name').replace(/revenue/g, 'value').replace(/有限/g, '').replace(/公司/g, '').replace(/湖北省/g, '').replace(/湖北/g, '').replace(/责任/g, '').replace(/管理/g, '').replace(/（）/g, ''));
+							// console.log(RevenueTop)
+								this.seriesData1.push(RevenueTop[0] ? RevenueTop[0] : {})
+								// console.log(this.seriesData1)
+								this.seriesData2.push(RevenueTop[1] ? RevenueTop[1] : {})
+								// console.log(this.seriesData2)
+								this.seriesData3.push(RevenueTop[2] ? RevenueTop[2] : {})
+								// console.log(this.seriesData3)
+								this.seriesData4.push(RevenueTop[3] ? RevenueTop[3] : {})
+								this.seriesData5.push(RevenueTop[4] ? RevenueTop[4] : {})
+							})
+					}
+				}
+			}else{
+					this.seriesData1 = []
+					this.seriesData2 = []
+					this.seriesData3 = []
+					this.seriesData4 = []
+					this.seriesData5 = []
+				for(let i = 0; i <this.industryrevenue.length; i++){
+					// console.log(this.industryrevenue[i])
+					const RevenueTop = JSON.parse(JSON.stringify(this.industryrevenue[i]).replace(/有限/g, '').replace(/公司/g, '').replace(/（）/g, ''))
+					// console.log(RevenueTop)
+								this.seriesData1.push(RevenueTop[0] ? RevenueTop[0] : {})
+								// console.log(this.seriesData1)
+								this.seriesData2.push(RevenueTop[1] ? RevenueTop[1] : {})
+								// console.log(this.seriesData2)
+								this.seriesData3.push(RevenueTop[2] ? RevenueTop[2] : {})
+								// console.log(this.seriesData3)
+								this.seriesData4.push(RevenueTop[3] ? RevenueTop[3] : {})
+								this.seriesData5.push(RevenueTop[4] ? RevenueTop[4] : {})
+				}
+			}
     },
     setOptions() {
       var option = {
@@ -123,7 +171,8 @@ export default {
           containLabel: true
         },
           legend: {
-              data:['第1','第2','第3'],
+              data:['第1','第2','第3','第4','第5'],
+							top: '8%',
               textStyle:{
                  color:'auto'
               },
@@ -132,15 +181,15 @@ export default {
           xAxis : [
               {
                   type : 'category',
-                  data : ['制造业','电燃气水','建筑业','运输仓储','计算机信息', '批发零售', '住宿餐饮', '金融业', '房地产业', '租赁商务业', "科研地勘",
-                "水利公共管理", "服务业", "文娱体育业"],
+                  data : this.type,
                   axisTick: { alignWithLabel: true},
                   axisLabel:{ interval:0 }
               }
           ],
           yAxis : [
               {
-                  type : 'value'
+								name: '万',
+                type : 'value'
               }
           ],
           series : [
@@ -150,16 +199,16 @@ export default {
                   label: {
                     show: true,
                     position: 'insideBottom',
-                    distance: 15,
+                    distance: 100,
                     align: 'left',
                     verticalAlign: 'middle',
-                    rotate: 90,
+                    rotate: -20,
                     fontSize: 12,
                     textStyle: {
                         color: '#FFFFFF'
                     },
                       formatter:function(params){
-                      return params.name;
+                      return params.name.replace(/\([^\)]*\)/g,"").split('').join('\n');
                       },
                    },
                   data:this.seriesData1,
@@ -170,16 +219,16 @@ export default {
                   label: {
                     show: true,
                     position: 'insideBottom',
-                    distance: 15,
+                    distance: 100,
                     align: 'left',
                     verticalAlign: 'middle',
-                    rotate: 90,
+                    rotate: -20,
                     fontSize: 12,
                     textStyle: {
                         color: '#FFFFFF'
                     },
                       formatter:function(params){
-                      return params.name;
+                      return params.name.split('').join('\n');
                       },
                    },
                   data:this.seriesData2,
@@ -190,19 +239,59 @@ export default {
                   label: {
                     show: true,
                     position: 'insideBottom',
-                    distance: 15,
+                    distance: 100,
                     align: 'left',
                     verticalAlign: 'middle',
-                    rotate: 90,
+                    rotate: -20,
                     fontSize: 12,
                     textStyle: {
                         color: '#FFFFFF'
                     },
                       formatter:function(params){
-                      return params.name;
+                      return params.name.split('').join('\n');
                       },
                    },
                   data:this.seriesData3,
+              },
+              {
+                  name:'第4',
+                  type:'bar',
+                  label: {
+                    show: true,
+                    position: 'insideBottom',
+                    distance: 100,
+                    align: 'left',
+                    verticalAlign: 'middle',
+                    rotate: -20,
+                    fontSize: 12,
+                    textStyle: {
+                        color: '#FFFFFF'
+                    },
+                      formatter:function(params){
+                      return params.name.split('').join('\n');
+                      },
+                   },
+                  data:this.seriesData4,
+              },
+              {
+                  name:'第5',
+                  type:'bar',
+                  label: {
+                    show: true,
+                    position: 'insideBottom',
+                    distance: 100,
+                    align: 'left',
+                    verticalAlign: 'middle',
+                    rotate: -20,
+                    fontSize: 12,
+                    textStyle: {
+                        color: '#FFFFFF'
+                    },
+                      formatter:function(params){
+                      return params.name.split('').join('\n');
+                      },
+                   },
+                  data:this.seriesData5,
               },
           ]
       };               

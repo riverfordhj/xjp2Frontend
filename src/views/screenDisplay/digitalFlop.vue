@@ -72,7 +72,7 @@ export default {
               {
                 title: '徐家棚总税收',
                 number: {
-                  number: this.taxsum,
+                  number: 39.91,
                   toFixed: 2,
                   content: '{nt}',
                   textAlign: 'center',
@@ -99,7 +99,7 @@ export default {
                 unit: '栋'
               },
               {
-                title: '总企业数量',
+                title: '楼宇企业数量',
                 number: {
                   number: this.companycount,
                   content: '{nt}',
@@ -115,7 +115,7 @@ export default {
               {
                 title: '“四上”企业数',
                 number: {
-                  number: 400,
+                  number: 117,
                   content: '{nt}',
                   textAlign: 'center',
                   style: {
@@ -129,7 +129,7 @@ export default {
               {
                 title: '区级重大项目数',
                 number: {
-                  number: 12,
+                  number: 18,
                   content: '{nt}',
                   textAlign: 'center',
                   style: {

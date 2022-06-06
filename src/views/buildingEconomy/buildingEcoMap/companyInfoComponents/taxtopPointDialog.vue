@@ -3,6 +3,7 @@
     :title="title"
     :data="taxpointinfo"
     :visible.sync="dialogVisible"
+		:modal="false"
     width="25%"
   >
     <div class="main">

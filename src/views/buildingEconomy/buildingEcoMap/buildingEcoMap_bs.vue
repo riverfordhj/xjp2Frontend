@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<div id="cesiumContainer" ref="cesiumContainer" />
-		<!-- <div class="mainMenu">
+		<div class="mainMenu">
 						<el-button
 							type="primary"
 							icon="el-icon-info" 
@@ -30,7 +30,7 @@
 						>
 							清除标记
 						</el-button>
-    </div> -->
+    </div>
 		<company-info-panel :company-datas="companyDatas"></company-info-panel>
     <taxtopPointDialog :opened="companyDatas.opened" :taxpointinfo ="companyDatas.taxinfo" />
     <revenuetopPointDialog :opened1="companyDatas.opened1" :revenuepointinfo ="companyDatas.revenueinfo" />
@@ -91,7 +91,9 @@ export default {
 			modelTreeData: [],
 
 			positionValue: {},
-			FloorValue: ''
+			FloorValue: '',
+			deliveryRevenueInfo: [],
+			deliveryTaxInfo: [],
 		}
 	},
 	components: {
@@ -103,20 +105,38 @@ export default {
 	mounted() {
 		this.init();
 		this.loadData();
-		debugger
+		// debugger
 		this.bus.$on('deliveryPositionInfo', (pos,floorNum) =>{
-			debugger
+			// debugger
 			this.FloorValue = floorNum;	
 			console.log('I get it');
-			debugger;
+			// debugger;
 			this.positionValue = {
 					long: pos.long,
 					lat: pos.lat,
 					height: pos.height
 			};
 			// this.$nextTick(this.companyDatas.interactOperate.FlytoFloor(position, floorNum));
-			debugger
+			// debugger
 			this.companyDatas.interactOperate.FlytoFloor(this.positionValue,this.FloorValue);
+		});
+		this.bus.$on('deliveryRevenueInfo', (exl) =>{
+			this.deliveryRevenueInfo = exl.map(item =>{
+					item.longitude = String(item.坐标).split(",")[0];
+					item.latitude = String(item.坐标).split(",")[1]
+					item.height = '80'
+					return item;
+				})
+			console.log(this.deliveryRevenueInfo,'这是传来的营收数据')
+		});
+		this.bus.$on('deliveryTaxInfo', (exl) =>{
+			this.deliveryTaxInfo = exl.map(item =>{
+					item.longitude = String(item.坐标).split(",")[0];
+					item.latitude = String(item.坐标).split(",")[1]
+					item.height = '80'
+					return item;
+				})
+			console.log(this.deliveryTaxInfo,'这是传来的税收数据')
 		})
 	},
 	methods: {
@@ -151,6 +171,9 @@ export default {
         animation: false,
         infoBox: true,
         requestRenderMode: true,
+				imageryProvider: new Cesium.OpenStreetMapImageryProvider({
+					url: 'https://a.tile.openstreetmap.org/'
+				})
         // imageryProvider: new Cesium.WebMapTileServiceImageryProvider({
         //   url: 'http://t0.tianditu.com/img_w/wmts?service=wmts&request=GetTile&version=1.0.0&LAYER=img&tileMatrixSet=w&TileMatrix={TileMatrix}&TileRow={TileRow}&TileCol={TileCol}&style=default&format=tiles&tk=b97312f85a240009c717a8480b6d54d2',
         //   layer: 'tdtBasicLayer',
@@ -167,7 +190,7 @@ export default {
 				url: '/3DModelsSetting.json', // 读取public目录下3维模型配置文件
         method: 'get'
 			}).then((res) =>{
-				debugger
+				// debugger
 				this.modelTreeData = res.data;
 				
 				var st_sanjiaolu = this.modelTreeData[2].children[0].url;
@@ -212,48 +235,86 @@ export default {
     //获取后台数据，税收前十 添加entity标记
     getTaxTopData(){
         var _this = this;
-        GetTaxTopOnMap().then(response =>{
-           response.forEach(item =>{
-            debugger
-                _this.addEntity(
-                    this.viewer,
-                    Cesium.Cartesian3.fromDegrees(
-                      //114.31988525390625, 30.577434539794922, 60),
-                        parseFloat(item["longitude"]),
-                        parseFloat(item["latitude"]),
-                        parseFloat(item["height"]) 
-                     ),
-                    item.name,   //item.type,'里斯'
-                    TaxTop
-                );
-                  console.log(item);
-           })  
-        }).catch(err =>{
-            console.log(err);
-        });
+				if(_this.deliveryTaxInfo.length == 0){
+					GetTaxTopOnMap().then(response =>{
+						response.forEach(item =>{
+							// debugger
+									_this.addEntity(
+											this.viewer,
+											Cesium.Cartesian3.fromDegrees(
+												//114.31988525390625, 30.577434539794922, 60),
+													parseFloat(item["longitude"]),
+													parseFloat(item["latitude"]),
+													parseFloat(item["height"]) 
+											),
+											item.name,   //item.type,'里斯'
+											TaxTop
+									);
+										console.log(item);
+						})  
+					}).catch(err =>{
+							console.log(err);
+					});
+				}else{
+					this.deliveryTaxInfo.forEach(item =>{
+							// debugger
+									_this.addEntity3(
+											this.viewer,
+											Cesium.Cartesian3.fromDegrees(
+												//114.31988525390625, 30.577434539794922, 60),
+													parseFloat(item["longitude"]),
+													parseFloat(item["latitude"]),
+													parseFloat(item["height"]) 
+											),
+											item.公司名称,   //item.type,'里斯'
+											TaxTop
+									);
+										console.log(item);
+						})
+				}
+
     },
     //获取后台数据，营收前十 添加entity标记
     getRevenueTopData(){
         var _this = this;
-        GetRevenueTopOnMap().then(response =>{
-           response.forEach(item =>{
-            debugger
-                _this.addEntity1(
-                    this.viewer,
-                    Cesium.Cartesian3.fromDegrees(
-                      //114.31988525390625, 30.577434539794922, 60),
-                        parseFloat(item["longitude"]),
-                        parseFloat(item["latitude"]),
-                        parseFloat(item["height"]) 
-                     ),
-                    item.name,   //item.type,'里斯'
-                    RevenueTop
-                );
-                  console.log(item);
-           })  
-        }).catch(err =>{
-            console.log(err);
-        });
+				if(_this.deliveryRevenueInfo.length == 0){
+					GetRevenueTopOnMap().then(response =>{
+						console.log(response)
+						response.forEach(item =>{
+							// debugger
+									_this.addEntity1(
+											this.viewer,
+											Cesium.Cartesian3.fromDegrees(
+												//114.31988525390625, 30.577434539794922, 60),
+													parseFloat(item["longitude"]),
+													parseFloat(item["latitude"]),
+													parseFloat(item["height"]) 
+											),
+											item.name,   //item.type,'里斯'
+											RevenueTop
+									);
+										console.log(item);
+						})  
+					}).catch(err =>{
+							console.log(err);
+					});
+				}else{
+					this.deliveryRevenueInfo.forEach(item =>{
+							// debugger
+									_this.addEntity3(
+											this.viewer,
+											Cesium.Cartesian3.fromDegrees(
+												//114.31988525390625, 30.577434539794922, 60),
+													parseFloat(item["longitude"]),
+													parseFloat(item["latitude"]),
+													parseFloat(item["height"]) 
+											),
+											item.公司名称,   //item.type,'里斯'
+											RevenueTop
+									);
+										console.log(item);
+						})
+				}
     },
     //获取后台数据，区外企业信息 添加entity标记
     getOutsidecompany(){
@@ -360,6 +421,41 @@ export default {
 						companyname: text,
             label: {
             text: text.replace(/有限/g, '').replace(/公司/g, '').replace(/湖北省/g, '').replace(/责任/g, '').replace(/管理/g, '').replace(/（）/g, '').replace(/华中分/g, '').replace(/山东/g, ''),
+            // font: parseInt(objEntity.FontSize) * 2.2 + 'px ' + objEntity.FontName,
+            style: Cesium.LabelStyle.FILL_AND_OUTLINE,
+            outlineWidth: 6,
+            translucencyByDistance: new Cesium.NearFarScalar(
+                1.5e2,
+                1.0,
+                1.5e5,
+                0.0
+            ),
+            horizontalOrigin: Cesium.HorizontalOrigin.LEFT,
+            // verticalOrigin : LSGlobe.VerticalOrigin.BOTTOM, //垂直方向以底部来计算标签的位置
+            pixelOffset: new Cesium.Cartesian2(20, -2), // 偏移量
+            disableDepthTestDistance: 1000000000, // 优先级
+            scale: 0.5,
+            },
+            billboard: {
+            image: img, // default: undefined
+            text: "123",
+            show: true, // default
+            width: 55,
+            height: 55,
+            disableDepthTestDistance: 1000000000,
+            scale: 0.6,
+            },
+        });
+    },
+    addEntity3(viewer, postion, text, img) {
+        viewer.entities.add({
+            // id: text,
+            // id:personID,
+            // phone:phone,
+            position: postion,
+						companyname: text,
+            label: {
+            text: text.replace(/有限/g, '').replace(/公司/g, '').replace(/责任/g, '').replace(/管理/g, '').replace(/（）/g, ''),
             // font: parseInt(objEntity.FontSize) * 2.2 + 'px ' + objEntity.FontName,
             style: Cesium.LabelStyle.FILL_AND_OUTLINE,
             outlineWidth: 6,

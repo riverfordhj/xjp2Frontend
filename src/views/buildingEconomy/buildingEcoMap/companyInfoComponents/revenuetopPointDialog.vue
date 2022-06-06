@@ -3,6 +3,7 @@
     :title="title"
     :data="revenuepointinfo"
     :visible.sync="dialogVisible1"
+		:modal="false"
     width="25%"
   >
     <div class="main">

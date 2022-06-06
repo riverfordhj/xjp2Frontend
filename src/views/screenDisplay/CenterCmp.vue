@@ -5,18 +5,22 @@
 </template>
 
 <script>
-import LabelTag from './LabelTag'
-import buildingecoMap from '../buildingEconomy/buildingEcoMap/buildingEcoMap.vue'
+import buildingecoMap from '../buildingEconomy/buildingEcoMap/buildingEcoMap_bs.vue'
 export default {
   name: 'CenterCmp',
   components: {
-    LabelTag,
     buildingecoMap
   },
   data () {
     return {
     }
-  }
+  },
+  created(){
+     console.log('dsadasf')
+  },
+	mounted() {
+
+	},
 }
 </script>
 
