@@ -3,18 +3,18 @@ import { MessageBox, Message } from 'element-ui'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
 
-let webapiBaseURL = undefined;
-async function getAppSetting(){
-	await axios.get('/appsetting.json').then((res) => {
-		webapiBaseURL = res.data[0].webapiBaseURL;
-	});
-}
-getAppSetting();
+// let webapiBaseURL = undefined;
+// async function getAppSetting(){
+// 	await axios.get('/appsetting.json').then((res) => {
+// 		webapiBaseURL = res.data[0].webapiBaseURL;
+// 	});
+// }
+// getAppSetting();
 
 // create an axios instance
 const service = axios.create({
   //baseURL: 'http://112.17.184.211:19898/XjpBackend2/api', // process.env.VUE_APP_BASE_API, // url = base url + request url
-	// baseURL: '/api',
+	baseURL: '/api',
   withCredentials: false, // send cookies when cross-domain requests
   timeout: 20000 // request timeout
   // headers: { 'Content-Type': 'application/json' }
@@ -24,7 +24,7 @@ const service = axios.create({
 service.interceptors.request.use(
   config => {
     // debugger
-    config.baseURL = webapiBaseURL; //在请求发起前，修改baseURL
+    // config.baseURL = webapiBaseURL; //在请求发起前，修改baseURL
     // do something before request is sent
     // config.headers['Content-Type'] = 'application/json'
     if (store.getters.token) {
