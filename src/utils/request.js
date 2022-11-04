@@ -4,17 +4,17 @@ import store from '@/store'
 import { getToken } from '@/utils/auth'
 
 // let webapiBaseURL = undefined;
-// async function getAppSetting(){
-// 	await axios.get('/appsetting.json').then((res) => {
-// 		webapiBaseURL = res.data[0].webapiBaseURL;
-// 	});
+// async function getAppSetting() {
+//   await axios.get('/appsetting.json').then((res) => {
+//     webapiBaseURL = res.data[0].webapiBaseURL;
+//   });
 // }
 // getAppSetting();
 
 // create an axios instance
 const service = axios.create({
-  //baseURL: 'http://112.17.184.211:19898/XjpBackend2/api', // process.env.VUE_APP_BASE_API, // url = base url + request url
-	baseURL: '/api',
+  baseURL: 'http://202.114.148.160:10086/XjpBackend/api/', // process.env.VUE_APP_BASE_API, // url = base url + request url
+  // baseURL: '/api',
   withCredentials: false, // send cookies when cross-domain requests
   timeout: 20000 // request timeout
   // headers: { 'Content-Type': 'application/json' }
