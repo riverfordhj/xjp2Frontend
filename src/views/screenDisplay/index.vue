@@ -98,7 +98,7 @@ import BottomCharts1 from './BottomCharts1'
 import XLSX from 'xlsx';
 
 export default {
-  name: 'DataView',
+  name: 'screenDisplay',
   components: {
     LeftChart1,
     LeftChart2,

@@ -72,7 +72,7 @@ export default {
               {
                 title: '徐家棚总税收',
                 number: {
-                  number: 39.91,
+                  number: 51.1,
                   toFixed: 2,
                   content: '{nt}',
                   textAlign: 'center',
@@ -87,7 +87,7 @@ export default {
               {
                 title: '楼宇数量',
                 number: {
-                  number: 23,
+                  number: 26,
                   content: '{nt}',
                   textAlign: 'center',
                   style: {
@@ -101,7 +101,7 @@ export default {
               {
                 title: '楼宇企业数量',
                 number: {
-                  number: this.companycount,
+                  number: 1233,
                   content: '{nt}',
                   textAlign: 'center',
                   style: {
@@ -115,7 +115,7 @@ export default {
               {
                 title: '“四上”企业数',
                 number: {
-                  number: 117,
+                  number: 150,
                   content: '{nt}',
                   textAlign: 'center',
                   style: {
@@ -129,7 +129,7 @@ export default {
               {
                 title: '区级重大项目数',
                 number: {
-                  number: 18,
+                  number: 21,
                   content: '{nt}',
                   textAlign: 'center',
                   style: {

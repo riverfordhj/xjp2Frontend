@@ -1,48 +1,23 @@
 <template>
   <div>
-    <div
-      id="cesiumContainer"
-      ref="cesiumContainer"
-    />
+    <div id="cesiumContainer" ref="cesiumContainer" />
     <div class="mainMenu">
-      <el-button
-        type="primary"
-        icon="el-icon-info"
-        @click="gettaxtoppoint()"
-      >
+      <el-button type="primary" icon="el-icon-info" @click="gettaxtoppoint()">
         税收前十
       </el-button>
-      <el-button
-        type="primary"
-        icon="el-icon-info"
-        @click="getrevenuetoppoint()"
-      >
+      <el-button type="primary" icon="el-icon-info" @click="getrevenuetoppoint()">
         营收前十
       </el-button>
-      <el-button
-        type="primary"
-        icon="el-icon-info"
-        @click="getOutsideCompanypointData()"
-      >
+      <el-button type="primary" icon="el-icon-info" @click="getOutsideCompanypointData()">
         非楼宇企业
       </el-button>
-      <el-button
-        type="primary"
-        icon="el-icon-remove"
-        @click="handledelete()"
-      >
+      <el-button type="primary" icon="el-icon-remove" @click="handledelete()">
         清除标记
       </el-button>
     </div>
     <company-info-panel :company-datas="companyDatas"></company-info-panel>
-    <taxtopPointDialog
-      :opened="companyDatas.opened"
-      :taxpointinfo="companyDatas.taxinfo"
-    />
-    <revenuetopPointDialog
-      :opened1="companyDatas.opened1"
-      :revenuepointinfo="companyDatas.revenueinfo"
-    />
+    <taxtopPointDialog :opened="companyDatas.opened" :taxpointinfo="companyDatas.taxinfo" />
+    <revenuetopPointDialog :opened1="companyDatas.opened1" :revenuepointinfo="companyDatas.revenueinfo" />
     <outcompany-info-panel :outcompanyinfo="companyDatas"> </outcompany-info-panel>
   </div>
 </template>
@@ -265,27 +240,58 @@ export default {
     getTaxTopData() {
       var _this = this;
       if (_this.deliveryTaxInfo.length == 0) {
-        GetTaxTopOnMap()
-          .then((response) => {
-            response.forEach((item) => {
-              // debugger
-              _this.addEntity(
-                this.viewer,
-                Cesium.Cartesian3.fromDegrees(
-                  //114.31988525390625, 30.577434539794922, 60),
-                  parseFloat(item["longitude"]),
-                  parseFloat(item["latitude"]),
-                  parseFloat(item["height"])
-                ),
-                item.name, //item.type,'里斯'
-                TaxTop
-              );
-              console.log(item);
-            });
-          })
-          .catch((err) => {
-            console.log(err);
-          });
+        // GetTaxTopOnMap()
+        //   .then((response) => {
+        //     response.forEach((item) => {
+        //       // debugger
+        //       _this.addEntity(
+        //         this.viewer,
+        //         Cesium.Cartesian3.fromDegrees(
+        //           //114.31988525390625, 30.577434539794922, 60),
+        //           parseFloat(item["longitude"]),
+        //           parseFloat(item["latitude"]),
+        //           parseFloat(item["height"])
+        //         ),
+        //         item.name, //item.type,'里斯'
+        //         TaxTop
+        //       );
+        //       console.log(item);
+        //     });
+        //   })
+        //   .catch((err) => {
+        //     console.log(err);
+        //   });
+
+        const res = [
+          { companyName: '国家开发银行湖北省分行', cRevenue: '21249719.9', location: '114.32747,30.572826 , 10' },
+          { companyName: '武汉市城市建设投资开发集团有限公司', cRevenue: '8722444.866', location: ' 114.346008,30.598169,10' },
+          { companyName: '武汉福星惠誉置业有限公司', cRevenue: '2619817.602', location: '114.359467,30.587214,10' },
+          { companyName: '国能销售集团有限公司华中分公司', cRevenue: '1958254.243', location: '114.377531,30.57671,10' },
+          { companyName: '御江轩（武汉）房地产开发有限公司', cRevenue: '1723864.754', location: '114.339487,30.598513,10' },
+          { companyName: '湖北能源集团股份有限公司', cRevenue: '1645908.776', location: '114.330627,30.588254,10' },
+          { companyName: '武汉清龙置业有限公司', cRevenue: '1230945.856', location: '114.343969,30.599423,10' },
+          { companyName: '湖北人人大经贸有限公司', cRevenue: '847195.4821', location: '114.362986,30.587171,10' },
+          { companyName: '有色矿业集团财务有限公司', cRevenue: '820223.3602', location: '114.349156,30.594233,10' },
+          { companyName: '国铁城投武汉置业有限公司', cRevenue: '790352.1189', location: '114.330627,30.588254,10' }
+        ]
+        res.forEach((item) => {
+          // debugger
+          item.longitude = String(item.location).split(",")[0];
+          item.latitude = String(item.location).split(",")[1];
+          item.height = "80"
+
+          _this.addEntity3(
+            this.viewer,
+            Cesium.Cartesian3.fromDegrees(
+              parseFloat(item["longitude"]),
+              parseFloat(item["latitude"]),
+              parseFloat(item["height"])
+            ),
+            item.companyName, //item.type,'里斯'
+            TaxTop
+          );
+          console.log(item);
+        });
       } else {
         this.deliveryTaxInfo.forEach((item) => {
           // debugger
@@ -308,28 +314,59 @@ export default {
     getRevenueTopData() {
       var _this = this;
       if (_this.deliveryRevenueInfo.length == 0) {
-        GetRevenueTopOnMap()
-          .then((response) => {
-            console.log(response);
-            response.forEach((item) => {
-              // debugger
-              _this.addEntity1(
-                this.viewer,
-                Cesium.Cartesian3.fromDegrees(
-                  //114.31988525390625, 30.577434539794922, 60),
-                  parseFloat(item["longitude"]),
-                  parseFloat(item["latitude"]),
-                  parseFloat(item["height"])
-                ),
-                item.name, //item.type,'里斯'
-                RevenueTop
-              );
-              console.log(item);
-            });
-          })
-          .catch((err) => {
-            console.log(err);
-          });
+        // GetRevenueTopOnMap()
+        //   .then((response) => {
+        //     console.log(response);
+        //     response.forEach((item) => {
+        //       // debugger
+        //       _this.addEntity1(
+        //         this.viewer,
+        //         Cesium.Cartesian3.fromDegrees(
+        //           //114.31988525390625, 30.577434539794922, 60),
+        //           parseFloat(item["longitude"]),
+        //           parseFloat(item["latitude"]),
+        //           parseFloat(item["height"])
+        //         ),
+        //         item.name, //item.type,'里斯'
+        //         RevenueTop
+        //       );
+        //       console.log(item);
+        //     });
+        //   })
+        //   .catch((err) => {
+        //     console.log(err);
+        //   });
+
+        const res = [
+          { companyName: '中煤华中能源有限公司', cRevenue: '1562094', location: '114.343961, 30.599832, 10' },
+          { companyName: '湖北省粮油（集团）有限责任公司', cRevenue: '1125827', location: '114.359448,30.588307,10' },
+          { companyName: '建发（武汉）有限公司', cRevenue: '1056760', location: '114.346008,30.598169,10' },
+          { companyName: '湖北省粮食有限公司', cRevenue: '568590', location: '114.343961,30.599832,10' },
+          { companyName: '中铁物贸集团武汉有限公司', cRevenue: '517993', location: '114.352878,30.593317,10' },
+          { companyName: '武汉清龙置业有限公司', cRevenue: '356741', location: '114.35547,30.590153,10' },
+          { companyName: '湖北人人大经贸有限公司', cRevenue: '128426', location: '114.339487,30.598513,10' },
+          { companyName: '武汉绿地滨江置业有限公司', cRevenue: '103224', location: '114.343961,30.599832,10' },
+          { companyName: '武汉恒信国泰贸易有限公司', cRevenue: '88129', location: '114.346008,30.598169,10' },
+          { companyName: '湖北景盛贸易有限公司', cRevenue: '81368', location: '114.346792,30.586729,10' }
+        ]
+        res.forEach((item) => {
+          // debugger
+          item.longitude = String(item.location).split(",")[0];
+          item.latitude = String(item.location).split(",")[1];
+          item.height = "80"
+
+          _this.addEntity3(
+            this.viewer,
+            Cesium.Cartesian3.fromDegrees(
+              parseFloat(item["longitude"]),
+              parseFloat(item["latitude"]),
+              parseFloat(item["height"])
+            ),
+            item.companyName, //item.type,'里斯'
+            RevenueTop
+          );
+          console.log(item);
+        });
       } else {
         this.deliveryRevenueInfo.forEach((item) => {
           // debugger
@@ -553,6 +590,7 @@ export default {
 #cesiumContainer {
   height: calc(100vh - 84px);
 }
+
 .mainMenu {
   left: 10px;
   top: 10px;

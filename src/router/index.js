@@ -384,15 +384,15 @@ export const asyncRoutes = [
 					icon: 'map'
 				}
 			},
-      {
-				path: 'inquery-buildingEco',
-				name: 'IqueryBuildingEco',
-				component: () => import('@/views/buildingEconomy/inqueryBuilding/inquery-buildingEco.vue'),
-				meta: {
-					title: '楼宇统计分析',
-					icon: 'search'
-				}
-      },
+      // {
+			// 	path: 'inquery-buildingEco',
+			// 	name: 'IqueryBuildingEco',
+			// 	component: () => import('@/views/buildingEconomy/inqueryBuilding/inquery-buildingEco.vue'),
+			// 	meta: {
+			// 		title: '楼宇统计分析',
+			// 		icon: 'search'
+			// 	}
+      // },
       {
           path: 'screenDisplay',
           name: 'screenDisplay',
